@@ -110,6 +110,11 @@ I am passionate about Data Analytics, Business Intelligence, and Data Visualizat
 
 ![Power BI Dashboard](Power%20BI%20Dashboards/powerbi_dashboard.png)
 <img width="1341" height="757" alt="Screenshot 2026-06-04 211242" src="https://github.com/user-attachments/assets/efc83088-d10d-4fba-b08e-9f14588e4647" />
+<img width="1348" height="744" alt="Screenshot 2026-06-04 212826" src="https://github.com/user-attachments/assets/6ca180b5-2528-4013-90dc-cd8e4c1ad8f9" />
+<img width="1334" height="748" alt="Screenshot 2026-06-04 213119" src="https://github.com/user-attachments/assets/72a21e36-eb7b-4d12-96f1-13a113dc6d70" />
+<img width="1336" height="751" alt="Screenshot 2026-06-04 213602" src="https://github.com/user-attachments/assets/897fec77-40d2-4b87-a25e-7c579414fbb2" />
+<img width="1043" height="581" alt="Screenshot 2026-06-04 214405" src="https://github.com/user-attachments/assets/b6d1ef1a-099c-43dc-b618-6c1ee28d0214" />
+<img width="1316" height="740" alt="Screenshot 2026-06-04 214547" src="https://github.com/user-attachments/assets/01aeb2e5-eee6-42da-99c1-caa7f0e61bc8" />
 
 
 **Tools Used:** Power BI, DAX, Power Query
@@ -124,6 +129,8 @@ I am passionate about Data Analytics, Business Intelligence, and Data Visualizat
 ### Tableau Dashboard
 
 ![Tableau Dashboard](Tableau%20Dashboards/tableau_dashboard.png)
+<img width="1536" height="1024" alt="ChatGPT Image Jun 4, 2026, 10_11_30 PM" src="https://github.com/user-attachments/assets/8181757d-817a-4dcc-8f42-386d6e85f9d0" />
+<img width="1536" height="1024" alt="ChatGPT Image Jun 4, 2026, 10_16_16 PM" src="https://github.com/user-attachments/assets/57266beb-938e-44d6-968e-3697b3814709" />
 
 **Tools Used:** Tableau
 

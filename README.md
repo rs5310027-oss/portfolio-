@@ -69,6 +69,9 @@ I am passionate about Data Analytics, Business Intelligence, and Data Visualizat
 - VS Code
 
 # Data Analytics Portfolio
+## Live Demo
+
+[Live Demo](https://rs5310027-oss.github.io/Business Intelligence Projects/HTML Project/100-html-projects.html/)
 
 ## Dashboard Gallery
 

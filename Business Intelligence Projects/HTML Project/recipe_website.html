@@ -1,0 +1,303 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Nunito:wght@300;400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+.rw{font-family:'Nunito',sans-serif;background:var(--color-background-tertiary)}
+.nav{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-family:'Lora',serif;font-size:20px;font-weight:600;color:#D85A30}
+.nav-links{display:flex;gap:20px}
+.nav-links span{font-size:13px;color:var(--color-text-secondary);cursor:pointer}
+.nav-links span:hover{color:var(--color-text-primary)}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:20px;padding:6px 14px}
+.search-bar input{background:none;border:none;outline:none;font-size:13px;color:var(--color-text-primary);width:140px;font-family:'Nunito',sans-serif}
+.search-bar i{font-size:15px;color:var(--color-text-tertiary)}
+.cats{display:flex;gap:8px;padding:16px 24px;overflow-x:auto;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
+.cat-btn{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);white-space:nowrap;font-family:'Nunito',sans-serif;transition:all 0.15s}
+.cat-btn.active{background:#D85A30;border-color:#D85A30;color:#fff}
+.cat-btn:hover:not(.active){background:var(--color-background-secondary)}
+.hero-section{padding:20px 24px 0}
+.hero-label{font-size:11px;font-weight:500;letter-spacing:1.5px;color:#D85A30;text-transform:uppercase;margin-bottom:4px}
+.hero-title{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--color-text-primary);margin-bottom:2px}
+.hero-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:16px}
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;padding:0 24px 20px}
+.recipe-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:border-color 0.15s}
+.recipe-card:hover{border-color:var(--color-border-secondary)}
+.recipe-card.active-card{border:2px solid #D85A30}
+.card-img{width:100%;height:130px;object-fit:cover;display:block;background:var(--color-background-secondary)}
+.card-img-placeholder{width:100%;height:130px;display:flex;align-items:center;justify-content:center;font-size:40px}
+.card-body{padding:12px}
+.card-tags{display:flex;gap:5px;margin-bottom:6px}
+.tag-pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.tag-veg{background:#EAF3DE;color:#27500A}
+.tag-time{background:#FAEEDA;color:#633806}
+.card-name{font-family:'Lora',serif;font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;line-height:1.3}
+.card-desc{font-size:11.5px;color:var(--color-text-secondary);line-height:1.5}
+.card-meta{display:flex;align-items:center;gap:10px;margin-top:8px}
+.meta-item{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--color-text-tertiary)}
+.meta-item i{font-size:13px}
+.stars{color:#BA7517;font-size:11px;letter-spacing:1px}
+.divider-line{height:0.5px;background:var(--color-border-tertiary);margin:0 24px}
+.detail-section{padding:20px 24px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;margin-bottom:16px;background:none;border:0.5px solid var(--color-border-tertiary);padding:5px 12px;border-radius:var(--border-radius-md);font-family:'Nunito',sans-serif}
+.back-btn:hover{background:var(--color-background-secondary)}
+.detail-img{width:100%;height:200px;object-fit:cover;border-radius:var(--border-radius-lg);margin-bottom:16px}
+.detail-img-ph{width:100%;height:200px;border-radius:var(--border-radius-lg);margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:72px;background:var(--color-background-secondary)}
+.detail-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.detail-name{font-family:'Lora',serif;font-size:22px;font-weight:600;color:var(--color-text-primary)}
+.detail-cuisine{font-size:12px;color:#D85A30;font-weight:500;margin-top:2px}
+.fav-btn{background:none;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 10px;cursor:pointer;color:var(--color-text-secondary);font-family:'Nunito',sans-serif}
+.fav-btn.liked{color:#D85A30;border-color:#D85A30}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.stat-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px;text-align:center}
+.stat-val{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.stat-lbl{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+.section-head{font-family:'Lora',serif;font-size:16px;font-weight:500;color:var(--color-text-primary);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-head i{font-size:18px;color:#D85A30}
+.ingr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:20px}
+.ingr-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)}
+.ingr-check{width:16px;height:16px;border-radius:4px;border:0.5px solid var(--color-border-secondary);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;background:var(--color-background-primary)}
+.ingr-check.checked{background:#D85A30;border-color:#D85A30;color:#fff}
+.ingr-name{font-size:12px;color:var(--color-text-primary);line-height:1.3}
+.ingr-qty{font-size:11px;color:var(--color-text-tertiary)}
+.steps-list{display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:12px;padding:12px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)}
+.step.done-step{opacity:0.55}
+.step-num{width:28px;height:28px;border-radius:50%;background:#D85A30;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer}
+.step.done-step .step-num{background:var(--color-background-success);color:var(--color-text-success)}
+.step-content{}
+.step-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.step-text{font-size:12.5px;color:var(--color-text-secondary);line-height:1.6}
+.tip-box{margin-top:16px;padding:12px 14px;background:#FAEEDA;border-radius:var(--border-radius-md);border-left:3px solid #BA7517;border-radius:0}
+.tip-box p{font-size:12.5px;color:#633806;line-height:1.6}
+.tip-box strong{color:#412402}
+</style>
+
+<div class="rw">
+  <div class="nav">
+    <div class="logo"><i class="ti ti-soup" style="font-size:20px;vertical-align:-2px;margin-right:4px" aria-hidden="true"></i>FlavorNest</div>
+    <div class="nav-links">
+      <span>Discover</span>
+      <span>Cuisine</span>
+      <span>Saved</span>
+    </div>
+    <div class="search-bar">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" placeholder="Search recipes..." id="searchInput" oninput="filterRecipes()">
+    </div>
+  </div>
+
+  <div class="cats">
+    <button class="cat-btn active" onclick="filterCat('All',this)">All</button>
+    <button class="cat-btn" onclick="filterCat('Indian',this)">Indian</button>
+    <button class="cat-btn" onclick="filterCat('Italian',this)">Italian</button>
+    <button class="cat-btn" onclick="filterCat('Mexican',this)">Mexican</button>
+    <button class="cat-btn" onclick="filterCat('Asian',this)">Asian</button>
+    <button class="cat-btn" onclick="filterCat('Dessert',this)">Dessert</button>
+  </div>
+
+  <div id="listView">
+    <div class="hero-section">
+      <div class="hero-label">Today's picks</div>
+      <div class="hero-title">What's cooking today?</div>
+      <div class="hero-sub">Tap any recipe to see ingredients & steps</div>
+    </div>
+    <div class="recipe-grid" id="recipeGrid"></div>
+  </div>
+
+  <div id="detailView" style="display:none"></div>
+</div>
+
+<script>
+const recipes=[
+  {
+    id:1,cat:'Indian',emoji:'🍛',name:'Butter Chicken',cuisine:'North Indian',desc:'Creamy tomato-based curry with tender chicken pieces.',time:'45 min',serves:'4',cal:'420 kcal',rating:'4.8',veg:false,
+    ingredients:[
+      {name:'Chicken (boneless)',qty:'500g'},{name:'Butter',qty:'3 tbsp'},{name:'Heavy cream',qty:'½ cup'},{name:'Tomatoes',qty:'4 large'},{name:'Onion',qty:'2 medium'},{name:'Garlic',qty:'6 cloves'},{name:'Ginger',qty:'1 inch'},{name:'Garam masala',qty:'1.5 tsp'},{name:'Kashmiri chili',qty:'2 tsp'},{name:'Salt',qty:'to taste'}
+    ],
+    steps:[
+      {title:'Marinate chicken',text:'Mix chicken with yogurt, chili powder, garam masala, and salt. Marinate for at least 30 minutes or overnight.'},
+      {title:'Grill the chicken',text:'Cook marinated chicken on a hot grill or skillet until charred and cooked through. Set aside.'},
+      {title:'Make the sauce',text:'Sauté onions in butter until golden. Add garlic and ginger paste, cook 2 minutes. Add pureed tomatoes and cook 10 minutes.'},
+      {title:'Blend & strain',text:'Let the sauce cool slightly, blend smooth, then strain through a sieve back into the pan.'},
+      {title:'Finish & simmer',text:'Add cream, butter, and the grilled chicken. Simmer 8–10 minutes. Adjust salt and garnish with cream and coriander.'}
+    ],
+    tip:'For extra smokiness, place a piece of coal with a drop of oil in the pan and cover for 2 minutes.'
+  },
+  {
+    id:2,cat:'Italian',emoji:'🍝',name:'Spaghetti Carbonara',cuisine:'Classic Italian',desc:'Silky pasta with eggs, cheese, pancetta and pepper.',time:'25 min',serves:'2',cal:'580 kcal',rating:'4.9',veg:false,
+    ingredients:[
+      {name:'Spaghetti',qty:'200g'},{name:'Pancetta / guanciale',qty:'100g'},{name:'Eggs',qty:'3 whole'},{name:'Pecorino Romano',qty:'50g grated'},{name:'Parmesan',qty:'30g grated'},{name:'Black pepper',qty:'generous'},{name:'Salt',qty:'for pasta water'},{name:'Garlic (optional)',qty:'1 clove'}
+    ],
+    steps:[
+      {title:'Boil pasta',text:'Cook spaghetti in heavily salted boiling water until al dente. Reserve 1 cup of pasta water before draining.'},
+      {title:'Crisp the pancetta',text:'Cook pancetta in a cold pan over medium heat until crispy. Remove from heat. Do not use oil — the fat renders itself.'},
+      {title:'Make egg mixture',text:'Whisk eggs with grated Pecorino and Parmesan. Add a generous amount of cracked black pepper.'},
+      {title:'Combine off-heat',text:'Add hot drained pasta to the pancetta pan (off heat). Pour egg mixture over, tossing quickly. Add pasta water splash by splash until creamy.'},
+      {title:'Serve immediately',text:'Plate at once, top with extra cheese and cracked pepper. Never reheat carbonara — it scrambles.'}
+    ],
+    tip:'The key is temperature control. The pan must be OFF heat when you add the egg mixture or you will get scrambled eggs.'
+  },
+  {
+    id:3,cat:'Mexican',emoji:'🌮',name:'Chicken Tacos',cuisine:'Street Mexican',desc:'Juicy spiced chicken with fresh salsa and lime.',time:'30 min',serves:'4',cal:'340 kcal',rating:'4.7',veg:false,
+    ingredients:[
+      {name:'Chicken thighs',qty:'400g'},{name:'Corn tortillas',qty:'8'},{name:'Cumin',qty:'1 tsp'},{name:'Smoked paprika',qty:'1 tsp'},{name:'Lime juice',qty:'2 limes'},{name:'Red onion',qty:'½, diced'},{name:'Tomato',qty:'2, diced'},{name:'Cilantro',qty:'handful'},{name:'Avocado',qty:'1 large'},{name:'Jalapeño',qty:'1, sliced'}
+    ],
+    steps:[
+      {title:'Season the chicken',text:'Rub chicken with cumin, paprika, garlic powder, salt, and olive oil. Let sit 10 minutes.'},
+      {title:'Cook the chicken',text:'Grill or pan-fry chicken over high heat, 5–6 minutes per side until cooked through. Rest 5 minutes.'},
+      {title:'Slice and chop',text:'Thinly slice rested chicken against the grain for maximum juiciness.'},
+      {title:'Make fresh salsa',text:'Combine diced tomato, red onion, cilantro, jalapeño, lime juice, and salt. Toss gently.'},
+      {title:'Warm tortillas & assemble',text:'Warm tortillas on a dry pan 30 seconds each side. Layer with chicken, salsa, avocado slices, and a squeeze of lime.'}
+    ],
+    tip:'Double-stack your tortillas — street-style tacos always use two corn tortillas so they don\'t fall apart.'
+  },
+  {
+    id:4,cat:'Asian',emoji:'🍜',name:'Ramen Bowl',cuisine:'Japanese',desc:'Rich tonkotsu broth with noodles, egg and toppings.',time:'60 min',serves:'2',cal:'510 kcal',rating:'4.8',veg:false,
+    ingredients:[
+      {name:'Ramen noodles',qty:'2 portions'},{name:'Pork belly / chashu',qty:'200g'},{name:'Soft-boiled eggs',qty:'2'},{name:'Soy sauce',qty:'3 tbsp'},{name:'Mirin',qty:'2 tbsp'},{name:'Chicken stock',qty:'1 liter'},{name:'Sesame oil',qty:'1 tsp'},{name:'Nori sheets',qty:'4'},{name:'Green onions',qty:'3 stalks'},{name:'Corn (optional)',qty:'½ cup'}
+    ],
+    steps:[
+      {title:'Make the broth',text:'Simmer chicken stock with soy sauce, mirin, and a piece of kombu for 30 minutes over low heat. Strain and keep warm.'},
+      {title:'Prepare chashu pork',text:'Roll pork belly tightly, tie with string, and braise in soy-mirin-sake mixture for 45 minutes until tender. Slice when cool.'},
+      {title:'Soft-boil the eggs',text:'Boil eggs exactly 6.5 minutes, transfer to ice water, peel and soak in soy-mirin mixture for at least 30 minutes.'},
+      {title:'Cook noodles',text:'Boil ramen noodles per package instructions (usually 2–3 min). Drain well.'},
+      {title:'Assemble the bowl',text:'Add noodles to a deep bowl. Ladle hot broth over. Arrange chashu, halved marinated egg, nori, corn, and green onions.'}
+    ],
+    tip:'Add a teaspoon of sesame paste (tahini) to the broth for an extra creamy mouthfeel.'
+  },
+  {
+    id:5,cat:'Indian',emoji:'🥘',name:'Palak Paneer',cuisine:'North Indian · Veg',desc:'Cottage cheese cubes in a velvety spiced spinach sauce.',time:'35 min',serves:'3',cal:'310 kcal',rating:'4.6',veg:true,
+    ingredients:[
+      {name:'Paneer',qty:'250g cubed'},{name:'Spinach',qty:'500g fresh'},{name:'Onion',qty:'1 large'},{name:'Tomato',qty:'2 medium'},{name:'Ginger-garlic paste',qty:'1 tbsp'},{name:'Cream',qty:'2 tbsp'},{name:'Cumin seeds',qty:'1 tsp'},{name:'Garam masala',qty:'1 tsp'},{name:'Turmeric',qty:'½ tsp'},{name:'Oil',qty:'2 tbsp'}
+    ],
+    steps:[
+      {title:'Blanch the spinach',text:'Boil spinach 2 minutes, transfer to ice water immediately to preserve color. Drain and blend to smooth purée.'},
+      {title:'Fry the paneer',text:'Lightly fry paneer cubes in oil until golden on the outside. Remove and keep aside — this prevents them from breaking.'},
+      {title:'Make the masala base',text:'Sauté cumin in oil, add onions until golden. Add ginger-garlic paste, cook 2 minutes. Add tomatoes and cook until oil separates.'},
+      {title:'Add spinach',text:'Pour spinach purée into the masala. Add turmeric, garam masala, and salt. Simmer 5 minutes.'},
+      {title:'Finish and serve',text:'Gently fold in fried paneer. Drizzle cream on top. Serve hot with roti or naan.'}
+    ],
+    tip:'Never overcook the spinach purée — it turns dull army-green. The ice-water trick keeps it vibrant.'
+  },
+  {
+    id:6,cat:'Dessert',emoji:'🍰',name:'Chocolate Lava Cake',cuisine:'French Dessert',desc:'Warm chocolate cake with a gooey molten center.',time:'20 min',serves:'4',cal:'480 kcal',rating:'4.9',veg:true,
+    ingredients:[
+      {name:'Dark chocolate (70%)',qty:'150g'},{name:'Butter',qty:'150g'},{name:'Eggs',qty:'4'},{name:'Egg yolks',qty:'4 extra'},{name:'Caster sugar',qty:'120g'},{name:'All-purpose flour',qty:'60g'},{name:'Cocoa powder',qty:'for dusting'},{name:'Vanilla extract',qty:'1 tsp'},{name:'Salt',qty:'pinch'},{name:'Ice cream',qty:'to serve'}
+    ],
+    steps:[
+      {title:'Prep ramekins',text:'Butter 4 ramekins generously, dust with cocoa powder, and tap out excess. Chill in freezer. Preheat oven to 200°C / 390°F.'},
+      {title:'Melt chocolate',text:'Melt chocolate and butter together in a bowl over barely simmering water. Stir gently until smooth. Let cool slightly.'},
+      {title:'Whisk eggs',text:'Whisk eggs, yolks, sugar, and vanilla until pale and thickened, about 3 minutes with an electric mixer.'},
+      {title:'Fold together',text:'Fold the chocolate mixture into the egg mixture. Sift in flour and salt, fold again until just combined — don\'t overmix.'},
+      {title:'Bake & serve',text:'Divide batter into chilled ramekins. Bake 10–12 minutes — edges firm, center still jiggly. Invert onto plates immediately and serve with ice cream.'}
+    ],
+    tip:'You can prep these up to 24 hours ahead and refrigerate. Just add 2 extra minutes to the baking time from cold.'
+  }
+];
+
+let currentCat='All';
+let favorites=new Set();
+let checkedIngr={};
+let doneSteps={};
+
+function filterRecipes(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  renderGrid(recipes.filter(r=>(currentCat==='All'||r.cat===currentCat)&&(r.name.toLowerCase().includes(q)||r.cuisine.toLowerCase().includes(q)||r.cat.toLowerCase().includes(q))));
+}
+
+function filterCat(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filterRecipes();
+}
+
+function renderGrid(list){
+  const grid=document.getElementById('recipeGrid');
+  grid.innerHTML=list.map(r=>`
+    <div class="recipe-card" onclick="showDetail(${r.id})">
+      <div class="card-img-placeholder">${r.emoji}</div>
+      <div class="card-body">
+        <div class="card-tags">
+          ${r.veg?'<span class="tag-pill tag-veg">Veg</span>':''}
+          <span class="tag-pill tag-time"><i class="ti ti-clock" style="font-size:10px;margin-right:2px"></i>${r.time}</span>
+        </div>
+        <div class="card-name">${r.name}</div>
+        <div class="card-desc">${r.desc}</div>
+        <div class="card-meta">
+          <span class="meta-item"><i class="ti ti-users" aria-hidden="true"></i>${r.serves}</span>
+          <span class="meta-item"><i class="ti ti-flame" aria-hidden="true"></i>${r.cal}</span>
+          <span class="stars">★ ${r.rating}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleIngr(rid,idx){
+  const key=rid+'-'+idx;
+  if(!checkedIngr[key]) checkedIngr[key]=true; else delete checkedIngr[key];
+  const el=document.getElementById('ingr-'+rid+'-'+idx);
+  if(el){el.classList.toggle('checked',!!checkedIngr[key]);el.innerHTML=checkedIngr[key]?'✓':'';}
+}
+
+function toggleStep(rid,idx){
+  const key=rid+'-'+idx;
+  if(!doneSteps[key]) doneSteps[key]=true; else delete doneSteps[key];
+  const el=document.getElementById('step-'+rid+'-'+idx);
+  if(el) el.classList.toggle('done-step',!!doneSteps[key]);
+}
+
+function toggleFav(id,btn){
+  if(favorites.has(id)){favorites.delete(id);btn.classList.remove('liked');btn.innerHTML='<i class="ti ti-heart" aria-hidden="true"></i>';}
+  else{favorites.add(id);btn.classList.add('liked');btn.innerHTML='<i class="ti ti-heart" aria-hidden="true"></i>';}
+}
+
+function showDetail(id){
+  const r=recipes.find(x=>x.id===id);
+  document.getElementById('listView').style.display='none';
+  const dv=document.getElementById('detailView');
+  dv.style.display='block';
+  const isFav=favorites.has(id);
+  dv.innerHTML=`
+    <div class="detail-section">
+      <button class="back-btn" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> All recipes</button>
+      <div class="detail-img-ph">${r.emoji}</div>
+      <div class="detail-header">
+        <div>
+          <div class="detail-name">${r.name}</div>
+          <div class="detail-cuisine">${r.cuisine} &nbsp;·&nbsp; ★ ${r.rating}</div>
+        </div>
+        <button class="fav-btn ${isFav?'liked':''}" id="fav-btn-${id}" onclick="toggleFav(${id},this)"><i class="ti ti-heart" aria-hidden="true"></i></button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-val"><i class="ti ti-clock" style="font-size:18px;color:#D85A30"></i></div><div class="stat-lbl">${r.time}</div></div>
+        <div class="stat-box"><div class="stat-val"><i class="ti ti-users" style="font-size:18px;color:#D85A30"></i></div><div class="stat-lbl">Serves ${r.serves}</div></div>
+        <div class="stat-box"><div class="stat-val"><i class="ti ti-flame" style="font-size:18px;color:#D85A30"></i></div><div class="stat-lbl">${r.cal}</div></div>
+      </div>
+      <div class="section-head"><i class="ti ti-basket" aria-hidden="true"></i> Ingredients</div>
+      <div class="ingr-grid">
+        ${r.ingredients.map((ing,i)=>`
+          <div class="ingr-item">
+            <div class="ingr-check${checkedIngr[id+'-'+i]?' checked':''}" id="ingr-${id}-${i}" onclick="toggleIngr(${id},${i})">${checkedIngr[id+'-'+i]?'✓':''}</div>
+            <div><div class="ingr-name">${ing.name}</div><div class="ingr-qty">${ing.qty}</div></div>
+          </div>`).join('')}
+      </div>
+      <div class="section-head" style="margin-top:4px"><i class="ti ti-list-check" aria-hidden="true"></i> Step-by-step instructions</div>
+      <div class="steps-list">
+        ${r.steps.map((s,i)=>`
+          <div class="step${doneSteps[id+'-'+i]?' done-step':''}" id="step-${id}-${i}">
+            <div class="step-num" onclick="toggleStep(${id},${i})" title="Mark done">${doneSteps[id+'-'+i]?'✓':(i+1)}</div>
+            <div class="step-content"><div class="step-title">${s.title}</div><div class="step-text">${s.text}</div></div>
+          </div>`).join('')}
+      </div>
+      ${r.tip?`<div class="tip-box"><p><strong>Chef's tip:</strong> ${r.tip}</p></div>`:''}
+    </div>`;
+}
+
+function showList(){
+  document.getElementById('detailView').style.display='none';
+  document.getElementById('listView').style.display='block';
+}
+
+renderGrid(recipes);
+</script>

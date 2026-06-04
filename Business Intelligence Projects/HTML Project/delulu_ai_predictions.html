@@ -1,0 +1,172 @@
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-sans); background: linear-gradient(135deg, #f5e6f3 0%, #fff0f7 100%); min-height: 100vh; }
+.container { padding: 2rem 1rem; max-width: 800px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 2rem; }
+.header h1 { font-size: 36px; font-weight: 600; background: linear-gradient(135deg, #ff1493 0%, #ff69b4 50%, #da70d6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; }
+.header p { color: #777; font-size: 14px; }
+.input-section { background: white; border-radius: 16px; padding: 24px; border: 2px solid #ffc0e3; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(255, 20, 147, 0.1); }
+.input-label { display: block; font-weight: 600; color: #ff1493; margin-bottom: 12px; font-size: 15px; }
+input { width: 100%; padding: 12px 16px; border: 2px solid #ffe0f0; border-radius: 10px; font-size: 15px; font-family: var(--font-sans); transition: all 0.3s; }
+input:focus { outline: none; border-color: #ff1493; background: #fff5fa; box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.1); }
+.button-group { display: flex; gap: 10px; margin-top: 16px; }
+button { flex: 1; padding: 12px 20px; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s; }
+.btn-primary { background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%); color: white; box-shadow: 0 4px 12px rgba(255, 20, 147, 0.3); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(255, 20, 147, 0.4); }
+.btn-secondary { background: white; border: 2px solid #ffc0e3; color: #ff1493; }
+.btn-secondary:hover { background: #fff5fa; }
+.results { display: none; }
+.results.show { display: block; }
+.loading { display: none; text-align: center; padding: 40px 20px; }
+.loading.show { display: block; }
+.spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #ffe0f0; border-top-color: #ff1493; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { margin-top: 16px; color: #ff1493; font-weight: 600; font-size: 16px; }
+.card-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.prediction-card { background: white; border-radius: 16px; padding: 24px; border: 2px solid #ffe0f0; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(255, 20, 147, 0.08); }
+.prediction-card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255, 192, 203, 0.3) 0%, transparent 70%); border-radius: 50%; }
+.card-content { position: relative; z-index: 1; }
+.card-emoji { font-size: 32px; margin-bottom: 12px; }
+.card-title { font-size: 18px; font-weight: 600; color: #ff1493; margin-bottom: 8px; }
+.card-prediction { font-size: 15px; color: #333; line-height: 1.6; margin-bottom: 12px; font-style: italic; }
+.card-confidence { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #ff69b4; font-weight: 500; }
+.confidence-bar { height: 4px; background: #ffe0f0; border-radius: 2px; overflow: hidden; width: 80px; }
+.confidence-fill { height: 100%; background: linear-gradient(90deg, #ff1493, #ff69b4); }
+.all-predictions { margin-top: 24px; padding: 20px; background: linear-gradient(135deg, #fff5fa 0%, #ffe8f5 100%); border-radius: 12px; border: 2px dashed #ffc0e3; }
+.all-predictions-title { font-weight: 600; color: #ff1493; margin-bottom: 12px; font-size: 16px; }
+.mini-predictions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mini-card { background: white; padding: 12px; border-radius: 8px; border: 1px solid #ffe0f0; font-size: 12px; }
+.mini-emoji { font-size: 20px; margin-bottom: 4px; }
+.mini-text { color: #666; line-height: 1.4; }
+.share-section { margin-top: 24px; text-align: center; }
+.share-btn { background: linear-gradient(135deg, #da70d6 0%, #ff69b4 100%); color: white; border: none; padding: 12px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(218, 112, 214, 0.3); transition: all 0.3s; }
+.share-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(218, 112, 214, 0.4); }
+.share-text { font-size: 13px; color: #999; margin-top: 8px; }
+</style>
+
+<div class="container">
+  <div class="header">
+    <h1>✨ DELULU AI ✨</h1>
+    <p>Your unrealistic predictions await...</p>
+  </div>
+
+  <div class="input-section">
+    <label class="input-label">What's your delulu question? 🔮</label>
+    <input type="text" id="userQuestion" placeholder="e.g., Will my crush text me? Am I going to be rich? When will I get famous?" />
+    <div class="button-group">
+      <button class="btn-primary" onclick="generatePrediction()">Get Your Prediction</button>
+      <button class="btn-secondary" onclick="clearInput()">Clear</button>
+    </div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">✨ Consulting the universe...</div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="prediction-card" id="mainCard"></div>
+    <div class="all-predictions" id="allPredictions"></div>
+    <div class="share-section">
+      <button class="share-btn" onclick="sharePrediction()">📱 Share This Delulu Moment</button>
+      <div class="share-text">Copy your prediction to clipboard!</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const deluluPredictions = [
+  { emoji: '📱', title: 'The Text Timeline', prediction: 'They will text you in exactly 3 business days. The universe has spoken.', confidence: 87 },
+  { emoji: '💰', title: 'The Random Decision Riches', prediction: 'One seemingly pointless decision you make today will lead to $50k+ within 18 months. Definitely.', confidence: 92 },
+  { emoji: '✨', title: 'The Glow Up Era', prediction: 'You\'re entering your main character arc. Everyone will notice the change within 2 weeks.', confidence: 94 },
+  { emoji: '🎬', title: 'The Viral Moment', prediction: 'Something you do casually will go viral. 500k+ views guaranteed by next month.', confidence: 79 },
+  { emoji: '💎', title: 'The Luxury Timeline', prediction: 'Designer items in your future. Like, very soon. Within the next season, actually.', confidence: 88 },
+  { emoji: '👀', title: 'The Attention Magnet', prediction: 'Three people who ghosted you will regret it deeply. They\'ll reach out. It\'s written in the stars.', confidence: 91 },
+  { emoji: '🏆', title: 'The Talent Discovery', prediction: 'Someone important will notice your hidden talent and offer you an amazing opportunity.', confidence: 85 },
+  { emoji: '🎯', title: 'The Plot Twist', prediction: 'Something you\'ve been worried about will actually become your biggest blessing. Trust the process.', confidence: 89 },
+  { emoji: '⭐', title: 'The Cosmic Shift', prediction: 'Your luck is turning. Jupiter is definitely in your favor right now. The timing is perfect.', confidence: 96 },
+  { emoji: '🌙', title: 'The Dream Come True', prediction: 'That thing you\'ve been manifesting? It\'s closer than you think. Within 90 days, probably.', confidence: 93 },
+  { emoji: '🧲', title: 'The Energy Upgrade', prediction: 'Your aura is immaculate right now. People will be inexplicably drawn to you.', confidence: 90 },
+  { emoji: '💌', title: 'The Unexpected Romance', prediction: 'Someone you didn\'t expect is about to make a move. Sparks incoming.', confidence: 84 }
+];
+
+let currentPredictions = [];
+
+function generatePrediction() {
+  const question = document.getElementById('userQuestion').value.trim();
+  
+  if (!question) {
+    alert('Ask the universe something first! 🔮');
+    return;
+  }
+
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('results').classList.remove('show');
+
+  setTimeout(() => {
+    currentPredictions = [];
+    
+    const mainPred = deluluPredictions[Math.floor(Math.random() * deluluPredictions.length)];
+    currentPredictions.push(mainPred);
+    
+    let used = new Set([deluluPredictions.indexOf(mainPred)]);
+    while (currentPredictions.length < 4) {
+      let idx = Math.floor(Math.random() * deluluPredictions.length);
+      if (!used.has(idx)) {
+        currentPredictions.push(deluluPredictions[idx]);
+        used.add(idx);
+      }
+    }
+
+    displayPredictions();
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('results').classList.add('show');
+  }, 1500);
+}
+
+function displayPredictions() {
+  const mainCard = document.getElementById('mainCard');
+  const main = currentPredictions[0];
+  
+  mainCard.innerHTML = `
+    <div class="card-content">
+      <div class="card-emoji">${main.emoji}</div>
+      <div class="card-title">${main.title}</div>
+      <div class="card-prediction">"${main.prediction}"</div>
+      <div class="card-confidence">
+        <div class="confidence-bar">
+          <div class="confidence-fill" style="width: ${main.confidence}%"></div>
+        </div>
+        <span>${main.confidence}% Delulu Certified</span>
+      </div>
+    </div>
+  `;
+
+  const allPreds = document.getElementById('allPredictions');
+  allPreds.innerHTML = `
+    <div class="all-predictions-title">✨ Your Full Reading (${currentPredictions.length} predictions):</div>
+    <div class="mini-predictions">
+      ${currentPredictions.map(p => `
+        <div class="mini-card">
+          <div class="mini-emoji">${p.emoji}</div>
+          <div class="mini-text"><strong>${p.title}</strong></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function sharePrediction() {
+  const main = currentPredictions[0];
+  const text = `✨ DELULU AI PREDICTION ✨\n\n${main.title}\n"${main.prediction}"\n\n${main.confidence}% Delulu Certified\n\n🔮 Get your unrealistic prediction at Delulu AI!`;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Prediction copied! Ready to share your delulu era! 💕');
+  });
+}
+
+function clearInput() {
+  document.getElementById('userQuestion').value = '';
+  document.getElementById('results').classList.remove('show');
+}
+</script>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baddie Energy Scanner AI 💅</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Playfair+Display:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #ffd6ec, #d9b3ff);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 4rem;
+    color: #fff;
+    text-shadow: 0 0 20px #ff66c4;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin: 20px 0;
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 30px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    box-shadow: 0 0 20px rgba(255,255,255,0.4);
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.35);
+}
+
+.glass-box {
+    margin-top: 50px;
+    padding: 30px;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(255,255,255,0.3);
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    font-size: 1rem;
+    resize: none;
+    outline: none;
+}
+
+.results {
+    margin-top: 40px;
+    display: none;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 20px;
+}
+
+.card {
+    padding: 25px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.18);
+    box-shadow: 0 0 20px rgba(255,255,255,0.25);
+    animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px #fff;
+    }
+    to {
+        box-shadow: 0 0 25px #ff66c4;
+    }
+}
+
+.result-message {
+    margin-top: 30px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.bio {
+    margin-top: 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+}
+
+.sparkle {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    animation: float 5s linear infinite;
+}
+
+@keyframes float {
+    from {
+        transform: translateY(100vh);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-10vh);
+        opacity: 0;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="hero">
+    <h1>How Baddie Are You? 💅</h1>
+    <p>Scan your aura, decode your confidence, and discover your main character energy instantly.</p>
+    <button class="btn">Scan My Energy ✨</button>
+    <button class="btn">Upload My Vibe 📸</button>
+</div>
+
+<div class="glass-box">
+    <h2>Serving confidence analysis for the girls 💖</h2>
+    <p class="bio">Type your latest text, caption, bio, or thoughts…</p>
+    
+    <textarea id="inputText" placeholder="I know I’m the vibe."></textarea>
+    
+    <button class="btn" onclick="analyzeAura()">Analyze My Aura 💅</button>
+</div>
+
+<div class="results" id="results">
+    <div class="cards">
+        <div class="card">💖 Baddie Level: <span id="baddie"></span>%</div>
+        <div class="card">✨ Confidence Aura: <span id="confidence"></span></div>
+        <div class="card">🌸 Soft Girl Score: <span id="softgirl"></span>%</div>
+        <div class="card">🤡 Delulu Percentage: <span id="delulu"></span>%</div>
+        <div class="card">🎀 Main Character Energy: <span id="mainCharacter"></span></div>
+    </div>
+
+    <div class="result-message" id="message"></div>
+</div>
+
+</div>
+
+<script>
+function analyzeAura() {
+    let baddie = Math.floor(Math.random() * 100);
+    let softgirl = Math.floor(Math.random() * 100);
+    let delulu = Math.floor(Math.random() * 100);
+
+    let confidence = baddie > 80 ? "Elite" :
+                     baddie > 50 ? "Cute & Confident" :
+                     "Needs Glow-Up";
+
+    let mainCharacter = baddie > 80 ? "Legendary" :
+                        baddie > 50 ? "Rising Icon" :
+                        "Background Extra";
+
+    let message = baddie > 80 ?
+        "You radiate unstoppable main character energy 💖" :
+        baddie > 50 ?
+        "Cute energy detected. Add more confidence ✨" :
+        "Needs a confidence glow-up immediately 💅";
+
+    document.getElementById("baddie").innerText = baddie;
+    document.getElementById("confidence").innerText = confidence;
+    document.getElementById("softgirl").innerText = softgirl;
+    document.getElementById("delulu").innerText = delulu;
+    document.getElementById("mainCharacter").innerText = mainCharacter;
+    document.getElementById("message").innerText = message;
+
+    document.getElementById("results").style.display = "block";
+}
+
+for(let i=0;i<30;i++){
+    let sparkle = document.createElement("div");
+    sparkle.classList.add("sparkle");
+    sparkle.style.left = Math.random()*100+"vw";
+    sparkle.style.animationDuration = (Math.random()*5+3)+"s";
+    document.body.appendChild(sparkle);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.header { padding: 1.5rem 0 1rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1rem; }
+.header h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.header p { font-size: 14px; color: var(--color-text-secondary); margin-top: 4px; }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+.controls input { flex: 1; min-width: 180px; font-size: 14px; }
+.filter-btn { font-size: 12px; padding: 6px 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+.filter-btn.active { background: #185FA5; color: #E6F1FB; border-color: #185FA5; }
+.stats { display: flex; gap: 8px; margin-bottom: 1rem; }
+.stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 8px 14px; font-size: 13px; color: var(--color-text-secondary); }
+.stat span { font-weight: 500; color: var(--color-text-primary); }
+.q-list { display: flex; flex-direction: column; gap: 8px; }
+.q-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; transition: border-color 0.15s; }
+.q-card:hover { border-color: var(--color-border-secondary); }
+.q-header { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; cursor: pointer; }
+.q-num { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); min-width: 28px; margin-top: 2px; }
+.q-text { flex: 1; font-size: 14px; color: var(--color-text-primary); line-height: 1.5; }
+.q-meta { display: flex; gap: 6px; align-items: center; margin-left: auto; }
+.badge { font-size: 11px; padding: 3px 8px; border-radius: var(--border-radius-md); white-space: nowrap; }
+.badge-basic { background: #EAF3DE; color: #27500A; }
+.badge-intermediate { background: #FAEEDA; color: #633806; }
+.badge-advanced { background: #FAECE7; color: #4A1B0C; }
+.badge-joins { background: #E6F1FB; color: #0C447C; }
+.badge-aggregate { background: #EEEDFE; color: #26215C; }
+.badge-ddl { background: #E1F5EE; color: #085041; }
+.badge-subquery { background: #FBEAF0; color: #4B1528; }
+.badge-performance { background: #FCEBEB; color: #501313; }
+.chevron { font-size: 16px; color: var(--color-text-secondary); transition: transform 0.2s; margin-top: 1px; }
+.chevron.open { transform: rotate(180deg); }
+.q-answer { border-top: 0.5px solid var(--color-border-tertiary); padding: 12px 14px 14px; background: var(--color-background-secondary); display: none; }
+.q-answer.open { display: block; }
+.q-answer p { font-size: 13px; color: var(--color-text-primary); line-height: 1.7; margin-bottom: 8px; }
+.q-answer p:last-child { margin-bottom: 0; }
+.q-answer code { font-family: var(--font-mono); font-size: 12px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); padding: 2px 6px; border-radius: 4px; }
+.q-answer pre { font-family: var(--font-mono); font-size: 12px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); padding: 10px 12px; border-radius: var(--border-radius-md); overflow-x: auto; margin: 8px 0; line-height: 1.6; color: var(--color-text-primary); }
+.no-results { text-align: center; padding: 2rem; color: var(--color-text-secondary); font-size: 14px; }
+</style>
+
+<h2 class="sr-only">100 Most Important SQL Interview Questions and Answers</h2>
+<div class="header">
+  <h1>100 SQL interview questions</h1>
+  <p>Most frequently asked questions — click any card to reveal the answer</p>
+</div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search questions..." oninput="filterQ()">
+  <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" onclick="setFilter('basic',this)">Basic</button>
+  <button class="filter-btn" onclick="setFilter('intermediate',this)">Intermediate</button>
+  <button class="filter-btn" onclick="setFilter('advanced',this)">Advanced</button>
+</div>
+
+<div class="stats">
+  <div class="stat">Total: <span id="total-count">100</span></div>
+  <div class="stat">Showing: <span id="visible-count">100</span></div>
+</div>
+
+<div class="q-list" id="q-list"></div>
+<div class="no-results" id="no-results" style="display:none;">No questions match your search.</div>
+
+<script>
+const questions = [
+  {q:"What is SQL?",a:"SQL (Structured Query Language) is a standard language used to communicate with relational databases. It is used to create, read, update, and delete data.",level:"basic",cat:"ddl"},
+  {q:"What is a primary key?",a:"A primary key is a column (or set of columns) that uniquely identifies each row in a table. It cannot contain NULL values and must be unique across all rows.",level:"basic",cat:"ddl"},
+  {q:"What is a foreign key?",a:"A foreign key is a column in one table that references the primary key of another table. It enforces referential integrity between tables.",level:"basic",cat:"ddl"},
+  {q:"What is the difference between DELETE, TRUNCATE, and DROP?",a:"<p><code>DELETE</code> removes specific rows (can use WHERE, is logged, can be rolled back).</p><p><code>TRUNCATE</code> removes all rows quickly without logging individual row deletions. Cannot use WHERE.</p><p><code>DROP</code> removes the entire table structure and its data permanently.</p>",level:"basic",cat:"ddl"},
+  {q:"What is a unique key?",a:"A unique key ensures all values in a column are different. Unlike a primary key, a table can have multiple unique keys and they can contain one NULL value.",level:"basic",cat:"ddl"},
+  {q:"What are the different types of SQL commands?",a:"<p>DDL (Data Definition Language): CREATE, ALTER, DROP, TRUNCATE</p><p>DML (Data Manipulation Language): SELECT, INSERT, UPDATE, DELETE</p><p>DCL (Data Control Language): GRANT, REVOKE</p><p>TCL (Transaction Control Language): COMMIT, ROLLBACK, SAVEPOINT</p>",level:"basic",cat:"ddl"},
+  {q:"What is the difference between WHERE and HAVING?",a:"<code>WHERE</code> filters rows before grouping — it works on individual rows. <code>HAVING</code> filters groups after a GROUP BY clause. You cannot use aggregate functions in WHERE, but you can in HAVING.<pre>SELECT dept, COUNT(*) FROM emp GROUP BY dept HAVING COUNT(*) > 5;</pre>",level:"basic",cat:"aggregate"},
+  {q:"What is a NULL value in SQL?",a:"NULL represents missing or unknown data. It is not the same as zero or an empty string. Use <code>IS NULL</code> or <code>IS NOT NULL</code> to check for NULL values — comparing with = NULL always returns unknown.",level:"basic",cat:"basic"},
+  {q:"What is the difference between CHAR and VARCHAR?",a:"<code>CHAR(n)</code> stores fixed-length strings — always uses n bytes. <code>VARCHAR(n)</code> stores variable-length strings — uses only the space needed. CHAR is faster for fixed-length data; VARCHAR saves space for variable-length data.",level:"basic",cat:"ddl"},
+  {q:"What is a view?",a:"A view is a virtual table based on the result of a SELECT query. It does not store data itself (unless it's a materialized view). Views simplify complex queries and can restrict access to specific columns or rows.",level:"basic",cat:"ddl"},
+  {q:"What are the different types of JOINs?",a:"<p>INNER JOIN: Returns rows with matching values in both tables.</p><p>LEFT JOIN: Returns all rows from the left table, and matching rows from the right (NULL for no match).</p><p>RIGHT JOIN: Opposite of LEFT JOIN.</p><p>FULL OUTER JOIN: Returns all rows from both tables.</p><p>CROSS JOIN: Returns the Cartesian product of both tables.</p><p>SELF JOIN: A table joined with itself.</p>",level:"basic",cat:"joins"},
+  {q:"What is the difference between INNER JOIN and LEFT JOIN?",a:"INNER JOIN returns only rows that have matching values in both tables. LEFT JOIN returns all rows from the left table plus matched rows from the right; unmatched right-side columns show NULL.",level:"basic",cat:"joins"},
+  {q:"What is a subquery?",a:"A subquery is a SELECT statement nested inside another SQL statement. It can appear in SELECT, FROM, WHERE, or HAVING clauses. Subqueries in WHERE are called correlated if they reference the outer query.",level:"intermediate",cat:"subquery"},
+  {q:"What is the difference between UNION and UNION ALL?",a:"<code>UNION</code> combines result sets of two SELECT statements and removes duplicate rows. <code>UNION ALL</code> combines them but keeps all duplicates. UNION ALL is faster because it skips the deduplication step.",level:"basic",cat:"basic"},
+  {q:"What is an index?",a:"An index is a database structure that speeds up data retrieval. It works like a book's index — instead of scanning every row, the database uses the index to find rows quickly. Indexes slow down INSERT/UPDATE/DELETE operations.",level:"intermediate",cat:"performance"},
+  {q:"What is the difference between clustered and non-clustered indexes?",a:"A clustered index determines the physical order of data in a table — there can be only one per table. A non-clustered index is a separate structure that points to the actual data rows. A table can have multiple non-clustered indexes.",level:"intermediate",cat:"performance"},
+  {q:"What is normalization? What are 1NF, 2NF, 3NF?",a:"<p>Normalization organizes tables to reduce redundancy.</p><p>1NF: Each column has atomic values; no repeating groups.</p><p>2NF: 1NF + every non-key column is fully dependent on the whole primary key (no partial dependency).</p><p>3NF: 2NF + no transitive dependency (non-key columns don't depend on other non-key columns).</p>",level:"intermediate",cat:"ddl"},
+  {q:"What is denormalization?",a:"Denormalization is the process of intentionally adding redundancy to a database to improve read performance. It trades storage space and update complexity for faster query speed — common in data warehouses.",level:"intermediate",cat:"ddl"},
+  {q:"What is a stored procedure?",a:"A stored procedure is a precompiled set of SQL statements stored in the database. It can accept parameters, perform logic, and return results. Stored procedures improve performance (precompiled) and code reuse.",level:"intermediate",cat:"ddl"},
+  {q:"What is a trigger?",a:"A trigger is a set of SQL statements that automatically executes (fires) in response to a specific event (INSERT, UPDATE, DELETE) on a table. Triggers can be BEFORE or AFTER the event.",level:"intermediate",cat:"ddl"},
+  {q:"What are aggregate functions in SQL?",a:"Aggregate functions perform a calculation on a set of values and return a single value. Common ones: <code>COUNT()</code>, <code>SUM()</code>, <code>AVG()</code>, <code>MIN()</code>, <code>MAX()</code>. They are used with GROUP BY.",level:"basic",cat:"aggregate"},
+  {q:"What is GROUP BY?",a:"GROUP BY groups rows that have the same values in specified columns into summary rows. It is used with aggregate functions to calculate statistics per group.<pre>SELECT dept, AVG(salary) FROM emp GROUP BY dept;</pre>",level:"basic",cat:"aggregate"},
+  {q:"What is ORDER BY?",a:"ORDER BY sorts the result set by one or more columns. Use ASC for ascending (default) and DESC for descending. It is applied after WHERE, GROUP BY, and HAVING.",level:"basic",cat:"basic"},
+  {q:"What is DISTINCT?",a:"<code>DISTINCT</code> removes duplicate rows from the result set of a SELECT query. It applies to the entire row (or combination of columns listed).<pre>SELECT DISTINCT city FROM customers;</pre>",level:"basic",cat:"basic"},
+  {q:"What is the difference between IN and EXISTS?",a:"<code>IN</code> checks if a value matches any value in a list or subquery. <code>EXISTS</code> checks if a subquery returns any rows at all (returns TRUE/FALSE). EXISTS is generally faster when the subquery result is large.",level:"intermediate",cat:"subquery"},
+  {q:"What are window functions?",a:"Window functions perform calculations across a set of rows related to the current row without collapsing them into a single output. Examples: <code>ROW_NUMBER()</code>, <code>RANK()</code>, <code>DENSE_RANK()</code>, <code>LAG()</code>, <code>LEAD()</code>, <code>SUM() OVER()</code>.",level:"advanced",cat:"aggregate"},
+  {q:"What is the difference between RANK() and DENSE_RANK()?",a:"<code>RANK()</code> assigns the same rank to tied rows but skips the next rank(s) (1,1,3). <code>DENSE_RANK()</code> also assigns the same rank to ties but does not skip ranks (1,1,2).",level:"intermediate",cat:"aggregate"},
+  {q:"What is ROW_NUMBER()?",a:"<code>ROW_NUMBER()</code> assigns a unique sequential integer to each row within a partition, starting at 1. Unlike RANK(), it never repeats numbers even for tied values.<pre>SELECT name, ROW_NUMBER() OVER(ORDER BY salary DESC) rn FROM emp;</pre>",level:"intermediate",cat:"aggregate"},
+  {q:"What is a CTE (Common Table Expression)?",a:"A CTE is a temporary named result set defined using the WITH clause. It makes complex queries more readable and can be referenced multiple times. Recursive CTEs are used for hierarchical data.<pre>WITH cte AS (SELECT * FROM emp WHERE dept='IT')\nSELECT * FROM cte WHERE salary > 50000;</pre>",level:"intermediate",cat:"subquery"},
+  {q:"What is the difference between a correlated and non-correlated subquery?",a:"A non-correlated subquery runs independently and its result is used by the outer query. A correlated subquery references columns from the outer query and is re-executed for each row of the outer query — making it slower.",level:"intermediate",cat:"subquery"},
+  {q:"What is CASE WHEN?",a:"<code>CASE WHEN</code> is SQL's conditional expression (like if-else).<pre>SELECT name,\n  CASE WHEN salary>70000 THEN 'High'\n       WHEN salary>40000 THEN 'Mid'\n       ELSE 'Low' END AS band\nFROM emp;</pre>",level:"basic",cat:"basic"},
+  {q:"What is the difference between COALESCE and ISNULL?",a:"<code>COALESCE(a, b, c)</code> is ANSI standard and returns the first non-NULL value from a list of arguments. <code>ISNULL(a, b)</code> is SQL Server-specific and replaces NULL with a specified value. COALESCE is preferred for portability.",level:"intermediate",cat:"basic"},
+  {q:"What is SELF JOIN and when do you use it?",a:"A SELF JOIN joins a table with itself. It is used when a table has a hierarchical relationship, such as an employee table where each employee has a manager who is also an employee.<pre>SELECT e.name, m.name AS manager\nFROM emp e JOIN emp m ON e.mgr_id = m.id;</pre>",level:"intermediate",cat:"joins"},
+  {q:"What is CROSS JOIN?",a:"A CROSS JOIN returns the Cartesian product — every combination of rows from both tables. If table A has 5 rows and B has 4 rows, CROSS JOIN returns 20 rows. Use carefully as it can produce very large results.",level:"intermediate",cat:"joins"},
+  {q:"What is a transaction? What are ACID properties?",a:"<p>A transaction is a unit of work that must be fully completed or fully rolled back.</p><p>Atomicity: All steps succeed or none do.</p><p>Consistency: DB moves from one valid state to another.</p><p>Isolation: Transactions don't interfere with each other.</p><p>Durability: Committed changes persist even after crashes.</p>",level:"intermediate",cat:"ddl"},
+  {q:"What is COMMIT and ROLLBACK?",a:"<code>COMMIT</code> permanently saves all changes made in the current transaction. <code>ROLLBACK</code> undoes all changes made since the last COMMIT or SAVEPOINT. They are used in transaction control.",level:"basic",cat:"ddl"},
+  {q:"What is a deadlock in SQL?",a:"A deadlock occurs when two or more transactions are each waiting for the other to release a lock, creating a cycle where none can proceed. Databases detect deadlocks and terminate one transaction (the victim) to resolve it.",level:"advanced",cat:"performance"},
+  {q:"What is the difference between optimistic and pessimistic locking?",a:"Pessimistic locking locks a record when it is read, preventing others from modifying it until the lock is released. Optimistic locking assumes conflicts are rare — it checks if data has changed before committing, and retries if it has.",level:"advanced",cat:"performance"},
+  {q:"What is a composite key?",a:"A composite key is a primary key made up of two or more columns. The combination of those columns must be unique for each row. Used when no single column uniquely identifies a row.",level:"basic",cat:"ddl"},
+  {q:"What is a candidate key?",a:"A candidate key is a column (or set of columns) that can uniquely identify each row in a table — it is a potential primary key. A table can have multiple candidate keys; one is chosen as the primary key.",level:"basic",cat:"ddl"},
+  {q:"What is the difference between OLTP and OLAP?",a:"OLTP (Online Transaction Processing) handles day-to-day transactions — many small, fast reads/writes. OLAP (Online Analytical Processing) handles complex queries on large historical data for reporting. OLTP is normalized; OLAP is often denormalized.",level:"intermediate",cat:"performance"},
+  {q:"What is a materialized view?",a:"A materialized view stores the result of a query physically on disk (unlike a regular view which is virtual). It improves read performance for complex queries but must be refreshed periodically to stay up to date.",level:"advanced",cat:"ddl"},
+  {q:"What is the difference between TRUNCATE and DELETE?",a:"<code>DELETE</code> removes rows one by one, logs each deletion, fires triggers, and can be rolled back. <code>TRUNCATE</code> removes all rows at once, uses minimal logging, does not fire row-level triggers, and is faster for clearing large tables.",level:"basic",cat:"ddl"},
+  {q:"What is SAVEPOINT?",a:"A SAVEPOINT sets a named point within a transaction to which you can later ROLLBACK without undoing the entire transaction.<pre>SAVEPOINT sp1;\n-- some work --\nROLLBACK TO sp1;</pre>",level:"intermediate",cat:"ddl"},
+  {q:"What are constraints in SQL?",a:"Constraints enforce rules on table columns. Common constraints: NOT NULL, UNIQUE, PRIMARY KEY, FOREIGN KEY, CHECK (validates values against a condition), DEFAULT (sets a default value).",level:"basic",cat:"ddl"},
+  {q:"What is the CHECK constraint?",a:"The CHECK constraint limits the values that can be placed in a column by validating them against a condition.<pre>CREATE TABLE emp (\n  age INT CHECK (age >= 18)\n);</pre>",level:"basic",cat:"ddl"},
+  {q:"How do you find duplicate records in a table?",a:"<pre>SELECT col, COUNT(*) AS cnt\nFROM table_name\nGROUP BY col\nHAVING COUNT(*) > 1;</pre>",level:"intermediate",cat:"aggregate"},
+  {q:"How do you find the second highest salary?",a:"<pre>SELECT MAX(salary)\nFROM emp\nWHERE salary < (SELECT MAX(salary) FROM emp);</pre><p>Or using DENSE_RANK:</p><pre>SELECT salary FROM (\n  SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) rk FROM emp\n) t WHERE rk = 2;</pre>",level:"intermediate",cat:"aggregate"},
+  {q:"How do you find the Nth highest salary?",a:"<pre>SELECT salary FROM (\n  SELECT salary,\n  DENSE_RANK() OVER (ORDER BY salary DESC) AS rk\n  FROM emp\n) ranked\nWHERE rk = N;</pre>Replace N with the desired rank number.",level:"intermediate",cat:"aggregate"},
+  {q:"What is the difference between a primary key and a unique key?",a:"A table can have only one primary key but multiple unique keys. The primary key cannot have NULL values. A unique key allows one NULL. Primary keys are often used as foreign key references.",level:"basic",cat:"ddl"},
+  {q:"What is referential integrity?",a:"Referential integrity ensures that a foreign key value in one table always points to an existing row in the referenced table. It prevents orphan records (e.g., an order referring to a customer that doesn't exist).",level:"intermediate",cat:"ddl"},
+  {q:"What is the difference between INNER JOIN and OUTER JOIN?",a:"INNER JOIN returns only matching rows from both tables. OUTER JOIN (LEFT, RIGHT, FULL) returns matching rows plus unmatched rows from one or both tables, filling missing columns with NULL.",level:"basic",cat:"joins"},
+  {q:"What is a schema in SQL?",a:"A schema is a logical container or namespace that groups related database objects (tables, views, procedures) together. It helps organize objects and manage access permissions. Example: <code>hr.employees</code> vs <code>sales.employees</code>.",level:"basic",cat:"ddl"},
+  {q:"How do you copy a table structure without data?",a:"<pre>-- SQL Server / MySQL:\nSELECT * INTO new_table FROM old_table WHERE 1=0;\n\n-- PostgreSQL / Oracle:\nCREATE TABLE new_table AS SELECT * FROM old_table WHERE 1=0;</pre>",level:"intermediate",cat:"ddl"},
+  {q:"What is the difference between NVL and COALESCE?",a:"<code>NVL(expr, replacement)</code> is Oracle-specific and accepts exactly 2 arguments. <code>COALESCE(a,b,c,...)</code> is ANSI SQL standard and accepts multiple arguments — returns the first non-NULL.",level:"intermediate",cat:"basic"},
+  {q:"What is the MERGE statement?",a:"MERGE (also called UPSERT) inserts a row if it doesn't exist, or updates it if it does — in a single statement.<pre>MERGE INTO target t\nUSING source s ON t.id = s.id\nWHEN MATCHED THEN UPDATE SET t.val = s.val\nWHEN NOT MATCHED THEN INSERT (id, val) VALUES (s.id, s.val);</pre>",level:"advanced",cat:"ddl"},
+  {q:"What is the difference between CHAR, VARCHAR, and TEXT?",a:"<code>CHAR(n)</code>: Fixed-length, pads with spaces. Fast for fixed-size data. <code>VARCHAR(n)</code>: Variable-length, no padding, max n chars. <code>TEXT</code>: Variable-length with no specified limit — for large text content. Storage and performance vary by DB.",level:"basic",cat:"ddl"},
+  {q:"What are scalar, table-valued, and aggregate functions?",a:"Scalar functions return a single value per row (e.g., UPPER, LEN). Table-valued functions return a table. Aggregate functions operate on groups of rows and return one value per group (COUNT, SUM, AVG).",level:"intermediate",cat:"aggregate"},
+  {q:"How do you pivot rows into columns?",a:"<pre>SELECT * FROM (\n  SELECT emp_id, month, amount FROM sales\n) src\nPIVOT (\n  SUM(amount) FOR month IN ([Jan],[Feb],[Mar])\n) pvt;</pre><p>In MySQL/PostgreSQL, use conditional aggregation with CASE WHEN instead of PIVOT.</p>",level:"advanced",cat:"aggregate"},
+  {q:"What is the LEAD and LAG function?",a:"<code>LAG(col, n)</code> returns the value from n rows before the current row. <code>LEAD(col, n)</code> returns the value from n rows after. Both are window functions, useful for comparing a row to the previous or next row.<pre>SELECT date, sales,\n  LAG(sales,1) OVER (ORDER BY date) AS prev_sales\nFROM monthly_sales;</pre>",level:"advanced",cat:"aggregate"},
+  {q:"What is PARTITION BY in window functions?",a:"<code>PARTITION BY</code> divides the result set into partitions (groups) for the window function to operate on independently. It is like GROUP BY but doesn't collapse the rows.<pre>SUM(salary) OVER (PARTITION BY dept ORDER BY hire_date)</pre>",level:"advanced",cat:"aggregate"},
+  {q:"What is query execution order in SQL?",a:"The logical order of SQL clause evaluation: FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT/TOP. This is why you can't use a SELECT alias in a WHERE clause.",level:"intermediate",cat:"basic"},
+  {q:"What is a full-text index?",a:"A full-text index enables efficient text searches on large text columns. Instead of scanning every row with LIKE, it indexes individual words. Used with CONTAINS or MATCH...AGAINST for fast keyword searches.",level:"advanced",cat:"performance"},
+  {q:"What is an execution plan?",a:"An execution plan (query plan) shows how the database engine will execute a SQL query — which indexes it will use, join order, estimated rows, etc. Use <code>EXPLAIN</code> (MySQL/PostgreSQL) or <code>SET STATISTICS</code> (SQL Server) to view it.",level:"advanced",cat:"performance"},
+  {q:"What is query optimization?",a:"Query optimization improves SQL performance through techniques like: adding proper indexes, avoiding SELECT *, using EXISTS instead of IN for large sets, avoiding functions on indexed columns in WHERE, and rewriting subqueries as JOINs.",level:"advanced",cat:"performance"},
+  {q:"What is the difference between a heap table and a clustered table?",a:"A heap table has no clustered index — data is stored in no particular order. A clustered table has a clustered index that determines the physical storage order of rows. Heap tables can be slower for range queries.",level:"advanced",cat:"performance"},
+  {q:"How do you delete duplicate rows keeping one?",a:"<pre>-- Using CTE with ROW_NUMBER:\nWITH cte AS (\n  SELECT *, ROW_NUMBER() OVER\n    (PARTITION BY col1,col2 ORDER BY id) rn\n  FROM table_name\n)\nDELETE FROM cte WHERE rn > 1;</pre>",level:"advanced",cat:"subquery"},
+  {q:"What is a surrogate key vs natural key?",a:"A natural key is a key from real-world data (e.g., SSN, email). A surrogate key is an artificial key with no business meaning (e.g., auto-incremented ID). Surrogate keys are preferred because natural keys can change.",level:"intermediate",cat:"ddl"},
+  {q:"What is the difference between implicit and explicit JOIN?",a:"Implicit JOIN uses the old comma-separated FROM syntax: <code>FROM a, b WHERE a.id = b.id</code>. Explicit JOIN uses the JOIN keyword: <code>FROM a JOIN b ON a.id = b.id</code>. Explicit JOIN is preferred for clarity and safety.",level:"basic",cat:"joins"},
+  {q:"What is the EXCEPT / MINUS operator?",a:"<code>EXCEPT</code> (SQL Server/PostgreSQL) or <code>MINUS</code> (Oracle) returns rows in the first SELECT that are not in the second SELECT. It is useful for finding rows that exist in one dataset but not another.",level:"intermediate",cat:"basic"},
+  {q:"What is INTERSECT?",a:"<code>INTERSECT</code> returns rows that appear in both SELECT result sets. It is the opposite of EXCEPT. Like UNION, it removes duplicates by default.",level:"intermediate",cat:"basic"},
+  {q:"What is a composite index?",a:"A composite index is an index on two or more columns. It is most effective when queries filter on the leading columns of the index (leftmost prefix rule). The order of columns in the index matters.",level:"advanced",cat:"performance"},
+  {q:"What is an implicit conversion?",a:"Implicit conversion happens when SQL automatically converts one data type to another (e.g., comparing VARCHAR to INT). This can prevent index usage and cause performance issues or unexpected results. Explicit casting is safer.",level:"intermediate",cat:"basic"},
+  {q:"What is the difference between BETWEEN and >= / <=?",a:"<code>BETWEEN a AND b</code> is inclusive on both ends and is equivalent to <code>>= a AND <= b</code>. Both produce identical results. BETWEEN is more readable; explicit operators give more control.",level:"basic",cat:"basic"},
+  {q:"What is LIKE and what are wildcards?",a:"<code>LIKE</code> is used for pattern matching. <code>%</code> matches any sequence of characters. <code>_</code> matches exactly one character.<pre>SELECT * FROM emp WHERE name LIKE 'J%';\nSELECT * FROM emp WHERE name LIKE '_ohn';</pre>",level:"basic",cat:"basic"},
+  {q:"What is the difference between NUMERIC, DECIMAL, FLOAT, and REAL?",a:"NUMERIC/DECIMAL store exact fixed-precision numbers (good for money). FLOAT and REAL store approximate floating-point numbers (good for scientific data). Never use FLOAT for financial calculations due to rounding errors.",level:"intermediate",cat:"ddl"},
+  {q:"What is a bitmap index?",a:"A bitmap index stores a bitmap (bit array) for each distinct value in a column, showing which rows have that value. Efficient for low-cardinality columns (few distinct values like gender, status). Common in data warehouses.",level:"advanced",cat:"performance"},
+  {q:"What is partitioning in SQL?",a:"Table partitioning divides a large table into smaller, more manageable pieces (partitions) based on a column value (e.g., date range). Queries that filter on the partition key only scan relevant partitions — improving performance.",level:"advanced",cat:"performance"},
+  {q:"What is the difference between a temporary table and a table variable?",a:"Temporary tables (<code>#temp</code>) are stored in tempdb, can have indexes, and are visible to nested procedures. Table variables (<code>@table</code>) are in memory (usually), have limited statistics, and are local to the current batch. Temp tables are better for large datasets.",level:"intermediate",cat:"ddl"},
+  {q:"What is recursive CTE?",a:"A recursive CTE is a CTE that references itself to handle hierarchical/tree data like org charts or bill of materials.<pre>WITH RECURSIVE cte AS (\n  SELECT id, name, mgr_id FROM emp WHERE mgr_id IS NULL\n  UNION ALL\n  SELECT e.id, e.name, e.mgr_id FROM emp e\n  JOIN cte c ON e.mgr_id = c.id\n)\nSELECT * FROM cte;</pre>",level:"advanced",cat:"subquery"},
+  {q:"How do you update one table using data from another table?",a:"<pre>-- SQL Server:\nUPDATE t1 SET t1.col = t2.col\nFROM table1 t1 JOIN table2 t2 ON t1.id = t2.id;\n\n-- MySQL:\nUPDATE table1 t1, table2 t2\nSET t1.col = t2.col WHERE t1.id = t2.id;</pre>",level:"intermediate",cat:"ddl"},
+  {q:"What is the difference between a function and a stored procedure?",a:"Functions must return a value, cannot modify database state (no INSERT/UPDATE), and can be used in SELECT. Stored procedures can or may not return values, can modify data, execute transactions, and cannot be used inline in SELECT.",level:"intermediate",cat:"ddl"},
+  {q:"What is an INSTEAD OF trigger?",a:"An INSTEAD OF trigger fires instead of the triggering DML statement (INSERT, UPDATE, DELETE) — it replaces the action. Commonly used on views that are not directly updatable.",level:"advanced",cat:"ddl"},
+  {q:"What is the SARGable query?",a:"SARGable (Search ARGument able) queries can use indexes effectively. Non-SARGable patterns include using functions on indexed columns in WHERE: <code>WHERE YEAR(date_col) = 2024</code> is non-SARGable. Better: <code>WHERE date_col BETWEEN '2024-01-01' AND '2024-12-31'</code>.",level:"advanced",cat:"performance"},
+  {q:"What is the difference between COUNT(*), COUNT(1), and COUNT(col)?",a:"<code>COUNT(*)</code> counts all rows including NULLs. <code>COUNT(1)</code> also counts all rows (equivalent to COUNT(*)). <code>COUNT(col)</code> counts only non-NULL values in that column. COUNT(*) and COUNT(1) perform identically.",level:"basic",cat:"aggregate"},
+  {q:"What is CONCAT in SQL?",a:"<code>CONCAT(a, b, ...)</code> joins two or more strings together. Some databases use <code>||</code> (PostgreSQL/Oracle) or <code>+</code> (SQL Server) for concatenation. CONCAT ignores NULLs in MySQL but returns NULL in SQL Server if any argument is NULL.",level:"basic",cat:"basic"},
+  {q:"What is STRING_AGG / GROUP_CONCAT?",a:"These functions aggregate multiple rows into a single comma-separated (or custom-delimiter) string within a GROUP BY. <code>STRING_AGG(col, ',')</code> in SQL Server/PostgreSQL; <code>GROUP_CONCAT(col)</code> in MySQL.",level:"intermediate",cat:"aggregate"},
+  {q:"What is a covering index?",a:"A covering index includes all the columns a query needs (in SELECT, WHERE, ORDER BY) so the database can satisfy the query using only the index, without accessing the main table. This is called an index-only scan and is very fast.",level:"advanced",cat:"performance"},
+  {q:"What is table sharding?",a:"Sharding horizontally splits a large table across multiple database servers (shards), each holding a subset of rows. It improves scalability for very large datasets. Queries may need to hit multiple shards.",level:"advanced",cat:"performance"},
+  {q:"What is the difference between ROW_NUMBER, RANK, and DENSE_RANK?",a:"<p>ROW_NUMBER: Always unique, sequential (1,2,3,4,5)</p><p>RANK: Ties get the same rank, next rank skips (1,1,3,4,5)</p><p>DENSE_RANK: Ties get the same rank, no gaps (1,1,2,3,4)</p>",level:"intermediate",cat:"aggregate"},
+  {q:"What is NTILE()?",a:"<code>NTILE(n)</code> divides rows into n equal buckets and assigns each row a bucket number. Useful for percentile analysis.<pre>SELECT name, salary,\n  NTILE(4) OVER (ORDER BY salary) AS quartile\nFROM emp;</pre>",level:"advanced",cat:"aggregate"},
+  {q:"What is FIRST_VALUE and LAST_VALUE?",a:"<code>FIRST_VALUE(col)</code> and <code>LAST_VALUE(col)</code> are window functions that return the first or last value in a window frame. Useful for getting the first/last event per group without a subquery.",level:"advanced",cat:"aggregate"},
+  {q:"What is the difference between SQL and NoSQL?",a:"SQL (relational) databases use structured tables with schemas and support ACID transactions — good for complex queries. NoSQL databases (document, key-value, graph) are schema-flexible, scale horizontally, and trade some ACID properties for performance.",level:"intermediate",cat:"basic"},
+  {q:"What is the purpose of the EXPLAIN keyword?",a:"<code>EXPLAIN</code> (MySQL/PostgreSQL) shows the execution plan for a query without running it — displaying which indexes are used, join types, estimated row counts, and cost. Essential for diagnosing slow queries.",level:"intermediate",cat:"performance"},
+  {q:"How do you handle NULL in aggregate functions?",a:"Most aggregate functions (SUM, AVG, MIN, MAX) ignore NULL values. COUNT(*) counts all rows; COUNT(col) ignores NULLs. Use <code>COALESCE(col, 0)</code> to treat NULLs as zero in calculations.",level:"basic",cat:"aggregate"},
+  {q:"What is a foreign key ON DELETE CASCADE?",a:"<code>ON DELETE CASCADE</code> means when a row in the parent table is deleted, all related rows in the child table are automatically deleted too. Other options: SET NULL, SET DEFAULT, RESTRICT, NO ACTION.",level:"intermediate",cat:"ddl"},
+  {q:"What is the difference between a database and a schema?",a:"A database is the entire container holding all data. A schema is a logical grouping of objects within a database. In MySQL, database and schema are synonymous. In SQL Server/PostgreSQL, a database can contain multiple schemas.",level:"basic",cat:"ddl"},
+  {q:"What is a sequence in SQL?",a:"A sequence is a database object that generates unique numeric values automatically, typically used for primary keys. It is separate from tables (unlike IDENTITY/AUTO_INCREMENT which are column properties).<pre>CREATE SEQUENCE seq START 1 INCREMENT 1;</pre>",level:"intermediate",cat:"ddl"},
+  {q:"What is the difference between ISNULL, IFNULL, COALESCE, and NVL?",a:"<code>ISNULL(a,b)</code>: SQL Server — replaces NULL with b. <code>IFNULL(a,b)</code>: MySQL. <code>NVL(a,b)</code>: Oracle. <code>COALESCE(a,b,c...)</code>: ANSI standard, all databases, accepts multiple args. COALESCE is the most portable.",level:"intermediate",cat:"basic"},
+  {q:"What is SQL injection and how do you prevent it?",a:"SQL injection is an attack where malicious SQL is inserted into input fields to manipulate queries. Prevention: use parameterized queries/prepared statements, stored procedures, input validation, and principle of least privilege for DB accounts.",level:"intermediate",cat:"performance"},
+  {q:"What is the difference between GETDATE() and SYSDATETIME()?",a:"Both return the current date and time in SQL Server. <code>GETDATE()</code> returns datetime (3ms precision). <code>SYSDATETIME()</code> returns datetime2 with higher precision (100ns). SYSDATETIME is preferred for precision.",level:"intermediate",cat:"basic"},
+  {q:"What is a lateral join (LATERAL / APPLY)?",a:"A lateral join (LATERAL in PostgreSQL, CROSS APPLY / OUTER APPLY in SQL Server) allows a subquery to reference columns from the preceding FROM item. Useful for row-by-row subqueries and top-N per group patterns.",level:"advanced",cat:"joins"},
+  {q:"How do you transpose columns to rows (unpivot)?",a:"<pre>-- SQL Server UNPIVOT:\nSELECT id, month, amount\nFROM sales\nUNPIVOT (amount FOR month IN (Jan, Feb, Mar)) u;\n</pre><p>In MySQL/PostgreSQL, use UNION ALL with CASE to simulate UNPIVOT.</p>",level:"advanced",cat:"aggregate"},
+  {q:"What is the difference between DATETIME and TIMESTAMP?",a:"Both store date and time. In MySQL, TIMESTAMP is stored in UTC and converts to the session time zone on retrieval — useful for global apps. DATETIME stores as-is without time zone conversion. In SQL Server, they are separate concepts entirely.",level:"intermediate",cat:"ddl"},
+];
+
+let currentFilter = 'all';
+
+function getBadgeClass(cat) {
+  const map = {ddl:'badge-ddl',joins:'badge-joins',aggregate:'badge-aggregate',subquery:'badge-subquery',performance:'badge-performance',basic:'badge-basic'};
+  return map[cat] || 'badge-basic';
+}
+function getLevelClass(level) {
+  return 'badge-'+level;
+}
+function getLevelLabel(level) {
+  return {basic:'Basic',intermediate:'Intermediate',advanced:'Advanced'}[level]||level;
+}
+function getCatLabel(cat) {
+  return {ddl:'DDL/DML',joins:'Joins',aggregate:'Aggregate',subquery:'Subquery',performance:'Performance',basic:'General'}[cat]||cat;
+}
+
+function renderList(filtered) {
+  const list = document.getElementById('q-list');
+  const noRes = document.getElementById('no-results');
+  document.getElementById('visible-count').textContent = filtered.length;
+  if (filtered.length === 0) { list.innerHTML=''; noRes.style.display='block'; return; }
+  noRes.style.display='none';
+  list.innerHTML = filtered.map((item, i) => `
+    <div class="q-card">
+      <div class="q-header" onclick="toggleCard(this)">
+        <span class="q-num">${String(item._orig+1).padStart(2,'0')}</span>
+        <span class="q-text">${item.q}</span>
+        <div class="q-meta">
+          <span class="badge ${getBadgeClass(item.cat)}">${getCatLabel(item.cat)}</span>
+          <span class="badge ${getLevelClass(item.level)}">${getLevelClass(item.level)==='badge-basic'?'Basic':getLevelLabel(item.level)}</span>
+          <i class="ti ti-chevron-down chevron" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="q-answer">${item.a.startsWith('<') ? item.a : '<p>'+item.a+'</p>'}</div>
+    </div>
+  `).join('');
+}
+
+function toggleCard(header) {
+  const ans = header.nextElementSibling;
+  const chev = header.querySelector('.chevron');
+  ans.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function filterQ() {
+  const search = document.getElementById('search').value.toLowerCase();
+  const filtered = questions
+    .map((q,i) => ({...q, _orig:i}))
+    .filter(q => (currentFilter === 'all' || q.level === currentFilter))
+    .filter(q => !search || q.q.toLowerCase().includes(search) || q.a.toLowerCase().includes(search));
+  renderList(filtered);
+}
+
+function setFilter(level, btn) {
+  currentFilter = level;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterQ();
+}
+
+renderList(questions.map((q,i) => ({...q, _orig:i})));
+</script>

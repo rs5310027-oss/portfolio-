@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>WorldBite — Global Food Cookbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1A120B;--paper:#FDFAF5;--warm:#F5EFE0;
+  --saffron:#E8A838;--saffron-light:#FDF3DC;
+  --chili:#C44B2B;--chili-light:#FCEAE5;
+  --herb:#3A6B4A;--herb-light:#E8F3EC;
+  --ocean:#2B5A8A;--ocean-light:#E5EEF7;
+  --muted:#8C7B6B;--border:#E8DFD0;
+  --shadow:0 2px 16px rgba(26,18,11,0.08);
+  --shadow-lg:0 8px 40px rgba(26,18,11,0.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+
+/* ── NOISE TEXTURE ── */
+body::after{content:'';position:fixed;inset:0;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+/* ── NAV ── */
+nav{background:var(--ink);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.logo{font-family:'Fraunces',serif;font-size:22px;color:var(--saffron);font-style:italic;letter-spacing:-0.5px}
+.logo em{font-style:normal;color:#fff}
+.nav-right{display:flex;align-items:center;gap:12px}
+.search-wrap{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:6px 12px}
+.search-wrap input{background:none;border:none;outline:none;color:#fff;font-size:13px;font-family:'Instrument Sans',sans-serif;width:180px}
+.search-wrap input::placeholder{color:rgba(255,255,255,0.4)}
+.nav-count{font-size:12px;color:rgba(255,255,255,0.45)}
+
+/* ── HERO ── */
+.hero{background:var(--ink);padding:56px 40px 64px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;bottom:-60px;right:-60px;width:320px;height:320px;border-radius:50%;background:rgba(232,168,56,0.08);pointer-events:none}
+.hero::after{content:'';position:absolute;top:-80px;left:30%;width:240px;height:240px;border-radius:50%;background:rgba(196,75,43,0.06);pointer-events:none}
+.hero-eyebrow{display:inline-block;font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--saffron);margin-bottom:16px}
+.hero h1{font-family:'Fraunces',serif;font-size:64px;line-height:1.0;color:#fff;font-weight:800;margin-bottom:16px;max-width:700px}
+.hero h1 em{font-style:italic;color:var(--saffron)}
+.hero p{font-size:16px;color:rgba(255,255,255,0.55);max-width:500px;line-height:1.7;margin-bottom:32px}
+.country-chips-hero{display:flex;flex-wrap:wrap;gap:8px}
+.cchip{padding:7px 16px;border-radius:20px;font-size:13px;cursor:pointer;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);font-family:'Instrument Sans',sans-serif;transition:all 0.2s}
+.cchip:hover,.cchip.active{background:var(--saffron);border-color:var(--saffron);color:var(--ink);font-weight:600}
+
+/* ── FILTERS BAR ── */
+.filters-bar{background:var(--warm);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:60px;z-index:100}
+.filter-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.filter-tags{display:flex;gap:6px;flex-wrap:wrap}
+.ftag{padding:5px 13px;border-radius:6px;font-size:12.5px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--muted);font-family:'Instrument Sans',sans-serif;transition:all 0.15s}
+.ftag.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.results-info{margin-left:auto;font-size:12px;color:var(--muted)}
+
+/* ── MAIN CONTENT ── */
+main{max-width:1200px;margin:0 auto;padding:36px 40px 80px}
+
+/* ── COUNTRY SECTION ── */
+.country-section{margin-bottom:52px}
+.country-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--border)}
+.country-flag{font-size:32px}
+.country-name{font-family:'Fraunces',serif;font-size:28px;font-weight:600;color:var(--ink)}
+.country-count{font-size:13px;color:var(--muted);margin-left:auto;background:var(--warm);padding:4px 12px;border-radius:20px}
+
+/* ── DISH GRID ── */
+.dish-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+
+/* ── DISH CARD ── */
+.dish-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all 0.22s;position:relative}
+.dish-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--saffron)}
+.dish-emoji-wrap{height:88px;display:flex;align-items:center;justify-content:center;font-size:48px;background:var(--warm);position:relative}
+.dish-difficulty{position:absolute;top:8px;right:8px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;letter-spacing:0.5px}
+.diff-easy{background:#E8F3EC;color:#2D6B40}
+.diff-medium{background:#FDF3DC;color:#8A5B10}
+.diff-hard{background:#FCEAE5;color:#A0341E}
+.dish-body{padding:14px}
+.dish-name{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:5px;line-height:1.25}
+.dish-ingr{font-size:11.5px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.dish-meta{display:flex;gap:10px;align-items:center}
+.dish-time{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.dish-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;background:var(--saffron-light);color:#7A5B10}
+.cook-btn{width:100%;padding:8px;border-radius:8px;background:var(--ink);color:var(--saffron);font-size:12.5px;font-weight:500;border:none;cursor:pointer;font-family:'Instrument Sans',sans-serif;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s}
+.cook-btn:hover{background:var(--chili)}
+.cook-btn:disabled{opacity:0.6;cursor:not-allowed}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,18,11,0.75);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--paper);border-radius:20px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 24px 80px rgba(26,18,11,0.35)}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.modal-hero{background:var(--ink);padding:28px 32px 24px;border-radius:20px 20px 0 0;position:sticky;top:0;z-index:10}
+.modal-flag{font-size:28px;margin-bottom:8px}
+.modal-name{font-family:'Fraunces',serif;font-size:30px;color:#fff;font-weight:600;margin-bottom:4px}
+.modal-cuisine{font-size:13px;color:var(--saffron)}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;cursor:pointer;font-size:18px;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Instrument Sans',sans-serif}
+.modal-close:hover{background:rgba(255,255,255,0.2)}
+.modal-body{padding:28px 32px}
+.modal-section{margin-bottom:24px}
+.modal-section-title{font-size:10.5px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.ingr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px}
+.ingr-pill{display:flex;align-items:center;gap:7px;padding:8px 11px;background:var(--warm);border-radius:8px;font-size:12.5px;color:var(--ink)}
+.ingr-dot{width:6px;height:6px;border-radius:50%;background:var(--saffron);flex-shrink:0}
+.steps-list{display:flex;flex-direction:column;gap:12px}
+.step-row{display:flex;gap:14px}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--saffron);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Fraunces',serif}
+.step-text{font-size:13.5px;line-height:1.7;color:var(--ink);padding-top:4px}
+.step-text strong{color:var(--chili)}
+.tips-box{background:var(--saffron-light);border-left:3px solid var(--saffron);border-radius:0 10px 10px 0;padding:14px 16px}
+.tips-box p{font-size:13px;color:#6B4D10;line-height:1.7}
+.tips-box strong{color:#4A3205}
+.ai-loading{display:flex;flex-direction:column;align-items:center;gap:12px;padding:40px;text-align:center}
+.ai-loading .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--saffron);border-radius:50%;animation:spin 0.8s linear infinite}
+.ai-loading p{font-size:13px;color:var(--muted)}
+.ai-error{padding:20px;background:var(--chili-light);border-radius:10px;font-size:13px;color:var(--chili);text-align:center}
+.nutrition-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.nut-box{background:white;border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+.nut-val{font-family:'Fraunces',serif;font-size:18px;color:var(--ink);font-weight:600}
+.nut-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.4s ease}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:80px 20px;color:var(--muted)}
+.empty-emoji{font-size:48px;margin-bottom:12px}
+.empty p{font-size:14px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><em>World</em>Bite 🌍</div>
+  <div class="nav-right">
+    <div class="search-wrap">
+      <span>🔍</span>
+      <input type="text" id="searchInput" placeholder="Search dishes, ingredients..." oninput="applyFilters()">
+    </div>
+    <div class="nav-count" id="navCount">200 dishes</div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">✦ Global Culinary Atlas</div>
+  <h1>Cook the <em>World</em><br>One Dish at a Time</h1>
+  <p>200 authentic recipes from 10 countries. Full step-by-step cooking tutorials, ingredient lists, and AI-powered tips for every dish.</p>
+  <div class="country-chips-hero" id="heroChips"></div>
+</div>
+
+<div class="filters-bar">
+  <span class="filter-label">Filter</span>
+  <div class="filter-tags" id="filterTags">
+    <div class="ftag active" onclick="filterDiff('all',this)">All</div>
+    <div class="ftag" onclick="filterDiff('Easy',this)">🟢 Easy</div>
+    <div class="ftag" onclick="filterDiff('Medium',this)">🟡 Medium</div>
+    <div class="ftag" onclick="filterDiff('Hard',this)">🔴 Advanced</div>
+  </div>
+  <span class="results-info" id="resultsInfo">Showing 200 dishes</span>
+</div>
+
+<main id="mainContent"></main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-hero" id="modalHero">
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+      <div class="modal-flag" id="modalFlag"></div>
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-cuisine" id="modalCuisine"></div>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="ai-loading"><div class="spinner"></div><p>Generating full cooking tutorial...</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  DISH DATA
+// ══════════════════════════════════════════════
+const COUNTRIES=[
+  {
+    name:"Italian",flag:"🇮🇹",color:"#C44B2B",
+    dishes:[
+      {name:"Pizza Margherita",ingr:"dough, tomato sauce, mozzarella, basil",time:"45 min",diff:"Easy",emoji:"🍕",tag:"Baked"},
+      {name:"Lasagna",ingr:"pasta sheets, béchamel, meat sauce, parmesan",time:"1.5 hr",diff:"Medium",emoji:"🫕",tag:"Baked"},
+      {name:"Risotto",ingr:"arborio rice, broth, parmesan, white wine",time:"35 min",diff:"Medium",emoji:"🍚",tag:"Stovetop"},
+      {name:"Spaghetti Carbonara",ingr:"pasta, eggs, guanciale, pecorino, pepper",time:"25 min",diff:"Medium",emoji:"🍝",tag:"Pasta"},
+      {name:"Tiramisu",ingr:"mascarpone, espresso, ladyfingers, cocoa",time:"30 min",diff:"Easy",emoji:"🍮",tag:"Dessert"},
+      {name:"Focaccia",ingr:"flour, olive oil, yeast, rosemary, sea salt",time:"2 hr",diff:"Easy",emoji:"🍞",tag:"Baked"},
+      {name:"Gnocchi",ingr:"potatoes, flour, egg, salt, nutmeg",time:"1 hr",diff:"Medium",emoji:"🥔",tag:"Pasta"},
+      {name:"Panna Cotta",ingr:"heavy cream, sugar, gelatin, vanilla",time:"20 min",diff:"Easy",emoji:"🍮",tag:"Dessert"},
+      {name:"Bruschetta",ingr:"bread, tomatoes, garlic, olive oil, basil",time:"15 min",diff:"Easy",emoji:"🍅",tag:"Snack"},
+      {name:"Ravioli",ingr:"pasta dough, ricotta, spinach, parmesan",time:"1 hr",diff:"Hard",emoji:"🥟",tag:"Pasta"},
+    ]
+  },
+  {
+    name:"Chinese",flag:"🇨🇳",color:"#C13B1D",
+    dishes:[
+      {name:"Kung Pao Chicken",ingr:"chicken, peanuts, dried chilies, soy sauce, Sichuan pepper",time:"30 min",diff:"Medium",emoji:"🍗",tag:"Stir-fry"},
+      {name:"Spring Rolls",ingr:"rice paper, shrimp, vegetables, vermicelli",time:"45 min",diff:"Medium",emoji:"🥢",tag:"Fried"},
+      {name:"Dumplings",ingr:"dough, pork mince, cabbage, ginger, soy sauce",time:"1 hr",diff:"Medium",emoji:"🥟",tag:"Steamed"},
+      {name:"Mapo Tofu",ingr:"silken tofu, chili bean paste, ground pork, Sichuan pepper",time:"25 min",diff:"Medium",emoji:"🫕",tag:"Stovetop"},
+      {name:"Sweet and Sour Pork",ingr:"pork belly, pineapple, bell pepper, vinegar, ketchup",time:"40 min",diff:"Medium",emoji:"🍖",tag:"Fried"},
+      {name:"Fried Rice",ingr:"day-old rice, eggs, soy sauce, scallions, vegetables",time:"15 min",diff:"Easy",emoji:"🍳",tag:"Stovetop"},
+      {name:"Chow Mein",ingr:"egg noodles, soy sauce, oyster sauce, vegetables, sesame oil",time:"20 min",diff:"Easy",emoji:"🍜",tag:"Stir-fry"},
+      {name:"Peking Duck",ingr:"whole duck, hoisin sauce, scallions, pancakes, cucumber",time:"2 days",diff:"Hard",emoji:"🦆",tag:"Roasted"},
+      {name:"Hot Pot",ingr:"rich broth, beef, mushrooms, tofu, glass noodles, dipping sauce",time:"1 hr",diff:"Easy",emoji:"🍲",tag:"Communal"},
+      {name:"Baozi",ingr:"flour dough, pork filling, ginger, soy sauce, sesame oil",time:"2 hr",diff:"Medium",emoji:"🫓",tag:"Steamed"},
+    ]
+  },
+  {
+    name:"Japanese",flag:"🇯🇵",color:"#BC002D",
+    dishes:[
+      {name:"Sushi",ingr:"sushi rice, fresh fish, nori, wasabi, soy sauce",time:"1 hr",diff:"Hard",emoji:"🍣",tag:"Raw"},
+      {name:"Ramen",ingr:"ramen noodles, tonkotsu broth, chashu pork, soft egg, nori",time:"4 hr",diff:"Hard",emoji:"🍜",tag:"Soup"},
+      {name:"Tempura",ingr:"shrimp, vegetables, ice-cold batter, dashi dipping sauce",time:"30 min",diff:"Medium",emoji:"🦐",tag:"Fried"},
+      {name:"Takoyaki",ingr:"octopus, batter, scallions, ginger, takoyaki sauce, mayo",time:"30 min",diff:"Medium",emoji:"🐙",tag:"Street Food"},
+      {name:"Udon",ingr:"thick wheat noodles, dashi broth, mirin, soy sauce, toppings",time:"30 min",diff:"Easy",emoji:"🍜",tag:"Soup"},
+      {name:"Miso Soup",ingr:"dashi, miso paste, tofu, wakame seaweed, scallions",time:"15 min",diff:"Easy",emoji:"🍵",tag:"Soup"},
+      {name:"Okonomiyaki",ingr:"cabbage, flour, egg, nagaimo, pork belly, okonomiyaki sauce",time:"25 min",diff:"Easy",emoji:"🥞",tag:"Pancake"},
+      {name:"Onigiri",ingr:"sushi rice, nori, salmon/tuna filling, sesame seeds",time:"20 min",diff:"Easy",emoji:"🍙",tag:"Snack"},
+      {name:"Yakitori",ingr:"chicken thighs, tare sauce, scallions, sake, mirin",time:"30 min",diff:"Easy",emoji:"🍢",tag:"Grilled"},
+      {name:"Mochi",ingr:"glutinous rice flour, sugar, water, red bean paste",time:"30 min",diff:"Medium",emoji:"🍡",tag:"Dessert"},
+    ]
+  },
+  {
+    name:"Mexican",flag:"🇲🇽",color:"#006847",
+    dishes:[
+      {name:"Tacos al Pastor",ingr:"marinated pork, corn tortilla, pineapple, cilantro, onion",time:"3 hr",diff:"Medium",emoji:"🌮",tag:"Street Food"},
+      {name:"Burrito",ingr:"flour tortilla, beans, rice, cheese, salsa, sour cream",time:"30 min",diff:"Easy",emoji:"🌯",tag:"Wrap"},
+      {name:"Nachos",ingr:"tortilla chips, cheddar, jalapeños, sour cream, guacamole",time:"20 min",diff:"Easy",emoji:"🧀",tag:"Snack"},
+      {name:"Quesadilla",ingr:"flour tortilla, cheese, chicken, bell pepper, salsa",time:"15 min",diff:"Easy",emoji:"🫓",tag:"Snack"},
+      {name:"Guacamole",ingr:"ripe avocado, lime, onion, cilantro, tomato, jalapeño",time:"10 min",diff:"Easy",emoji:"🥑",tag:"Dip"},
+      {name:"Enchiladas",ingr:"corn tortillas, chili sauce, cheese, chicken, sour cream",time:"45 min",diff:"Medium",emoji:"🫕",tag:"Baked"},
+      {name:"Tamales",ingr:"masa harina, lard, chicken/pork filling, dried corn husks",time:"3 hr",diff:"Hard",emoji:"🌽",tag:"Steamed"},
+      {name:"Churros",ingr:"flour, water, butter, cinnamon sugar, chocolate sauce",time:"30 min",diff:"Easy",emoji:"🍩",tag:"Dessert"},
+      {name:"Pozole",ingr:"hominy corn, pork, chili, oregano, cabbage, radish",time:"3 hr",diff:"Medium",emoji:"🫕",tag:"Soup"},
+      {name:"Elote",ingr:"corn on the cob, mayo, cotija cheese, chili powder, lime",time:"20 min",diff:"Easy",emoji:"🌽",tag:"Street Food"},
+    ]
+  },
+  {
+    name:"French",flag:"🇫🇷",color:"#003087",
+    dishes:[
+      {name:"Croissant",ingr:"flour, butter, yeast, milk, egg wash",time:"2 days",diff:"Hard",emoji:"🥐",tag:"Baked"},
+      {name:"Ratatouille",ingr:"zucchini, eggplant, tomato, bell pepper, herbes de Provence",time:"1 hr",diff:"Easy",emoji:"🫕",tag:"Baked"},
+      {name:"Crêpes",ingr:"flour, eggs, milk, butter, sugar, vanilla",time:"30 min",diff:"Easy",emoji:"🥞",tag:"Pan"},
+      {name:"Quiche Lorraine",ingr:"shortcrust pastry, eggs, cream, bacon, gruyère",time:"1 hr",diff:"Medium",emoji:"🥚",tag:"Baked"},
+      {name:"Bouillabaisse",ingr:"mixed seafood, saffron, fennel, tomato, rouille",time:"2 hr",diff:"Hard",emoji:"🦞",tag:"Soup"},
+      {name:"Coq au Vin",ingr:"chicken, red wine, mushrooms, lardons, pearl onions",time:"2 hr",diff:"Medium",emoji:"🍷",tag:"Braised"},
+      {name:"Macarons",ingr:"almond flour, egg whites, sugar, buttercream filling",time:"2 hr",diff:"Hard",emoji:"🍪",tag:"Dessert"},
+      {name:"Soufflé",ingr:"eggs, butter, flour, milk, gruyère or chocolate",time:"45 min",diff:"Hard",emoji:"🧁",tag:"Baked"},
+      {name:"Baguette",ingr:"strong flour, water, salt, yeast",time:"4 hr",diff:"Medium",emoji:"🥖",tag:"Baked"},
+      {name:"Crème Brûlée",ingr:"heavy cream, egg yolks, sugar, vanilla bean",time:"1 hr",diff:"Medium",emoji:"🍮",tag:"Dessert"},
+    ]
+  },
+  {
+    name:"Thai",flag:"🇹🇭",color:"#A51931",
+    dishes:[
+      {name:"Pad Thai",ingr:"rice noodles, shrimp, eggs, bean sprouts, peanuts, tamarind",time:"25 min",diff:"Medium",emoji:"🍜",tag:"Noodles"},
+      {name:"Tom Yum Soup",ingr:"shrimp, lemongrass, galangal, kaffir lime, fish sauce, chili",time:"25 min",diff:"Easy",emoji:"🍲",tag:"Soup"},
+      {name:"Green Curry",ingr:"green curry paste, coconut milk, chicken, Thai eggplant, basil",time:"30 min",diff:"Easy",emoji:"🫕",tag:"Curry"},
+      {name:"Mango Sticky Rice",ingr:"glutinous rice, coconut milk, ripe mango, palm sugar",time:"45 min",diff:"Easy",emoji:"🥭",tag:"Dessert"},
+      {name:"Som Tam",ingr:"green papaya, tomatoes, green beans, peanuts, fish sauce, lime",time:"15 min",diff:"Easy",emoji:"🥗",tag:"Salad"},
+      {name:"Massaman Curry",ingr:"beef, massaman paste, coconut milk, potatoes, peanuts",time:"2 hr",diff:"Medium",emoji:"🍛",tag:"Curry"},
+      {name:"Pad See Ew",ingr:"wide rice noodles, Chinese broccoli, egg, soy sauce",time:"20 min",diff:"Easy",emoji:"🥡",tag:"Stir-fry"},
+      {name:"Khao Pad",ingr:"jasmine rice, eggs, garlic, oyster sauce, scallions",time:"15 min",diff:"Easy",emoji:"🍳",tag:"Fried Rice"},
+      {name:"Larb",ingr:"minced pork, toasted rice powder, lime, fish sauce, mint",time:"20 min",diff:"Easy",emoji:"🥗",tag:"Salad"},
+      {name:"Satay",ingr:"chicken skewers, peanut sauce, turmeric, coconut milk",time:"1 hr",diff:"Easy",emoji:"🍢",tag:"Grilled"},
+    ]
+  },
+  {
+    name:"Korean",flag:"🇰🇷",color:"#003478",
+    dishes:[
+      {name:"Kimchi",ingr:"napa cabbage, gochugaru, garlic, ginger, fish sauce",time:"2 days",diff:"Medium",emoji:"🥬",tag:"Fermented"},
+      {name:"Bibimbap",ingr:"steamed rice, mixed vegetables, beef, gochujang, fried egg",time:"45 min",diff:"Easy",emoji:"🍱",tag:"Bowl"},
+      {name:"Bulgogi",ingr:"thinly sliced beef, soy sauce, sesame oil, pear, garlic",time:"1 hr",diff:"Easy",emoji:"🥩",tag:"Grilled"},
+      {name:"Tteokbokki",ingr:"rice cakes, gochujang, fish cake, scallions, sugar",time:"20 min",diff:"Easy",emoji:"🍡",tag:"Street Food"},
+      {name:"Japchae",ingr:"glass noodles, beef, spinach, mushrooms, sesame oil",time:"40 min",diff:"Medium",emoji:"🍜",tag:"Noodles"},
+      {name:"Sundubu Jjigae",ingr:"soft tofu, clams, gochugaru, egg, sesame oil",time:"25 min",diff:"Easy",emoji:"🍲",tag:"Stew"},
+      {name:"Dakgalbi",ingr:"chicken, gochujang, sweet potato, cabbage, rice cake",time:"30 min",diff:"Easy",emoji:"🍗",tag:"Stir-fry"},
+      {name:"Samgyeopsal",ingr:"pork belly, garlic, sesame leaf, ssamjang, kimchi",time:"20 min",diff:"Easy",emoji:"🥓",tag:"Grilled"},
+      {name:"Haemul Pajeon",ingr:"seafood, scallions, flour, egg, soy dipping sauce",time:"25 min",diff:"Easy",emoji:"🥞",tag:"Pancake"},
+      {name:"Doenjang Jjigae",ingr:"fermented soybean paste, tofu, zucchini, mushrooms, clams",time:"25 min",diff:"Easy",emoji:"🍲",tag:"Stew"},
+    ]
+  },
+  {
+    name:"Spanish",flag:"🇪🇸",color:"#AA151B",
+    dishes:[
+      {name:"Paella Valenciana",ingr:"bomba rice, chicken, rabbit, green beans, saffron, tomato",time:"1 hr",diff:"Medium",emoji:"🥘",tag:"Baked"},
+      {name:"Gazpacho",ingr:"ripe tomatoes, cucumber, pepper, garlic, olive oil, vinegar",time:"20 min",diff:"Easy",emoji:"🍅",tag:"Cold Soup"},
+      {name:"Tortilla Española",ingr:"eggs, potatoes, onion, olive oil, salt",time:"45 min",diff:"Medium",emoji:"🥚",tag:"Stovetop"},
+      {name:"Churros con Chocolate",ingr:"flour, water, oil, cinnamon, thick hot chocolate",time:"30 min",diff:"Easy",emoji:"🍩",tag:"Dessert"},
+      {name:"Patatas Bravas",ingr:"potatoes, bravas sauce, garlic mayo, smoked paprika",time:"35 min",diff:"Easy",emoji:"🥔",tag:"Tapas"},
+      {name:"Jamón Ibérico",ingr:"Iberian pork leg, sea salt (cured 36 months)",time:"N/A",diff:"Easy",emoji:"🥩",tag:"Cured"},
+      {name:"Croquetas",ingr:"béchamel, jamón or bacalà, breadcrumbs, egg",time:"1 hr",diff:"Medium",emoji:"🍳",tag:"Fried"},
+      {name:"Crema Catalana",ingr:"egg yolks, cream, sugar, cinnamon, lemon zest",time:"1 hr",diff:"Medium",emoji:"🍮",tag:"Dessert"},
+      {name:"Pulpo a la Gallega",ingr:"octopus, potatoes, olive oil, smoked paprika, sea salt",time:"2 hr",diff:"Medium",emoji:"🐙",tag:"Seafood"},
+      {name:"Salmorejo",ingr:"bread, ripe tomatoes, garlic, olive oil, sherry vinegar",time:"15 min",diff:"Easy",emoji:"🍲",tag:"Cold Soup"},
+    ]
+  },
+  {
+    name:"Indian",flag:"🇮🇳",color:"#FF9933",
+    dishes:[
+      {name:"Butter Chicken",ingr:"chicken, tomato, butter, cream, garam masala, kashmiri chili",time:"50 min",diff:"Medium",emoji:"🍛",tag:"Curry"},
+      {name:"Biryani",ingr:"basmati rice, chicken, saffron, fried onions, whole spices",time:"2 hr",diff:"Hard",emoji:"🍚",tag:"Rice"},
+      {name:"Palak Paneer",ingr:"spinach, paneer, cream, ginger, garlic, spices",time:"35 min",diff:"Easy",emoji:"🥬",tag:"Curry"},
+      {name:"Dal Makhani",ingr:"black lentils, kidney beans, tomato, cream, butter, spices",time:"3 hr",diff:"Medium",emoji:"🫕",tag:"Lentils"},
+      {name:"Samosa",ingr:"flour pastry, potato, peas, cumin, coriander, green chili",time:"1 hr",diff:"Medium",emoji:"🥟",tag:"Fried"},
+      {name:"Naan",ingr:"flour, yogurt, yeast, ghee, baking powder",time:"2 hr",diff:"Medium",emoji:"🫓",tag:"Bread"},
+      {name:"Chole Bhature",ingr:"chickpeas, spices, fried bread, onion, tamarind",time:"1.5 hr",diff:"Medium",emoji:"🧆",tag:"Street Food"},
+      {name:"Gulab Jamun",ingr:"milk powder, flour, ghee, cardamom, rose water syrup",time:"45 min",diff:"Medium",emoji:"🍯",tag:"Dessert"},
+      {name:"Masala Chai",ingr:"black tea, milk, ginger, cardamom, cinnamon, cloves",time:"15 min",diff:"Easy",emoji:"🍵",tag:"Beverage"},
+      {name:"Raita",ingr:"yogurt, cucumber, mint, cumin, coriander",time:"10 min",diff:"Easy",emoji:"🥗",tag:"Condiment"},
+    ]
+  },
+  {
+    name:"Greek",flag:"🇬🇷",color:"#0D5EAF",
+    dishes:[
+      {name:"Moussaka",ingr:"eggplant, ground beef, béchamel, cinnamon, tomato",time:"2 hr",diff:"Medium",emoji:"🫕",tag:"Baked"},
+      {name:"Spanakopita",ingr:"spinach, feta, phyllo dough, onions, dill, olive oil",time:"1 hr",diff:"Medium",emoji:"🥬",tag:"Pie"},
+      {name:"Greek Salad",ingr:"tomato, cucumber, olives, feta, red onion, olive oil",time:"10 min",diff:"Easy",emoji:"🥗",tag:"Salad"},
+      {name:"Tzatziki",ingr:"Greek yogurt, cucumber, garlic, dill, olive oil, lemon",time:"15 min",diff:"Easy",emoji:"🥒",tag:"Dip"},
+      {name:"Souvlaki",ingr:"pork/chicken skewers, lemon, oregano, garlic, pita",time:"30 min",diff:"Easy",emoji:"🍢",tag:"Grilled"},
+      {name:"Baklava",ingr:"phyllo dough, walnuts, honey syrup, butter, cinnamon",time:"1.5 hr",diff:"Medium",emoji:"🍯",tag:"Dessert"},
+      {name:"Fasolada",ingr:"white beans, carrots, celery, tomato, olive oil, parsley",time:"2 hr",diff:"Easy",emoji:"🫘",tag:"Soup"},
+      {name:"Pastitsio",ingr:"penne, ground beef, béchamel, cinnamon, parmesan",time:"1.5 hr",diff:"Medium",emoji:"🫕",tag:"Baked"},
+      {name:"Dolmades",ingr:"grape leaves, rice, pine nuts, herbs, lemon",time:"1.5 hr",diff:"Medium",emoji:"🌿",tag:"Stuffed"},
+      {name:"Loukoumades",ingr:"flour, yeast, honey, walnuts, cinnamon",time:"1 hr",diff:"Easy",emoji:"🍩",tag:"Dessert"},
+    ]
+  },
+];
+
+// State
+let currentFilter='all';
+let currentDiff='all';
+let activeCountry='all';
+
+// ══════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════
+function renderAll(){
+  // Hero chips
+  const hc=document.getElementById('heroChips');
+  hc.innerHTML='<div class="cchip active" onclick="filterCountry(\'all\',this)">🌍 All Countries</div>';
+  COUNTRIES.forEach(c=>{
+    hc.innerHTML+=`<div class="cchip" onclick="filterCountry('${c.name}',this)">${c.flag} ${c.name}</div>`;
+  });
+
+  applyFilters();
+}
+
+function applyFilters(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const main=document.getElementById('mainContent');
+  let total=0;
+  let html='';
+
+  COUNTRIES.forEach(country=>{
+    if(activeCountry!=='all' && activeCountry!==country.name) return;
+
+    const dishes=country.dishes.filter(d=>{
+      const matchQ=!q || d.name.toLowerCase().includes(q) || d.ingr.toLowerCase().includes(q) || d.tag.toLowerCase().includes(q);
+      const matchD=currentDiff==='all' || d.diff===currentDiff;
+      return matchQ && matchD;
+    });
+
+    if(!dishes.length) return;
+    total+=dishes.length;
+
+    html+=`<div class="country-section">
+      <div class="country-header">
+        <span class="country-flag">${country.flag}</span>
+        <span class="country-name">${country.name} Cuisine</span>
+        <span class="country-count">${dishes.length} dish${dishes.length>1?'es':''}</span>
+      </div>
+      <div class="dish-grid">
+        ${dishes.map(d=>dishCard(d,country)).join('')}
+      </div>
+    </div>`;
+  });
+
+  if(!total){
+    html=`<div class="empty"><div class="empty-emoji">🔍</div><p>No dishes found. Try a different search!</p></div>`;
+  }
+
+  main.innerHTML=html;
+  document.getElementById('resultsInfo').textContent=`Showing ${total} dishes`;
+  document.getElementById('navCount').textContent=`${total} dishes`;
+}
+
+function diffClass(d){return d==='Easy'?'diff-easy':d==='Medium'?'diff-medium':'diff-hard';}
+
+function dishCard(d,country){
+  return `<div class="dish-card" onclick="openModal(this)" 
+    data-name="${d.name}" data-ingr="${d.ingr}" data-time="${d.time}" data-diff="${d.diff}"
+    data-emoji="${d.emoji}" data-tag="${d.tag}" data-country="${country.name}" data-flag="${country.flag}">
+    <div class="dish-emoji-wrap">
+      <span style="font-size:46px">${d.emoji}</span>
+      <span class="dish-difficulty ${diffClass(d.diff)}">${d.diff}</span>
+    </div>
+    <div class="dish-body">
+      <div class="dish-name">${d.name}</div>
+      <div class="dish-ingr">${d.ingr}</div>
+      <div class="dish-meta">
+        <span class="dish-time">⏱ ${d.time}</span>
+        <span class="dish-tag">${d.tag}</span>
+      </div>
+      <button class="cook-btn" onclick="event.stopPropagation();openModal(this.closest('.dish-card'))">
+        📖 Full Cooking Tutorial
+      </button>
+    </div>
+  </div>`;
+}
+
+function filterCountry(name,el){
+  activeCountry=name;
+  document.querySelectorAll('.cchip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function filterDiff(diff,el){
+  currentDiff=diff;
+  document.querySelectorAll('.ftag').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+// ══════════════════════════════════════════════
+//  MODAL + CLAUDE API
+// ══════════════════════════════════════════════
+async function openModal(card){
+  const name=card.dataset.name;
+  const ingr=card.dataset.ingr;
+  const time=card.dataset.time;
+  const diff=card.dataset.diff;
+  const emoji=card.dataset.emoji;
+  const tag=card.dataset.tag;
+  const country=card.dataset.country;
+  const flag=card.dataset.flag;
+
+  document.getElementById('modalFlag').textContent=flag;
+  document.getElementById('modalName').textContent=emoji+' '+name;
+  document.getElementById('modalCuisine').textContent=country+' Cuisine  ·  '+tag+'  ·  '+diff+'  ·  '+time;
+  document.getElementById('modalBody').innerHTML=`<div class="ai-loading"><div class="spinner"></div><p>Generating full cooking tutorial for ${name}...</p></div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+
+  try{
+    const prompt=`Create a complete, detailed cooking tutorial for "${name}" (${country} cuisine).
+Base ingredients: ${ingr}
+Difficulty: ${diff} | Time: ${time} | Category: ${tag}
+
+Return a JSON object with exactly these keys:
+{
+  "description": "2-sentence description of the dish and its cultural significance",
+  "servings": "number as string e.g. 4",
+  "calories": "approximate per serving as string",
+  "protein": "grams per serving as string",
+  "carbs": "grams per serving as string",
+  "fat": "grams per serving as string",
+  "ingredients": ["detailed ingredient 1 with quantity", "ingredient 2 with quantity", ...] (8-12 items),
+  "steps": ["Step description 1", "Step description 2", ...] (6-8 clear steps),
+  "tips": "3 chef tips as a single string, separated by • symbols",
+  "storage": "storage instructions one sentence"
+}
+Return only valid JSON, no markdown.`;
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'You are a professional chef and culinary educator. Return only valid JSON as instructed, no extra text.',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    let text=data.content?.[0]?.text||'{}';
+    text=text.replace(/```json|```/g,'').trim();
+    const recipe=JSON.parse(text);
+    renderModal(recipe,name,ingr,country,flag,emoji,tag,diff,time);
+  }catch(e){
+    document.getElementById('modalBody').innerHTML=`
+      <div class="ai-error">⚠️ Could not load tutorial. Please try again.<br><small>${e.message}</small></div>
+      ${staticFallback(name,ingr)}`;
+  }
+}
+
+function renderModal(r,name,ingr,country,flag,emoji,tag,diff,time){
+  const steps=(r.steps||[]).map((s,i)=>`
+    <div class="step-row fade-in" style="animation-delay:${i*0.05}s">
+      <div class="step-num">${i+1}</div>
+      <div class="step-text">${s}</div>
+    </div>`).join('');
+
+  const ingrList=(r.ingredients||ingr.split(',')).map(i=>`
+    <div class="ingr-pill"><div class="ingr-dot"></div>${i.trim()}</div>`).join('');
+
+  const tips=(r.tips||'').split('•').filter(Boolean).map(t=>`• ${t.trim()}`).join('<br>');
+
+  document.getElementById('modalBody').innerHTML=`
+    <div class="fade-in">
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px">${r.description||''}</p>
+      
+      <div class="modal-section">
+        <div class="modal-section-title">Nutrition (per serving · serves ${r.servings||4})</div>
+        <div class="nutrition-grid">
+          <div class="nut-box"><div class="nut-val">${r.calories||'—'}</div><div class="nut-lbl">Calories</div></div>
+          <div class="nut-box"><div class="nut-val">${r.protein||'—'}g</div><div class="nut-lbl">Protein</div></div>
+          <div class="nut-box"><div class="nut-val">${r.carbs||'—'}g</div><div class="nut-lbl">Carbs</div></div>
+          <div class="nut-box"><div class="nut-val">${r.fat||'—'}g</div><div class="nut-lbl">Fat</div></div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Ingredients</div>
+        <div class="ingr-grid">${ingrList}</div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Step-by-step instructions</div>
+        <div class="steps-list">${steps}</div>
+      </div>
+
+      ${tips?`<div class="modal-section">
+        <div class="modal-section-title">Chef's tips</div>
+        <div class="tips-box"><p>${tips}</p></div>
+      </div>`:''}
+
+      ${r.storage?`<div class="modal-section">
+        <div class="modal-section-title">Storage</div>
+        <p style="font-size:13px;color:var(--muted)">${r.storage}</p>
+      </div>`:''}
+    </div>`;
+}
+
+function staticFallback(name,ingr){
+  return `<div class="modal-section" style="margin-top:16px">
+    <div class="modal-section-title">Ingredients</div>
+    <div class="ingr-grid">${ingr.split(',').map(i=>`<div class="ingr-pill"><div class="ingr-dot"></div>${i.trim()}</div>`).join('')}</div>
+  </div>`;
+}
+
+function closeModal(e){if(e.target===document.getElementById('modalOverlay')) closeModalDirect();}
+function closeModalDirect(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape') closeModalDirect();});
+
+// ── INIT ──
+renderAll();
+</script>
+</body>
+</html>

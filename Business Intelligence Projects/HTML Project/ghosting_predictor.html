@@ -1,0 +1,249 @@
+<style>
+@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+@keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+@keyframes flicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 20%, 24%, 55% { opacity: 0.4; } }
+@keyframes drift { 0% { transform: translateX(0) translateY(0); } 25% { transform: translateX(20px) translateY(-20px); } 50% { transform: translateX(-30px) translateY(-40px); } 75% { transform: translateX(15px) translateY(-10px); } 100% { transform: translateX(0) translateY(0); } }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+body { font-family: var(--font-sans); background: linear-gradient(135deg, #1a0f2e 0%, #2d1b4e 50%, #1a0f2e 100%); min-height: 100vh; position: relative; overflow-x: hidden; }
+
+.ghost-bg { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; opacity: 0.3; }
+.ghost-float { position: absolute; font-size: 80px; animation: float 4s ease-in-out infinite, drift 8s ease-in-out infinite; opacity: 0.2; }
+.ghost-1 { top: 10%; left: 5%; animation-delay: 0s; }
+.ghost-2 { top: 50%; right: 10%; animation-delay: 1s; }
+.ghost-3 { top: 70%; left: 15%; animation-delay: 2s; }
+
+.container { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 3rem 1.5rem; }
+.header { text-align: center; margin-bottom: 3rem; }
+.header h1 { font-size: 40px; font-weight: 700; color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); margin-bottom: 8px; letter-spacing: 2px; }
+.header p { color: #a0a0ff; font-size: 15px; text-shadow: 0 0 10px rgba(160, 160, 255, 0.3); }
+
+.input-wrapper { background: rgba(45, 27, 78, 0.6); border: 2px solid #00ff88; border-radius: 15px; padding: 28px; margin-bottom: 28px; backdrop-filter: blur(10px); position: relative; overflow: hidden; }
+.input-wrapper::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%); animation: drift 8s ease-in-out infinite; }
+.input-label { display: block; font-weight: 600; color: #00ff88; margin-bottom: 12px; font-size: 15px; position: relative; z-index: 1; text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+textarea { width: 100%; padding: 16px; border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 10px; font-size: 15px; font-family: var(--font-sans); resize: vertical; min-height: 120px; background: rgba(26, 15, 46, 0.8); color: #e0e0ff; transition: all 0.3s; position: relative; z-index: 1; }
+textarea::placeholder { color: #7070a0; }
+textarea:focus { outline: none; border-color: #00ff88; background: rgba(26, 15, 46, 0.95); box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); color: #00ff88; }
+
+.button-group { display: flex; gap: 12px; margin-top: 20px; position: relative; z-index: 1; }
+.btn-predict { flex: 1; padding: 14px 24px; background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); color: #1a0f2e; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.3s; text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+.btn-predict:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4); }
+.btn-predict:active { transform: translateY(0); }
+.btn-clear { flex: 1; padding: 14px 24px; background: transparent; border: 2px solid #7070a0; color: #a0a0ff; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s; }
+.btn-clear:hover { border-color: #00ff88; color: #00ff88; background: rgba(0, 255, 136, 0.1); }
+
+.spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(0, 255, 136, 0.2); border-top-color: #00ff88; border-radius: 50%; animation: flicker 1s linear infinite; }
+.loading-state { display: none; text-align: center; padding: 60px 20px; }
+.loading-state.show { display: block; animation: pulse 2s ease-in-out infinite; }
+.loading-text { margin-top: 20px; color: #00ff88; font-weight: 600; font-size: 16px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+
+.results { display: none; }
+.results.show { display: block; }
+
+.prediction-card { background: rgba(45, 27, 78, 0.7); border: 2px solid rgba(0, 255, 136, 0.5); border-radius: 15px; padding: 28px; margin-bottom: 20px; backdrop-filter: blur(10px); position: relative; overflow: hidden; }
+.prediction-card::before { content: ''; position: absolute; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%); border-radius: 50%; }
+
+.prediction-emoji { font-size: 60px; margin-bottom: 16px; animation: float 3s ease-in-out infinite; }
+.prediction-title { font-size: 24px; font-weight: 700; color: #00ff88; margin-bottom: 12px; text-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
+.prediction-desc { font-size: 15px; color: #c0c0e0; line-height: 1.6; margin-bottom: 16px; }
+.prediction-meter { background: rgba(0, 255, 136, 0.1); height: 10px; border-radius: 5px; overflow: hidden; margin: 16px 0; border: 1px solid rgba(0, 255, 136, 0.3); }
+.meter-fill { height: 100%; background: linear-gradient(90deg, #00ff88 0%, #00cc6a 100%); border-radius: 5px; transition: width 0.8s ease; box-shadow: 0 0 15px rgba(0, 255, 136, 0.6); }
+.confidence-text { font-size: 13px; color: #a0a0ff; font-weight: 600; margin-top: 8px; }
+
+.outcome-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 24px; position: relative; z-index: 1; }
+.outcome { background: rgba(26, 15, 46, 0.9); border: 2px solid rgba(0, 255, 136, 0.2); border-radius: 10px; padding: 14px; text-align: center; transition: all 0.3s; }
+.outcome:hover { border-color: #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
+.outcome-emoji { font-size: 32px; margin-bottom: 8px; }
+.outcome-label { font-size: 12px; color: #a0a0ff; font-weight: 600; }
+.outcome-chance { font-size: 16px; color: #00ff88; font-weight: 700; margin-top: 6px; text-shadow: 0 0 8px rgba(0, 255, 136, 0.4); }
+
+.warning-banner { background: rgba(255, 100, 100, 0.1); border: 2px solid rgba(255, 100, 100, 0.5); border-radius: 10px; padding: 16px; margin-top: 20px; color: #ff9999; font-size: 13px; line-height: 1.6; text-shadow: 0 0 10px rgba(255, 100, 100, 0.3); }
+.warning-banner strong { color: #ffaaaa; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: #a0a0ff; font-size: 15px; }
+</style>
+
+<div class="ghost-bg">
+  <div class="ghost-float ghost-1">👻</div>
+  <div class="ghost-float ghost-2">👻</div>
+  <div class="ghost-float ghost-3">👻</div>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1>💀 GHOSTING PREDICTOR 💀</h1>
+    <p>Know your fate before they disappear...</p>
+  </div>
+
+  <div class="input-wrapper">
+    <label class="input-label">Paste the last message they sent</label>
+    <textarea id="messageInput" placeholder="Paste their message here... The spirits will read the energy..."></textarea>
+    <div class="button-group">
+      <button class="btn-predict" onclick="predictGhosting()">👻 Predict Fate</button>
+      <button class="btn-clear" onclick="clearInput()">Clear</button>
+    </div>
+  </div>
+
+  <div class="loading-state" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">👻 Consulting the ghosting spirits...</div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="empty-state" id="emptyState">
+    <p>The spirits await your message...</p>
+  </div>
+</div>
+
+<script>
+const ghostingPatterns = {
+  quickReply: {
+    emoji: '⚡',
+    title: 'Quick Reply',
+    subtitle: 'They will text back in 2 minutes',
+    color: '#00ff88',
+    keywords: ['haha', 'lol', 'yes', 'no', 'ok', 'cool', 'nice', 'yeah', 'true', 'exactly', '!', '?', 'omg'],
+    patterns: [/^.{1,30}$/i, /([!?]{2,})/i, /(haha|lol|omg)/i],
+    traits: ['Engaged', 'Enthusiastic', 'Quick responder'],
+    description: 'They\'re actively engaged and quick to respond. This is a good sign! They\'ll likely message you again very soon.',
+    seenChance: 5,
+    replyChance: 90,
+    ghostChance: 5
+  },
+  seenZone: {
+    emoji: '👁️',
+    title: 'Seen Zone',
+    subtitle: 'They saw it but won\'t reply for hours',
+    color: '#a0a0ff',
+    keywords: ['k', 'maybe', 'idk', 'we\'ll see', 'lol ok', 'cool cool', 'let me think', 'not sure', 'later', 'busy'],
+    patterns: [/^(k|ok|idk|maybe|cool|later)$/i, /(let me think|we'll see|not sure)/i],
+    traits: ['Lukewarm', 'Noncommittal', 'Potentially flaky'],
+    description: 'The energy is... uncertain. They\'re interested but not enthusiastic. Expect them to leave you on read for hours (or days).',
+    seenChance: 70,
+    replyChance: 20,
+    ghostChance: 10
+  },
+  ghosted: {
+    emoji: '💀',
+    title: 'Ghosted Forever',
+    subtitle: 'They will never reply again',
+    color: '#ff6666',
+    keywords: ['...', 'nevermind', 'whatever', 'fine', 'good luck', 'no thanks', 'nah', 'not interested', 'deleted', 'blocked', 'bye', 'goodbye', 'actually', 'unmatched'],
+    patterns: [/(\.{3,})/i, /(nevermind|whatever|fine|good luck|no thanks)/i, /goodbye|bye|unmatched/i, /not interested|nah/i],
+    traits: ['Disengaged', 'Dismissive', 'Already gone'],
+    description: 'The spirits have spoken and it\'s not good. This message screams "I\'m not interested" or "I\'m ending this." Prepare for the silence.',
+    seenChance: 100,
+    replyChance: 5,
+    ghostChance: 95
+  }
+};
+
+function predictGhosting() {
+  const message = document.getElementById('messageInput').value.trim();
+  
+  if (!message) {
+    alert('The spirits need a message to read! 👻');
+    return;
+  }
+
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('emptyState').style.display = 'none';
+
+  setTimeout(() => {
+    const prediction = detectGhosting(message);
+    displayPrediction(prediction);
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('results').classList.add('show');
+  }, 2000);
+}
+
+function detectGhosting(text) {
+  const lowerText = text.toLowerCase();
+  let scores = {};
+
+  for (let category in ghostingPatterns) {
+    let score = 0;
+    const pattern = ghostingPatterns[category];
+
+    for (let keyword of pattern.keywords) {
+      const count = (lowerText.match(new RegExp(`\\b${keyword}\\b`, 'gi')) || []).length;
+      score += count * 2;
+    }
+
+    for (let regex of pattern.patterns) {
+      if (regex.test(text)) {
+        score += 10;
+      }
+    }
+
+    scores[category] = score;
+  }
+
+  let maxScore = 0;
+  let result = 'seenZone';
+  for (let category in scores) {
+    if (scores[category] > maxScore) {
+      maxScore = scores[category];
+      result = category;
+    }
+  }
+
+  return { category: result, score: maxScore };
+}
+
+function displayPrediction(prediction) {
+  const resultsDiv = document.getElementById('results');
+  const pattern = ghostingPatterns[prediction.category];
+  const percentage = Math.min(Math.round((prediction.score / 20) * 100), 100);
+
+  resultsDiv.innerHTML = `
+    <div class="prediction-card">
+      <div class="prediction-emoji">${pattern.emoji}</div>
+      <div class="prediction-title">${pattern.title}</div>
+      <div style="color: #a0a0ff; font-size: 13px; margin-bottom: 16px; font-style: italic;">${pattern.subtitle}</div>
+      
+      <div class="prediction-desc">${pattern.description}</div>
+      
+      <div class="prediction-meter">
+        <div class="meter-fill" style="width: ${percentage}%; background: linear-gradient(90deg, ${pattern.color} 0%, ${pattern.color}88 100%);"></div>
+      </div>
+      <div class="confidence-text">Prediction certainty: ${Math.round((prediction.score / 25) * 100)}%</div>
+
+      <div class="outcome-cards">
+        <div class="outcome">
+          <div class="outcome-emoji">⚡</div>
+          <div class="outcome-label">Reply fast</div>
+          <div class="outcome-chance">${pattern.replyChance}%</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-emoji">👁️</div>
+          <div class="outcome-label">Seen zone</div>
+          <div class="outcome-chance">${pattern.seenChance}%</div>
+        </div>
+        <div class="outcome">
+          <div class="outcome-emoji">💀</div>
+          <div class="outcome-label">Ghosted</div>
+          <div class="outcome-chance">${pattern.ghostChance}%</div>
+        </div>
+      </div>
+
+      <div class="warning-banner">
+        <strong>The energy read:</strong> They seem ${pattern.traits.join(', ').toLowerCase()}. ${
+          prediction.category === 'ghosted' ? 'Prepare yourself for the silence. 👻' : 
+          prediction.category === 'seenZone' ? 'Don\'t hold your breath, but don\'t give up hope either.' :
+          'Great signs! They\'re into it!'
+        }
+      </div>
+    </div>
+  `;
+}
+
+function clearInput() {
+  document.getElementById('messageInput').value = '';
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('emptyState').style.display = 'block';
+}
+</script>

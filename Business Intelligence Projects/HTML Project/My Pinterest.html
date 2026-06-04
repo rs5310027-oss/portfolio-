@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PinkPin</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#4a0404,#ffffff);
+min-height:100vh;
+color:#fff;
+}
+
+nav{
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(15px);
+padding:20px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-size:2rem;
+font-weight:bold;
+color:white;
+}
+
+.hero{
+text-align:center;
+padding:60px 20px;
+}
+
+.hero h1{
+font-size:3rem;
+}
+
+.hero p{
+margin:15px 0;
+}
+
+.btn{
+padding:12px 25px;
+border:none;
+border-radius:30px;
+background:#800000;
+color:white;
+cursor:pointer;
+margin:10px;
+}
+
+.upload-box{
+width:80%;
+margin:auto;
+padding:30px;
+border:2px dashed white;
+border-radius:20px;
+text-align:center;
+background:rgba(255,255,255,0.12);
+}
+
+.gallery{
+column-count:3;
+column-gap:15px;
+padding:30px;
+}
+
+.card{
+break-inside:avoid;
+background:white;
+color:#4a0404;
+padding:12px;
+margin-bottom:15px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+
+.card img{
+width:100%;
+border-radius:15px;
+}
+
+.actions{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:8px;
+margin-top:10px;
+}
+
+.actions button{
+padding:8px 12px;
+border:none;
+border-radius:20px;
+background:#800000;
+color:white;
+cursor:pointer;
+font-size:12px;
+}
+
+.comment-box{
+width:100%;
+margin-top:10px;
+padding:8px;
+border-radius:10px;
+border:1px solid #ccc;
+}
+
+.result{
+display:none;
+text-align:center;
+padding:20px;
+font-size:1.2rem;
+background:white;
+color:#4a0404;
+margin:20px;
+border-radius:20px;
+}
+
+@media(max-width:768px){
+.gallery{
+column-count:2;
+}
+}
+
+@media(max-width:500px){
+.gallery{
+column-count:1;
+}
+}
+</style>
+</head>
+<body>
+
+<nav>
+<div class="logo">PinkPin ❤️</div>
+</nav>
+
+<section class="hero">
+<h1>Find Your Baddie Aesthetic</h1>
+<p>Upload your vibe, pin your glow, inspire the girls ✨</p>
+<button class="btn">Upload Picture</button>
+</section>
+
+<div class="upload-box">
+<h2>Upload Your Picture</h2>
+<input type="file" id="upload" accept="image/*">
+</div>
+
+<div class="gallery" id="gallery"></div>
+
+<div class="result" id="result"></div>
+
+<script>
+const upload=document.getElementById("upload");
+const gallery=document.getElementById("gallery");
+const result=document.getElementById("result");
+
+upload.addEventListener("change",function(e){
+const file=e.target.files[0];
+if(file){
+const reader=new FileReader();
+reader.onload=function(event){
+createCard(event.target.result);
+}
+reader.readAsDataURL(file);
+}
+});
+
+function createCard(src){
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<img src="${src}">
+<div class="actions">
+<button onclick="likePost()">❤️ Like</button>
+<button onclick="savePost()">📌 Save</button>
+<button onclick="deletePost(this)">🗑 Delete</button>
+<button onclick="sharePost()">📤 Share</button>
+<button onclick="copyLink()">📋 Copy</button>
+<button onclick="analyzeAura()">✨ Analyze</button>
+</div>
+<input class="comment-box" placeholder="Add comment...">
+`;
+
+gallery.prepend(card);
+}
+
+function likePost(){
+alert("Liked ❤️");
+}
+
+function savePost(){
+alert("Saved 📌");
+}
+
+function deletePost(btn){
+btn.closest(".card").remove();
+}
+
+function sharePost(){
+alert("Shared 📤");
+}
+
+function copyLink(){
+navigator.clipboard.writeText(window.location.href);
+alert("Link copied 📋");
+}
+
+function analyzeAura(){
+let score=Math.floor(Math.random()*100);
+
+let vibe=
+score>80?"Luxury Baddie 👑":
+score>60?"Soft Glam Queen ✨":
+score>40?"Elegant Girl 🌹":
+"Glow-Up Needed 💅";
+
+result.style.display="block";
+result.innerHTML=`
+<h2>AI Vibe Analyzer</h2>
+<p>Baddie Score: ${score}%</p>
+<p>Aesthetic Type: ${vibe}</p>
+<p>Confidence Aura: Elite</p>
+`;
+}
+</script>
+
+</body>
+</html>

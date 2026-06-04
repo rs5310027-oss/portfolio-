@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netflux — Stream Everything</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E50914;
+    --red-dark: #b0060f;
+    --red-glow: rgba(229,9,20,0.4);
+    --black: #000000;
+    --dark: #0d0d0d;
+    --card-bg: #1a1a1a;
+    --text: #e5e5e5;
+    --muted: #777;
+    --nav-h: 68px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAVBAR ─────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4%;
+    transition: background .4s ease, box-shadow .4s ease;
+    background: linear-gradient(to bottom, rgba(0,0,0,.95) 0%, transparent 100%);
+  }
+
+  nav.scrolled {
+    background: rgba(0,0,0,.97);
+    box-shadow: 0 2px 20px rgba(0,0,0,.8);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+    color: var(--red);
+    text-shadow: 0 0 24px var(--red-glow);
+    user-select: none;
+  }
+
+  .nav-logo span { color: #fff; }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 500;
+    letter-spacing: .5px;
+    transition: color .2s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 2px;
+    background: var(--red);
+    transition: width .25s ease;
+  }
+
+  .nav-links a:hover { color: #fff; }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a.active { color: #fff; }
+  .nav-links a.active::after { width: 100%; }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .nav-search {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+    color: #ccc;
+    font-size: 14px;
+  }
+  .nav-search:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.3); color: #fff; }
+
+  .nav-bell {
+    color: #ccc;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color .2s;
+    position: relative;
+  }
+  .nav-bell:hover { color: #fff; }
+  .nav-bell::after {
+    content: '';
+    position: absolute;
+    top: -2px; right: -2px;
+    width: 8px; height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    border: 2px solid var(--black);
+  }
+
+  .nav-avatar {
+    width: 34px; height: 34px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #E50914, #8b0000);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color .2s;
+  }
+  .nav-avatar:hover { border-color: rgba(255,255,255,.5); }
+
+  /* ── HERO ────────────────────────────────────── */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 95vh;
+    min-height: 600px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(0,0,0,.85) 40%, rgba(0,0,0,.1) 100%),
+      linear-gradient(to top, rgba(0,0,0,.95) 0%, transparent 50%),
+      url('https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=1600&q=80') center/cover no-repeat;
+    transform: scale(1.03);
+    animation: heroZoom 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes heroZoom {
+    from { transform: scale(1.03); }
+    to   { transform: scale(1.08); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 4%;
+    max-width: 580px;
+    animation: heroFadeUp .9s ease both;
+  }
+
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(229,9,20,.15);
+    border: 1px solid rgba(229,9,20,.4);
+    color: #ff6b6b;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 3px;
+    margin-bottom: 18px;
+    backdrop-filter: blur(6px);
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--red);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--red);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: .5; transform: scale(.7); }
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(3.5rem, 7vw, 5.5rem);
+    line-height: .95;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 18px;
+    text-shadow: 0 4px 30px rgba(0,0,0,.7);
+  }
+
+  .hero-title .accent { color: var(--red); }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    font-size: .82rem;
+    color: #aaa;
+  }
+
+  .hero-meta .score {
+    color: #46d369;
+    font-weight: 700;
+    font-size: .88rem;
+  }
+
+  .hero-meta .dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #555;
+  }
+
+  .hero-desc {
+    font-size: .95rem;
+    line-height: 1.65;
+    color: #bbb;
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .hero-tag {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.12);
+    color: #aaa;
+    font-size: .72rem;
+    letter-spacing: .5px;
+    padding: 4px 12px;
+    border-radius: 2px;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn-play {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    color: #000;
+    font-weight: 700;
+    font-size: .9rem;
+    padding: 12px 28px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+    letter-spacing: .3px;
+  }
+  .btn-play:hover { background: rgba(255,255,255,.85); transform: scale(1.03); }
+
+  .btn-play .play-icon {
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 7px 0 7px 13px;
+    border-color: transparent transparent transparent #000;
+  }
+
+  .btn-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(109,109,110,.7);
+    color: #fff;
+    font-weight: 600;
+    font-size: .9rem;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background .2s, transform .15s;
+    backdrop-filter: blur(8px);
+  }
+  .btn-info:hover { background: rgba(109,109,110,.5); transform: scale(1.03); }
+
+  .btn-icon {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  /* ── SECTIONS ────────────────────────────────── */
+  .sections {
+    padding: 0 0 60px;
+    margin-top: -120px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 4%;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 1.5px;
+    color: #fff;
+  }
+
+  .section-see-all {
+    font-size: .78rem;
+    color: var(--red);
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: .5px;
+    transition: color .2s;
+    text-transform: uppercase;
+  }
+  .section-see-all:hover { color: #ff4444; }
+
+  /* ── CAROUSEL ────────────────────────────────── */
+  .carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .carousel-wrapper::before,
+  .carousel-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 5%;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .carousel-wrapper::before { left: 0; background: linear-gradient(to right, var(--black), transparent); }
+  .carousel-wrapper::after  { right: 0; background: linear-gradient(to left, var(--black), transparent); }
+
+  .carousel-track {
+    display: flex;
+    gap: 10px;
+    padding: 12px 4%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+  }
+  .carousel-track::-webkit-scrollbar { display: none; }
+  .carousel-track:active { cursor: grabbing; }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    z-index: 10;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.8);
+    border: 1px solid rgba(255,255,255,.2);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s, border-color .2s, opacity .2s;
+    opacity: 0;
+  }
+  .carousel-wrapper:hover .carousel-btn { opacity: 1; }
+  .carousel-btn:hover { background: rgba(40,40,40,.95); border-color: rgba(255,255,255,.4); }
+  .carousel-btn.prev { left: 10px; }
+  .carousel-btn.next { right: 10px; }
+
+  /* ── MOVIE CARD ──────────────────────────────── */
+  .card {
+    flex-shrink: 0;
+    width: 200px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform .3s ease, z-index 0s .3s;
+    z-index: 1;
+  }
+
+  .card:hover {
+    transform: scale(1.18) translateY(-8px);
+    z-index: 20;
+    transition: transform .3s ease, z-index 0s 0s;
+  }
+
+  .card-img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    display: block;
+    background: var(--card-bg);
+  }
+
+  .card-img-placeholder {
+    width: 100%;
+    aspect-ratio: 2/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    font-size: 2.5rem;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-img-placeholder span {
+    font-family: 'Bebas Neue', cursive;
+    font-size: .9rem;
+    color: #555;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 0 10px;
+  }
+
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.95) 0%, rgba(0,0,0,.2) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity .3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 14px;
+  }
+
+  .card:hover .card-overlay { opacity: 1; }
+
+  .card-play-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.9);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+    transition: background .2s, transform .15s;
+    align-self: flex-start;
+  }
+  .card-play-btn:hover { background: #fff; transform: scale(1.1); }
+
+  .card-play-btn .play-tri {
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 6px 0 6px 11px;
+    border-color: transparent transparent transparent #000;
+    margin-left: 2px;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+
+  .card-action-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(42,42,42,.8);
+    border: 1.5px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .2s, background .2s;
+  }
+  .card-action-btn:hover { border-color: rgba(255,255,255,.7); background: rgba(70,70,70,.8); }
+
+  .card-title {
+    font-weight: 700;
+    font-size: .82rem;
+    color: #fff;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .7rem;
+    color: #aaa;
+    flex-wrap: wrap;
+  }
+
+  .card-match { color: #46d369; font-weight: 700; }
+  .card-age {
+    border: 1px solid #aaa;
+    padding: 0 4px;
+    font-size: .62rem;
+    color: #aaa;
+    border-radius: 2px;
+  }
+
+  .card-ribbon {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: var(--red);
+    color: #fff;
+    font-size: .6rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 2px;
+    z-index: 3;
+  }
+
+  .card-rank {
+    position: absolute;
+    bottom: 0; left: -8px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 5rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(255,255,255,.15);
+    z-index: 2;
+    pointer-events: none;
+    user-select: none;
+    transition: -webkit-text-stroke .3s;
+  }
+  .card:hover .card-rank { -webkit-text-stroke: 2px rgba(255,255,255,.4); }
+
+  /* ── FEATURED ROW (wide cards) ───────────────── */
+  .card-wide {
+    width: 320px;
+  }
+
+  .card-wide .card-img-placeholder {
+    aspect-ratio: 16/9;
+  }
+
+  /* ── TOP 10 ─────────────────────────────────── */
+  .card-top { width: 160px; }
+
+  /* ── FOOTER ─────────────────────────────────── */
+  footer {
+    padding: 40px 4% 30px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    margin-top: 20px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .footer-links a {
+    color: #666;
+    text-decoration: none;
+    font-size: .78rem;
+    transition: color .2s;
+  }
+  .footer-links a:hover { color: #999; }
+
+  .footer-copy {
+    font-size: .73rem;
+    color: #444;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.4rem;
+    color: var(--red);
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+    opacity: .7;
+  }
+
+  /* ── SCROLLBAR ───────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #111; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #555; }
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ─── -->
+<nav id="navbar">
+  <div class="nav-logo">NET<span>FLUX</span></div>
+
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#">TV Shows</a></li>
+    <li><a href="#">Movies</a></li>
+    <li><a href="#">New & Popular</a></li>
+    <li><a href="#">My List</a></li>
+    <li><a href="#">Browse by Languages</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="nav-search" title="Search">🔍</div>
+    <div class="nav-bell" title="Notifications">🔔</div>
+    <div class="nav-avatar" title="Profile">AM</div>
+  </div>
+</nav>
+
+<!-- ── HERO ─── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Now Streaming</div>
+    <h1 class="hero-title">Echoes of<br>the <span class="accent">Abyss</span></h1>
+    <div class="hero-meta">
+      <span class="score">97% Match</span>
+      <span class="dot"></span>
+      <span>2024</span>
+      <span class="dot"></span>
+      <span>2h 18m</span>
+      <span class="dot"></span>
+      <span class="card-age">TV-MA</span>
+    </div>
+    <p class="hero-desc">When a marine biologist discovers an ancient signal from the deepest trench on Earth, she must race against a clandestine organization to uncover a truth that could reshape human civilization — or end it.</p>
+    <div class="hero-tags">
+      <span class="hero-tag">Sci-Fi</span>
+      <span class="hero-tag">Thriller</span>
+      <span class="hero-tag">Mystery</span>
+      <span class="hero-tag">Award Winning</span>
+    </div>
+    <div class="hero-buttons">
+      <button class="btn-play">
+        <span class="play-icon"></span>
+        Play
+      </button>
+      <button class="btn-info">
+        <span class="btn-icon">i</span>
+        More Info
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTENT SECTIONS ─── -->
+<div class="sections">
+
+  <!-- Trending Now -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">🔥 Trending Now</span>
+      <a href="#" class="section-see-all">See All →</a>
+    </div>
+    <div class="carousel-wrapper" id="trending">
+      <button class="carousel-btn prev" onclick="scroll('trending',-1)">‹</button>
+      <div class="carousel-track" id="trending-track">
+        <!-- Cards injected by JS -->
+      </div>
+      <button class="carousel-btn next" onclick="scroll('trending',1)">›</button>
+    </div>
+  </div>
+
+  <!-- Continue Watching -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">▶ Continue Watching</span>
+      <a href="#" class="section-see-all">See All →</a>
+    </div>
+    <div class="carousel-wrapper" id="continue">
+      <button class="carousel-btn prev" onclick="scroll('continue',-1)">‹</button>
+      <div class="carousel-track card-wide" id="continue-track" style="display:flex;gap:10px;padding:12px 4%;overflow-x:auto;scrollbar-width:none;cursor:grab;">
+      </div>
+      <button class="carousel-btn next" onclick="scroll('continue',1)">›</button>
+    </div>
+  </div>
+
+  <!-- Top 10 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">🏆 Top 10 in India Today</span>
+      <a href="#" class="section-see-all">See All →</a>
+    </div>
+    <div class="carousel-wrapper" id="top10">
+      <button class="carousel-btn prev" onclick="scroll('top10',-1)">‹</button>
+      <div class="carousel-track" id="top10-track">
+      </div>
+      <button class="carousel-btn next" onclick="scroll('top10',1)">›</button>
+    </div>
+  </div>
+
+  <!-- New on Netflux -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">✨ New on Netflux</span>
+      <a href="#" class="section-see-all">See All →</a>
+    </div>
+    <div class="carousel-wrapper" id="newon">
+      <button class="carousel-btn prev" onclick="scroll('newon',-1)">‹</button>
+      <div class="carousel-track" id="newon-track">
+      </div>
+      <button class="carousel-btn next" onclick="scroll('newon',1)">›</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── FOOTER ─── -->
+<footer>
+  <div class="footer-logo">NETFLUX</div>
+  <div class="footer-links">
+    <a href="#">Audio Description</a>
+    <a href="#">Help Centre</a>
+    <a href="#">Gift Cards</a>
+    <a href="#">Media Centre</a>
+    <a href="#">Investor Relations</a>
+    <a href="#">Jobs</a>
+    <a href="#">Terms of Use</a>
+    <a href="#">Privacy</a>
+    <a href="#">Legal Notices</a>
+    <a href="#">Cookie Preferences</a>
+    <a href="#">Corporate Information</a>
+    <a href="#">Contact Us</a>
+  </div>
+  <div class="footer-copy">© 2024 Netflux — A Demo Project. All rights reserved.</div>
+</footer>
+
+<script>
+/* ── DATA ── */
+const genres = ['Action','Drama','Sci-Fi','Horror','Comedy','Romance','Thriller','Crime','Fantasy','Documentary'];
+const years = ['2021','2022','2023','2024'];
+const matches = ['92%','95%','97%','88%','91%','99%','85%','94%'];
+const ratings = ['TV-MA','PG-13','TV-14','R','TV-PG'];
+
+const movieEmojis = ['🎬','🎭','🚀','👾','🌊','🔥','💀','⚡','🌙','🕵️','🧬','🏹','👁️','🎪','🌌'];
+
+const trendingMovies = [
+  {title:'Dark Meridian',emoji:'🌌',genre:'Sci-Fi',year:'2024',match:'97%',age:'TV-MA',ribbon:'New'},
+  {title:'The Hollow Crown',emoji:'👑',genre:'Drama',year:'2024',match:'94%',age:'TV-14'},
+  {title:'Crimson Wave',emoji:'🌊',genre:'Action',year:'2023',match:'91%',age:'PG-13'},
+  {title:'Ghost Protocol X',emoji:'👁️',genre:'Thriller',year:'2024',match:'88%',age:'TV-MA',ribbon:'Hot'},
+  {title:'Neon Requiem',emoji:'⚡',genre:'Crime',year:'2023',match:'95%',age:'R'},
+  {title:'The Last Signal',emoji:'📡',genre:'Sci-Fi',year:'2024',match:'99%',age:'TV-MA'},
+  {title:'Oblivion Gate',emoji:'🔮',genre:'Fantasy',year:'2024',match:'92%',age:'PG-13'},
+  {title:'Savage Lands',emoji:'🏹',genre:'Action',year:'2022',match:'89%',age:'R'},
+  {title:'Mind Fracture',emoji:'🧠',genre:'Horror',year:'2024',match:'93%',age:'TV-MA'},
+  {title:'Aurora Protocol',emoji:'🌠',genre:'Sci-Fi',year:'2023',match:'96%',age:'TV-14'},
+];
+
+const continueMovies = [
+  {title:'Echoes of the Abyss',emoji:'🌊',genre:'Sci-Fi · Thriller',year:'2024',match:'97%',progress:35},
+  {title:'Iron Dominion',emoji:'⚔️',genre:'Action · Drama',year:'2023',match:'91%',progress:72},
+  {title:'Shadow Protocol',emoji:'🕵️',genre:'Crime · Thriller',year:'2024',match:'88%',progress:15},
+  {title:'The Fractal Mind',emoji:'🧬',genre:'Sci-Fi · Horror',year:'2023',match:'94%',progress:58},
+  {title:'Requiem City',emoji:'🌆',genre:'Drama · Crime',year:'2022',match:'92%',progress:89},
+];
+
+const top10Movies = [
+  {title:'Zero Gravity',emoji:'🚀',year:'2024',match:'99%',age:'PG-13'},
+  {title:'The Omen Road',emoji:'💀',year:'2024',match:'96%',age:'TV-MA'},
+  {title:'Synthetic Hearts',emoji:'🤖',year:'2023',match:'93%',age:'TV-14'},
+  {title:'Night Siege',emoji:'🌙',year:'2024',match:'90%',age:'R'},
+  {title:'Atlas Down',emoji:'🌍',year:'2023',match:'87%',age:'PG-13'},
+  {title:'Celestial Hunt',emoji:'🎯',year:'2024',match:'95%',age:'TV-MA'},
+  {title:'Blood Meridian',emoji:'🩸',year:'2022',match:'88%',age:'R'},
+  {title:'Phantom Grid',emoji:'👻',year:'2024',match:'91%',age:'TV-14'},
+  {title:'Wildfire',emoji:'🔥',year:'2023',match:'94%',age:'PG-13'},
+  {title:'Dead Orbit',emoji:'☄️',year:'2024',match:'97%',age:'TV-MA'},
+];
+
+const newOnNetflux = [
+  {title:'Apex Predator',emoji:'🦁',genre:'Documentary',year:'2024',match:'95%',age:'TV-PG',ribbon:'New'},
+  {title:'The Quiet Storm',emoji:'⛈️',genre:'Drama',year:'2024',match:'91%',age:'TV-14',ribbon:'New'},
+  {title:'Voidwalker',emoji:'🌑',genre:'Sci-Fi',year:'2024',match:'98%',age:'TV-MA',ribbon:'New'},
+  {title:'Lunar Thieves',emoji:'🌕',genre:'Heist',year:'2024',match:'89%',age:'PG-13',ribbon:'New'},
+  {title:'Resonance',emoji:'🎵',genre:'Musical · Drama',year:'2024',match:'93%',age:'TV-14',ribbon:'New'},
+  {title:'The Burning Keep',emoji:'🏰',genre:'Fantasy',year:'2024',match:'96%',age:'TV-MA',ribbon:'New'},
+  {title:'Deep Ink',emoji:'🖤',genre:'Noir · Crime',year:'2024',match:'90%',age:'R',ribbon:'New'},
+  {title:'Frozen Protocol',emoji:'❄️',genre:'Thriller',year:'2024',match:'94%',age:'TV-MA',ribbon:'New'},
+];
+
+/* ── CARD BUILDERS ── */
+function buildCard(movie) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  if (movie.ribbon) {
+    card.innerHTML += `<div class="card-ribbon">${movie.ribbon}</div>`;
+  }
+  card.innerHTML += `
+    <div class="card-img-placeholder" style="background: ${randomGrad()}">
+      <span style="font-size:2.8rem">${movie.emoji}</span>
+      <span>${movie.title}</span>
+    </div>
+    <div class="card-overlay">
+      <button class="card-play-btn"><span class="play-tri"></span></button>
+      <div class="card-actions">
+        <button class="card-action-btn" title="Add to List">+</button>
+        <button class="card-action-btn" title="Like">👍</button>
+        <button class="card-action-btn" title="More Info">⌄</button>
+      </div>
+      <div class="card-title">${movie.title}</div>
+      <div class="card-info">
+        <span class="card-match">${movie.match}</span>
+        <span class="card-age">${movie.age}</span>
+        <span>${movie.year}</span>
+        <span>${movie.genre || ''}</span>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function buildWideCard(movie) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.width = '300px';
+  card.style.position = 'relative';
+  card.innerHTML = `
+    <div class="card-img-placeholder" style="aspect-ratio:16/9;background:${randomGrad()}">
+      <span style="font-size:2.2rem">${movie.emoji}</span>
+      <span>${movie.title}</span>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(255,255,255,.1)">
+      <div style="height:100%;width:${movie.progress}%;background:var(--red);transition:width .3s"></div>
+    </div>
+    <div class="card-overlay">
+      <button class="card-play-btn"><span class="play-tri"></span></button>
+      <div class="card-title">${movie.title}</div>
+      <div class="card-info">
+        <span class="card-match">${movie.match}</span>
+        <span>${movie.year}</span>
+        <span style="color:#999">${movie.genre}</span>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function buildTopCard(movie, rank) {
+  const card = document.createElement('div');
+  card.className = 'card card-top';
+  card.innerHTML = `
+    <div class="card-rank">${rank}</div>
+    <div class="card-img-placeholder" style="aspect-ratio:2/3;background:${randomGrad()}">
+      <span style="font-size:2.2rem">${movie.emoji}</span>
+      <span>${movie.title}</span>
+    </div>
+    <div class="card-overlay">
+      <button class="card-play-btn"><span class="play-tri"></span></button>
+      <div class="card-title">${movie.title}</div>
+      <div class="card-info">
+        <span class="card-match">${movie.match}</span>
+        <span>${movie.year}</span>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+const gradients = [
+  'linear-gradient(135deg,#1a1a2e,#16213e)',
+  'linear-gradient(135deg,#2d0000,#5c0000)',
+  'linear-gradient(135deg,#001a2d,#003d5c)',
+  'linear-gradient(135deg,#1a0030,#3d0070)',
+  'linear-gradient(135deg,#001a00,#003d00)',
+  'linear-gradient(135deg,#2a1a00,#5c3d00)',
+  'linear-gradient(135deg,#0d1a2d,#1a3556)',
+  'linear-gradient(135deg,#1a001a,#40004d)',
+  'linear-gradient(135deg,#001a1a,#004040)',
+  'linear-gradient(135deg,#1a1a00,#3d3d00)',
+];
+let gradIdx = 0;
+function randomGrad() { return gradients[gradIdx++ % gradients.length]; }
+
+/* ── POPULATE TRACKS ── */
+const trendingTrack = document.getElementById('trending-track');
+trendingMovies.forEach(m => trendingTrack.appendChild(buildCard(m)));
+
+const continueTrack = document.getElementById('continue-track');
+continueMovies.forEach(m => continueTrack.appendChild(buildWideCard(m)));
+
+const top10Track = document.getElementById('top10-track');
+top10Movies.forEach((m,i) => top10Track.appendChild(buildTopCard(m, i+1)));
+
+const newonTrack = document.getElementById('newon-track');
+newOnNetflux.forEach(m => newonTrack.appendChild(buildCard(m)));
+
+/* ── SCROLL BUTTONS ── */
+function scroll(id, dir) {
+  const map = { trending: 'trending-track', continue: 'continue-track', top10: 'top10-track', newon: 'newon-track' };
+  const el = document.getElementById(map[id]);
+  if (el) el.scrollBy({ left: dir * 600, behavior: 'smooth' });
+}
+
+/* ── NAVBAR SCROLL ── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+/* ── DRAG TO SCROLL ── */
+document.querySelectorAll('.carousel-track').forEach(track => {
+  let isDown = false, startX, scrollLeft;
+  track.addEventListener('mousedown', e => {
+    isDown = true; startX = e.pageX - track.offsetLeft; scrollLeft = track.scrollLeft;
+    track.style.cursor = 'grabbing';
+  });
+  track.addEventListener('mouseleave', () => { isDown = false; track.style.cursor = 'grab'; });
+  track.addEventListener('mouseup', () => { isDown = false; track.style.cursor = 'grab'; });
+  track.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - track.offsetLeft;
+    track.scrollLeft = scrollLeft - (x - startX) * 1.5;
+  });
+});
+</script>
+</body>
+</html>

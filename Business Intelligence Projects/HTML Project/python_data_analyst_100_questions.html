@@ -1,0 +1,212 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.hdr{padding:1.5rem 0 1rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1rem}
+.hdr h1{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.hdr p{font-size:14px;color:var(--color-text-secondary);margin-top:4px}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.ctrl input{flex:1;min-width:180px;font-size:14px}
+.fb{font-size:12px;padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:all .15s}
+.fb.on{background:#185FA5;color:#E6F1FB;border-color:#185FA5}
+.stats{display:flex;gap:8px;margin-bottom:1rem}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 14px;font-size:13px;color:var(--color-text-secondary)}
+.stat span{font-weight:500;color:var(--color-text-primary)}
+.ql{display:flex;flex-direction:column;gap:8px}
+.qc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;transition:border-color .15s}
+.qc:hover{border-color:var(--color-border-secondary)}
+.qh{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;cursor:pointer}
+.qn{font-size:11px;font-weight:500;color:var(--color-text-secondary);min-width:28px;margin-top:2px}
+.qt{flex:1;font-size:14px;color:var(--color-text-primary);line-height:1.5}
+.qm{display:flex;gap:6px;align-items:center;margin-left:auto}
+.badge{font-size:11px;padding:3px 8px;border-radius:var(--border-radius-md);white-space:nowrap}
+.b-basic{background:#EAF3DE;color:#27500A}
+.b-intermediate{background:#FAEEDA;color:#633806}
+.b-advanced{background:#FAECE7;color:#4A1B0C}
+.b-pandas{background:#E6F1FB;color:#0C447C}
+.b-numpy{background:#EEEDFE;color:#26215C}
+.b-viz{background:#E1F5EE;color:#085041}
+.b-stats{background:#FBEAF0;color:#4B1528}
+.b-python{background:#F1EFE8;color:#444441}
+.b-cleaning{background:#FCEBEB;color:#501313}
+.chev{font-size:16px;color:var(--color-text-secondary);transition:transform .2s;margin-top:1px}
+.chev.open{transform:rotate(180deg)}
+.qa{border-top:0.5px solid var(--color-border-tertiary);padding:12px 14px 14px;background:var(--color-background-secondary);display:none}
+.qa.open{display:block}
+.qa p{font-size:13px;color:var(--color-text-primary);line-height:1.7;margin-bottom:8px}
+.qa p:last-child{margin-bottom:0}
+.qa code{font-family:var(--font-mono);font-size:12px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);padding:2px 6px;border-radius:4px}
+.qa pre{font-family:var(--font-mono);font-size:12px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);padding:10px 12px;border-radius:var(--border-radius-md);overflow-x:auto;margin:8px 0;line-height:1.6;color:var(--color-text-primary)}
+.nores{text-align:center;padding:2rem;color:var(--color-text-secondary);font-size:14px;display:none}
+</style>
+
+<h2 class="sr-only">100 Python interview questions for data analyst roles with answers</h2>
+<div class="hdr">
+  <h1>100 Python interview questions — data analyst</h1>
+  <p>Most frequently asked questions — click any card to reveal the answer</p>
+</div>
+<div class="ctrl">
+  <input type="text" id="srch" placeholder="Search questions..." oninput="filt()">
+  <button class="fb on" onclick="setF('all',this)">All</button>
+  <button class="fb" onclick="setF('basic',this)">Basic</button>
+  <button class="fb" onclick="setF('intermediate',this)">Intermediate</button>
+  <button class="fb" onclick="setF('advanced',this)">Advanced</button>
+</div>
+<div class="stats">
+  <div class="stat">Total: <span id="tc">100</span></div>
+  <div class="stat">Showing: <span id="vc">100</span></div>
+</div>
+<div class="ql" id="ql"></div>
+<div class="nores" id="nores">No questions match your search.</div>
+
+<script>
+const qs=[
+{q:"What is Python and why is it popular for data analysis?",a:"Python is a high-level, interpreted programming language known for its simple syntax. For data analysis it is popular because of powerful libraries (pandas, NumPy, matplotlib), a huge community, and the ability to handle everything from data wrangling to machine learning in one environment.",level:"basic",cat:"python"},
+{q:"What is the difference between a list and a tuple in Python?",a:"<p>Both store ordered sequences. Key differences:</p><pre>my_list = [1, 2, 3]   # mutable — can change\nmy_tuple = (1, 2, 3)  # immutable — cannot change</pre><p>Tuples are faster and use less memory. Use tuples for fixed data (coordinates, RGB values).",level:"basic",cat:"python"},
+{q:"What is a dictionary in Python?",a:"A dictionary stores key-value pairs. Keys must be unique and immutable.<pre>d = {'name': 'Alice', 'age': 30}\nprint(d['name'])  # Alice\nd['city'] = 'Delhi'  # add new key</pre>",level:"basic",cat:"python"},
+{q:"What is a list comprehension?",a:"A concise way to create lists from existing iterables.<pre>squares = [x**2 for x in range(10)]\nevens = [x for x in range(20) if x % 2 == 0]</pre>It replaces many for-loop patterns with a single readable line.",level:"basic",cat:"python"},
+{q:"What is the difference between '==' and 'is' in Python?",a:"<code>==</code> checks value equality. <code>is</code> checks identity (same object in memory).<pre>a = [1,2,3]; b = [1,2,3]\na == b  # True — same values\na is b  # False — different objects</pre>",level:"basic",cat:"python"},
+{q:"What are *args and **kwargs?",a:"<code>*args</code> lets a function accept any number of positional arguments as a tuple. <code>**kwargs</code> lets it accept any number of keyword arguments as a dictionary.<pre>def func(*args, **kwargs):\n    print(args, kwargs)\nfunc(1,2, name='Alice')  # (1,2) {'name':'Alice'}</pre>",level:"intermediate",cat:"python"},
+{q:"What is a lambda function?",a:"A lambda is an anonymous, single-expression function.<pre>double = lambda x: x * 2\ndouble(5)  # 10\n\n# Common in data work:\ndf['col'].apply(lambda x: x.strip().lower())</pre>",level:"basic",cat:"python"},
+{q:"What is the difference between deep copy and shallow copy?",a:"A shallow copy copies the outer object but references inner objects. A deep copy copies everything recursively.<pre>import copy\noriginal = [[1,2],[3,4]]\nshallow = original.copy()    # inner lists shared\ndeep = copy.deepcopy(original)  # fully independent</pre>",level:"intermediate",cat:"python"},
+{q:"What are Python decorators?",a:"A decorator wraps a function to add behaviour without modifying its code. Common in logging, timing, and authentication.<pre>def timer(func):\n    import time\n    def wrapper(*args, **kwargs):\n        t = time.time()\n        result = func(*args, **kwargs)\n        print(f'Took {time.time()-t:.2f}s')\n        return result\n    return wrapper\n\n@timer\ndef slow_query(): ...</pre>",level:"intermediate",cat:"python"},
+{q:"What is a generator in Python?",a:"A generator yields values one at a time instead of building a full list in memory — ideal for large datasets.<pre>def read_chunks(df, size=1000):\n    for i in range(0, len(df), size):\n        yield df.iloc[i:i+size]\n\nfor chunk in read_chunks(big_df):\n    process(chunk)</pre>",level:"intermediate",cat:"python"},
+{q:"What is pandas and what is it used for?",a:"pandas is Python's primary data manipulation library. It provides the DataFrame (2D table) and Series (1D array) structures with powerful tools for cleaning, transforming, aggregating, merging, and analysing tabular data.",level:"basic",cat:"pandas"},
+{q:"How do you read a CSV file in pandas?",a:"<pre>import pandas as pd\ndf = pd.read_csv('data.csv')\n\n# Common options:\ndf = pd.read_csv('data.csv',\n    sep=';',\n    encoding='utf-8',\n    parse_dates=['date_col'],\n    na_values=['NA','?'])</pre>",level:"basic",cat:"pandas"},
+{q:"How do you select rows and columns in a DataFrame?",a:"<pre>df['col']             # single column (Series)\ndf[['col1','col2']]   # multiple columns\ndf.loc[0:5, 'name']   # label-based\ndf.iloc[0:5, 0:2]     # position-based\ndf[df['age'] > 30]    # boolean filter</pre>",level:"basic",cat:"pandas"},
+{q:"What is the difference between loc and iloc?",a:"<code>loc</code> selects by label (index name, column name). <code>iloc</code> selects by integer position (0-based).<pre>df.loc[2, 'salary']    # row label 2, col 'salary'\ndf.iloc[2, 3]          # 3rd row, 4th column</pre>",level:"basic",cat:"pandas"},
+{q:"How do you handle missing values in pandas?",a:"<pre>df.isnull().sum()          # count NaNs per column\ndf.dropna()               # drop rows with any NaN\ndf.dropna(subset=['age']) # drop only where age is NaN\ndf.fillna(0)              # fill with 0\ndf['age'].fillna(df['age'].mean())  # fill with mean</pre>",level:"basic",cat:"cleaning"},
+{q:"How do you group and aggregate data in pandas?",a:"<pre>df.groupby('dept')['salary'].mean()\n\ndf.groupby('dept').agg(\n    avg_sal=('salary','mean'),\n    count=('id','count'),\n    max_sal=('salary','max')\n)</pre>",level:"basic",cat:"pandas"},
+{q:"What is the difference between merge, join, and concat in pandas?",a:"<p><code>pd.merge()</code>: SQL-style join on columns.</p><p><code>df.join()</code>: Join on index.</p><p><code>pd.concat()</code>: Stack DataFrames vertically (rows) or horizontally (columns).</p><pre>pd.merge(df1, df2, on='id', how='left')\npd.concat([df1, df2], ignore_index=True)</pre>",level:"intermediate",cat:"pandas"},
+{q:"How do you apply a function to a DataFrame column?",a:"<pre>df['col'].apply(lambda x: x * 2)\ndf['name'].str.upper()\n\n# Vectorised (faster):\nimport numpy as np\ndf['log_val'] = np.log(df['value'])\n\n# Row-wise:\ndf.apply(lambda row: row['a'] + row['b'], axis=1)</pre>",level:"basic",cat:"pandas"},
+{q:"How do you sort a DataFrame?",a:"<pre>df.sort_values('salary', ascending=False)\ndf.sort_values(['dept','salary'], ascending=[True,False])\ndf.sort_index()  # sort by index</pre>",level:"basic",cat:"pandas"},
+{q:"How do you rename columns in pandas?",a:"<pre>df.rename(columns={'old_name':'new_name'})\n\n# Rename all at once:\ndf.columns = ['a','b','c']\n\n# Clean column names:\ndf.columns = df.columns.str.strip().str.lower().str.replace(' ','_')</pre>",level:"basic",cat:"pandas"},
+{q:"What is a pivot table in pandas?",a:"<pre>pd.pivot_table(df,\n    values='sales',\n    index='region',\n    columns='quarter',\n    aggfunc='sum',\n    fill_value=0)</pre><p>Equivalent to Excel pivot tables — summarises data by two dimensions.",level:"intermediate",cat:"pandas"},
+{q:"What is the difference between melt and pivot?",a:"<code>pivot()</code> reshapes long data to wide (rows → columns). <code>melt()</code> reshapes wide data to long (columns → rows).<pre>df.melt(id_vars=['id'], value_vars=['Jan','Feb','Mar'],\n        var_name='month', value_name='sales')</pre>",level:"intermediate",cat:"pandas"},
+{q:"How do you remove duplicate rows in pandas?",a:"<pre>df.duplicated().sum()         # count duplicates\ndf.drop_duplicates()          # remove all\ndf.drop_duplicates(subset=['id'])  # based on column</pre>",level:"basic",cat:"cleaning"},
+{q:"What is NumPy and how does it differ from pandas?",a:"NumPy provides fast multi-dimensional arrays (ndarray) and mathematical operations. pandas is built on NumPy and adds labelled axes, missing value handling, and tabular data tools. Use NumPy for numerical computation; pandas for tabular/analytical work.",level:"basic",cat:"numpy"},
+{q:"What is broadcasting in NumPy?",a:"Broadcasting lets NumPy perform operations on arrays of different shapes by automatically expanding the smaller array.<pre>import numpy as np\na = np.array([[1,2,3],[4,5,6]])  # shape (2,3)\nb = np.array([10,20,30])          # shape (3,)\na + b  # b is broadcast across rows → (2,3)</pre>",level:"intermediate",cat:"numpy"},
+{q:"What is the difference between np.array and np.matrix?",a:"<code>np.array</code> is the standard N-dimensional array. <code>np.matrix</code> is a 2D array with overloaded <code>*</code> for matrix multiplication. <code>np.matrix</code> is deprecated — use <code>np.array</code> with <code>@</code> or <code>np.dot()</code> for matrix multiplication.",level:"intermediate",cat:"numpy"},
+{q:"How do you reshape a NumPy array?",a:"<pre>a = np.arange(12)\na.reshape(3, 4)   # 3 rows, 4 cols\na.reshape(3, -1)  # -1 infers the dimension\na.flatten()       # convert to 1D</pre>",level:"basic",cat:"numpy"},
+{q:"What is vectorisation and why is it important?",a:"Vectorisation performs operations on entire arrays at once (using compiled C code under the hood) instead of Python for-loops. It is 10–100x faster for numerical computation.<pre># Slow:\nfor i in range(len(a)): result[i] = a[i] * 2\n# Fast:\nresult = a * 2  # vectorised</pre>",level:"intermediate",cat:"numpy"},
+{q:"What are common string methods in pandas?",a:"<pre>df['name'].str.lower()\ndf['name'].str.strip()\ndf['email'].str.contains('@gmail')\ndf['date'].str.split('-', expand=True)\ndf['name'].str.replace('  ',' ')\ndf['code'].str.startswith('A')</pre>All accessed via the <code>.str</code> accessor.",level:"basic",cat:"cleaning"},
+{q:"How do you convert data types in pandas?",a:"<pre>df['age'] = df['age'].astype(int)\ndf['date'] = pd.to_datetime(df['date'])\ndf['price'] = pd.to_numeric(df['price'], errors='coerce')\ndf.dtypes  # check all types</pre>",level:"basic",cat:"cleaning"},
+{q:"How do you work with dates and times in pandas?",a:"<pre>df['date'] = pd.to_datetime(df['date'])\ndf['year'] = df['date'].dt.year\ndf['month'] = df['date'].dt.month\ndf['day_name'] = df['date'].dt.day_name()\ndf.set_index('date').resample('M').sum()  # monthly total</pre>",level:"intermediate",cat:"pandas"},
+{q:"What is matplotlib and how do you create a basic plot?",a:"matplotlib is Python's foundational plotting library.<pre>import matplotlib.pyplot as plt\nplt.figure(figsize=(8,4))\nplt.plot(df['date'], df['sales'], color='steelblue')\nplt.title('Monthly Sales')\nplt.xlabel('Date'); plt.ylabel('Sales')\nplt.tight_layout()\nplt.show()</pre>",level:"basic",cat:"viz"},
+{q:"What is seaborn and how does it differ from matplotlib?",a:"seaborn is a high-level statistical visualisation library built on matplotlib. It produces attractive statistical plots with less code and works natively with pandas DataFrames.<pre>import seaborn as sns\nsns.boxplot(data=df, x='dept', y='salary')\nsns.heatmap(df.corr(), annot=True)</pre>",level:"basic",cat:"viz"},
+{q:"How do you create a histogram in Python?",a:"<pre>import matplotlib.pyplot as plt\ndf['age'].hist(bins=20, edgecolor='white')\nplt.xlabel('Age'); plt.ylabel('Count')\n\n# With seaborn:\nimport seaborn as sns\nsns.histplot(df['age'], bins=20, kde=True)</pre>",level:"basic",cat:"viz"},
+{q:"How do you create a bar chart in Python?",a:"<pre>df.groupby('region')['sales'].sum().plot(kind='bar')\n\n# Seaborn:\nsns.barplot(data=df, x='region', y='sales',\n            estimator='sum')</pre>",level:"basic",cat:"viz"},
+{q:"What is a box plot and when do you use it?",a:"A box plot shows the distribution of data through five summary statistics: minimum, Q1, median, Q3, maximum — and outliers as points. Use it to compare distributions across categories and spot outliers.<pre>sns.boxplot(data=df, x='dept', y='salary')</pre>",level:"basic",cat:"viz"},
+{q:"What is a scatter plot used for in data analysis?",a:"Scatter plots show the relationship (correlation) between two numerical variables. Useful to detect patterns, clusters, and outliers.<pre>sns.scatterplot(data=df, x='experience',\n    y='salary', hue='dept')</pre>",level:"basic",cat:"viz"},
+{q:"What is a correlation matrix and how do you plot it?",a:"A correlation matrix shows pairwise Pearson correlations between all numerical columns. Values range from -1 to 1.<pre>corr = df.select_dtypes('number').corr()\nsns.heatmap(corr, annot=True, cmap='coolwarm',\n            vmin=-1, vmax=1)</pre>",level:"intermediate",cat:"stats"},
+{q:"What is the difference between mean, median, and mode?",a:"Mean: arithmetic average — sensitive to outliers. Median: middle value when sorted — robust to outliers. Mode: most frequent value — used for categorical data.<pre>df['salary'].mean()\ndf['salary'].median()\ndf['grade'].mode()[0]</pre>",level:"basic",cat:"stats"},
+{q:"What is standard deviation and variance?",a:"Variance measures the average squared deviation from the mean. Standard deviation is its square root — easier to interpret since it is in the same unit as the data.<pre>df['salary'].var()\ndf['salary'].std()\n# or:\nimport numpy as np\nnp.std(arr, ddof=1)  # sample std</pre>",level:"basic",cat:"stats"},
+{q:"What is a z-score and how do you compute it?",a:"A z-score measures how many standard deviations a value is from the mean. Used for standardisation and outlier detection.<pre>from scipy import stats\ndf['z'] = stats.zscore(df['salary'])\n\n# Manual:\ndf['z'] = (df['salary'] - df['salary'].mean()) / df['salary'].std()</pre>",level:"intermediate",cat:"stats"},
+{q:"What is the IQR method for outlier detection?",a:"IQR (Interquartile Range) = Q3 - Q1. Outliers are defined as values below Q1 - 1.5×IQR or above Q3 + 1.5×IQR.<pre>Q1 = df['val'].quantile(0.25)\nQ3 = df['val'].quantile(0.75)\nIQR = Q3 - Q1\noutliers = df[(df['val'] < Q1-1.5*IQR) | (df['val'] > Q3+1.5*IQR)]</pre>",level:"intermediate",cat:"stats"},
+{q:"What is Pearson correlation?",a:"Pearson correlation (r) measures the linear relationship between two variables. r = 1 (perfect positive), -1 (perfect negative), 0 (no linear relationship).<pre>df['col1'].corr(df['col2'])\nimport scipy.stats as stats\nr, p = stats.pearsonr(df['a'], df['b'])</pre>",level:"intermediate",cat:"stats"},
+{q:"What is hypothesis testing?",a:"Hypothesis testing uses statistics to decide whether to reject a null hypothesis (H0). The p-value is the probability of seeing the data if H0 is true. If p < 0.05, we reject H0 at the 5% significance level.",level:"intermediate",cat:"stats"},
+{q:"How do you perform a t-test in Python?",a:"A t-test compares means of two groups to check if they are significantly different.<pre>from scipy import stats\nt, p = stats.ttest_ind(df[df['group']=='A']['score'],\n                       df[df['group']=='B']['score'])\nprint(f't={t:.3f}, p={p:.4f}')\n# p < 0.05 → significant difference</pre>",level:"intermediate",cat:"stats"},
+{q:"What is linear regression and how do you implement it in Python?",a:"Linear regression models the relationship between a dependent variable and one or more independent variables.<pre>from sklearn.linear_model import LinearRegression\nimport numpy as np\nX = df[['experience']]; y = df['salary']\nmodel = LinearRegression().fit(X, y)\nprint(model.coef_, model.intercept_)\nprint(model.score(X, y))  # R²</pre>",level:"intermediate",cat:"stats"},
+{q:"What is R-squared (R²)?",a:"R² (coefficient of determination) measures how well the model explains variance in the target variable. R²=1 means perfect fit; R²=0 means the model explains nothing.<pre>from sklearn.metrics import r2_score\nr2_score(y_true, y_pred)</pre>",level:"intermediate",cat:"stats"},
+{q:"What is the difference between Jupyter Notebook and a Python script?",a:"A Jupyter Notebook (.ipynb) is an interactive document combining code cells, markdown, and visualisations — great for exploration and storytelling. A Python script (.py) runs from top to bottom — better for production pipelines and automation.",level:"basic",cat:"python"},
+{q:"What is a virtual environment and why use it?",a:"A virtual environment is an isolated Python installation for a project, preventing package version conflicts between projects.<pre>python -m venv myenv\nsource myenv/bin/activate  # Linux/Mac\nmyenv\\Scripts\\activate     # Windows\npip install pandas</pre>",level:"basic",cat:"python"},
+{q:"What is the difference between import and from...import?",a:"<code>import pandas as pd</code> imports the whole module under an alias. <code>from pandas import DataFrame</code> imports a specific name directly into the namespace. Use aliases for large libraries; direct imports for commonly used classes.",level:"basic",cat:"python"},
+{q:"How do you read an Excel file in pandas?",a:"<pre>df = pd.read_excel('data.xlsx', sheet_name='Sheet1')\n\n# All sheets:\nxl = pd.ExcelFile('data.xlsx')\nfor sheet in xl.sheet_names:\n    df = xl.parse(sheet)</pre>Requires <code>openpyxl</code> library.",level:"basic",cat:"pandas"},
+{q:"How do you write a DataFrame to CSV or Excel?",a:"<pre>df.to_csv('output.csv', index=False)\ndf.to_excel('output.xlsx', index=False,\n            sheet_name='Results')\ndf.to_json('output.json', orient='records')</pre>",level:"basic",cat:"pandas"},
+{q:"How do you connect to a SQL database from Python?",a:"<pre>import pandas as pd\nfrom sqlalchemy import create_engine\n\nengine = create_engine(\n  'postgresql://user:pass@host:5432/dbname')\ndf = pd.read_sql('SELECT * FROM sales', engine)\n\n# Or write:\ndf.to_sql('table_name', engine, if_exists='replace')</pre>",level:"intermediate",cat:"pandas"},
+{q:"What is query() in pandas?",a:"<code>query()</code> filters a DataFrame using a string expression — cleaner than boolean indexing for complex conditions.<pre>df.query('age > 30 and dept == \"IT\"')\ndf.query('salary > @threshold')  # use Python variable with @</pre>",level:"intermediate",cat:"pandas"},
+{q:"What are pandas categorical data types?",a:"Categorical dtype stores repeated string values as integer codes — reducing memory significantly.<pre>df['dept'] = df['dept'].astype('category')\ndf['dept'].cat.codes     # integer codes\ndf['dept'].cat.categories  # unique values\n# Can save 50-90% memory on large string columns</pre>",level:"intermediate",cat:"pandas"},
+{q:"What is memory_usage() in pandas?",a:"<code>df.memory_usage(deep=True)</code> shows how much memory each column uses. Use it to identify columns that can be downcast (e.g., int64 → int32) or converted to categorical to save RAM.",level:"intermediate",cat:"pandas"},
+{q:"How do you downsample or aggregate time series data?",a:"<pre>df.set_index('date', inplace=True)\ndf.resample('W').sum()   # weekly sum\ndf.resample('M').mean()  # monthly mean\ndf.resample('Q').agg({'sales':'sum','orders':'count'})</pre>",level:"intermediate",cat:"pandas"},
+{q:"What is a rolling window in pandas?",a:"Rolling windows compute statistics over a sliding window of rows — useful for moving averages in time series.<pre>df['ma7'] = df['sales'].rolling(window=7).mean()\ndf['roll_std'] = df['sales'].rolling(7).std()</pre>",level:"intermediate",cat:"pandas"},
+{q:"What is the difference between map, apply, and applymap?",a:"<code>map()</code>: element-wise on a Series (replaces values). <code>apply()</code>: applies a function along an axis of a DataFrame or Series. <code>applymap()</code> / <code>map()</code> (pandas 2+): element-wise on every cell of a DataFrame.",level:"intermediate",cat:"pandas"},
+{q:"What is MultiIndex in pandas?",a:"MultiIndex allows multiple levels of row or column labels — useful for hierarchical data.<pre>df.set_index(['region','dept'], inplace=True)\ndf.loc[('North','IT')]  # access by level\ndf.reset_index()        # flatten back</pre>",level:"advanced",cat:"pandas"},
+{q:"How do you deal with large files that don't fit in memory?",a:"<pre># Read in chunks:\nfor chunk in pd.read_csv('big.csv', chunksize=10000):\n    process(chunk)\n\n# Or use Dask:\nimport dask.dataframe as dd\nddf = dd.read_csv('big.csv')\nresult = ddf.groupby('col').sum().compute()</pre>",level:"advanced",cat:"pandas"},
+{q:"What is the difference between wide and long data formats?",a:"Wide format has one row per subject with multiple columns for measurements. Long (tidy) format has one row per observation. Long is better for plotting and modelling.<pre>df.melt(id_vars=['id'], var_name='variable',\n        value_name='value')  # wide → long</pre>",level:"intermediate",cat:"cleaning"},
+{q:"How do you handle categorical encoding?",a:"<pre># Label encoding:\nfrom sklearn.preprocessing import LabelEncoder\nle = LabelEncoder()\ndf['encoded'] = le.fit_transform(df['category'])\n\n# One-hot encoding:\npd.get_dummies(df, columns=['category'], drop_first=True)</pre>",level:"intermediate",cat:"cleaning"},
+{q:"What is feature scaling and why does it matter?",a:"Feature scaling normalises the range of variables so distance-based algorithms (KNN, SVM) are not dominated by large-scale features.<pre>from sklearn.preprocessing import StandardScaler, MinMaxScaler\nscaler = StandardScaler()\nX_scaled = scaler.fit_transform(X)</pre>",level:"intermediate",cat:"stats"},
+{q:"What is the difference between normalisation and standardisation?",a:"Normalisation (Min-Max) scales data to [0,1]. Standardisation (z-score) scales to mean=0, std=1. Use standardisation when data is normally distributed; normalisation when range matters (neural networks, image pixels).",level:"intermediate",cat:"stats"},
+{q:"What is scipy and what is it used for?",a:"scipy builds on NumPy and provides scientific computing functions: statistics, optimisation, integration, interpolation, signal processing, and linear algebra. For data analysts, <code>scipy.stats</code> is most used for hypothesis tests and distributions.",level:"intermediate",cat:"stats"},
+{q:"How do you detect and handle skewed data?",a:"<pre>df['col'].skew()  # >1 or <-1 is highly skewed\n\n# Transformations:\nimport numpy as np\ndf['log_col'] = np.log1p(df['col'])   # log transform\ndf['sqrt_col'] = np.sqrt(df['col'])   # square root</pre>",level:"intermediate",cat:"stats"},
+{q:"What is seaborn's pairplot?",a:"<code>sns.pairplot()</code> creates a grid of scatter plots for all pairs of numerical columns, with histograms on the diagonal. Great for a quick exploratory overview.<pre>sns.pairplot(df[['age','salary','experience']],\n             hue='dept')</pre>",level:"basic",cat:"viz"},
+{q:"How do you save a matplotlib figure?",a:"<pre>fig, ax = plt.subplots(figsize=(10,5))\nax.plot(df['date'], df['sales'])\nfig.savefig('chart.png', dpi=150, bbox_inches='tight')\nfig.savefig('chart.pdf')  # vector format</pre>",level:"basic",cat:"viz"},
+{q:"What is Plotly and when would you use it over matplotlib?",a:"Plotly creates interactive charts (hover, zoom, filter) that work in browsers and Jupyter. Use Plotly for dashboards and presentations where interactivity matters; use matplotlib for static reports and fine-grained control.<pre>import plotly.express as px\nfig = px.line(df, x='date', y='sales', color='region')\nfig.show()</pre>",level:"intermediate",cat:"viz"},
+{q:"What is an EDA (Exploratory Data Analysis) workflow?",a:"<p>Typical steps:</p><p>1. Load data and inspect shape, dtypes, head</p><p>2. Check missing values and duplicates</p><p>3. Summary statistics (describe)</p><p>4. Distribution of each variable (histograms)</p><p>5. Correlation analysis</p><p>6. Bivariate analysis (scatter, boxplots)</p><p>7. Identify and handle outliers</p>",level:"basic",cat:"cleaning"},
+{q:"What does df.describe() return?",a:"<code>df.describe()</code> returns count, mean, std, min, 25th percentile (Q1), median (Q2), 75th percentile (Q3), and max for each numerical column. Add <code>include='all'</code> to include categorical columns.",level:"basic",cat:"pandas"},
+{q:"How do you check data types and missing values quickly?",a:"<pre>df.info()           # dtypes, non-null counts, memory\ndf.isnull().sum()   # NaN count per column\ndf.dtypes           # just dtypes\ndf.shape            # (rows, cols)</pre>",level:"basic",cat:"cleaning"},
+{q:"What is the difference between dropna and fillna?",a:"<code>dropna()</code> removes rows (or columns) containing NaN. <code>fillna()</code> replaces NaN with a specified value, forward-fill, back-fill, or interpolation.<pre>df.fillna(method='ffill')   # forward fill\ndf.fillna(method='bfill')   # backward fill\ndf['age'].interpolate()     # linear interpolation</pre>",level:"basic",cat:"cleaning"},
+{q:"How do you bin continuous data into categories?",a:"<pre>pd.cut(df['age'],\n    bins=[0,18,35,60,100],\n    labels=['teen','young','mid','senior'])\n\npd.qcut(df['salary'], q=4,\n    labels=['Q1','Q2','Q3','Q4'])  # equal-frequency bins</pre>",level:"intermediate",cat:"pandas"},
+{q:"What is the nunique() function?",a:"<code>nunique()</code> returns the count of unique values in a column or DataFrame. Useful for understanding cardinality.<pre>df['country'].nunique()  # how many unique countries\ndf.nunique()             # for all columns</pre>",level:"basic",cat:"pandas"},
+{q:"What is value_counts()?",a:"<code>value_counts()</code> returns the frequency of each unique value in a Series, sorted by frequency.<pre>df['city'].value_counts()\ndf['city'].value_counts(normalize=True)  # proportions\ndf['city'].value_counts(dropna=False)    # include NaN</pre>",level:"basic",cat:"pandas"},
+{q:"What is crosstab in pandas?",a:"<code>pd.crosstab()</code> computes a frequency table of two or more categorical variables — a contingency table.<pre>pd.crosstab(df['gender'], df['dept'])\npd.crosstab(df['gender'], df['dept'], normalize='index')  # row %</pre>",level:"intermediate",cat:"pandas"},
+{q:"How do you create new columns derived from existing ones?",a:"<pre>df['total'] = df['price'] * df['quantity']\ndf['full_name'] = df['first'] + ' ' + df['last']\ndf['tax'] = df['price'].apply(lambda x: x * 0.18 if x > 500 else 0)</pre>",level:"basic",cat:"pandas"},
+{q:"What is the difference between stack and unstack?",a:"<code>stack()</code> pivots the innermost column level to become the innermost row index. <code>unstack()</code> does the opposite. They are used to reshape hierarchical (MultiIndex) DataFrames.",level:"advanced",cat:"pandas"},
+{q:"How do you use window functions in pandas?",a:"<pre>df['rank'] = df.groupby('dept')['salary'].rank(\n    method='dense', ascending=False)\ndf['running_total'] = df.groupby('region')['sales'].cumsum()\ndf['pct_of_dept'] = df['salary'] / df.groupby('dept')['salary'].transform('sum')</pre>",level:"advanced",cat:"pandas"},
+{q:"What is transform() vs agg() in groupby?",a:"<code>agg()</code> collapses each group to a single row (reduces rows). <code>transform()</code> returns a Series with the same index as the original DataFrame — useful to broadcast group statistics back to each row.<pre>df['dept_avg'] = df.groupby('dept')['salary'].transform('mean')</pre>",level:"intermediate",cat:"pandas"},
+{q:"What is a confusion matrix?",a:"A confusion matrix shows the counts of true positives, true negatives, false positives, and false negatives for a classification model.<pre>from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay\ncm = confusion_matrix(y_test, y_pred)\nConfusionMatrixDisplay(cm).plot()</pre>",level:"intermediate",cat:"stats"},
+{q:"What are precision, recall, and F1 score?",a:"<p>Precision: of all predicted positives, how many are correct? TP/(TP+FP)</p><p>Recall: of all actual positives, how many did we catch? TP/(TP+FN)</p><p>F1: harmonic mean of precision and recall — balances both.</p><pre>from sklearn.metrics import classification_report\nprint(classification_report(y_test, y_pred))</pre>",level:"intermediate",cat:"stats"},
+{q:"What is cross-validation?",a:"Cross-validation splits the data into k folds and trains/tests the model k times, using a different fold as the test set each time. It gives a more reliable estimate of model performance than a single train/test split.<pre>from sklearn.model_selection import cross_val_score\nscores = cross_val_score(model, X, y, cv=5)\nprint(scores.mean(), scores.std())</pre>",level:"intermediate",cat:"stats"},
+{q:"What is a heatmap and when is it used?",a:"A heatmap uses colour to encode values in a matrix — commonly used for correlation matrices, confusion matrices, and missing value patterns.<pre>sns.heatmap(df.isnull(),\n    yticklabels=False, cbar=False, cmap='viridis')\n# Shows which cells are NaN</pre>",level:"basic",cat:"viz"},
+{q:"How do you create subplots in matplotlib?",a:"<pre>fig, axes = plt.subplots(1, 2, figsize=(12,5))\naxes[0].hist(df['age'])\naxes[1].boxplot(df['salary'])\nplt.tight_layout()</pre>",level:"intermediate",cat:"viz"},
+{q:"How do you annotate a plot in matplotlib?",a:"<pre>ax.annotate('Peak', xy=(peak_x, peak_y),\n    xytext=(peak_x+1, peak_y+500),\n    arrowprops=dict(arrowstyle='->'))\nax.axhline(y=df['sales'].mean(), linestyle='--',\n    color='red', label='Mean')</pre>",level:"intermediate",cat:"viz"},
+{q:"What is Streamlit and how is it used by data analysts?",a:"Streamlit is a Python library for building interactive web dashboards directly from Python scripts — no HTML/CSS needed.<pre>import streamlit as st\nimport pandas as pd\ndf = pd.read_csv('data.csv')\nst.title('Sales Dashboard')\nst.dataframe(df)\nst.line_chart(df.set_index('date')['sales'])</pre>",level:"intermediate",cat:"viz"},
+{q:"What are common Python libraries a data analyst should know?",a:"<p>Data manipulation: pandas, NumPy</p><p>Visualisation: matplotlib, seaborn, Plotly</p><p>Statistics: scipy, statsmodels</p><p>Machine learning: scikit-learn</p><p>Database: SQLAlchemy, psycopg2</p><p>Big data: Dask, PySpark</p><p>Reporting: Streamlit, Dash</p>",level:"basic",cat:"python"},
+{q:"What is the difference between append and concat in pandas?",a:"<code>DataFrame.append()</code> was deprecated in pandas 2.0. The replacement is <code>pd.concat([df1, df2], ignore_index=True)</code>. concat is more flexible and handles multiple DataFrames at once.",level:"basic",cat:"pandas"},
+{q:"How do you profile a DataFrame quickly?",a:"Use <code>ydata-profiling</code> (formerly pandas-profiling) for an automated EDA report:<pre>from ydata_profiling import ProfileReport\nprofile = ProfileReport(df, title='EDA Report')\nprofile.to_file('report.html')</pre>Or use <code>df.describe()</code>, <code>df.info()</code>, and <code>df.isnull().sum()</code> for a quick manual check.",level:"intermediate",cat:"cleaning"},
+{q:"What is the difference between inplace=True and reassignment?",a:"<code>inplace=True</code> modifies the DataFrame directly and returns None. Reassignment (<code>df = df.sort_values(...)</code>) creates a new DataFrame. Both work, but reassignment is safer and easier to debug. Avoid <code>inplace=True</code> in function pipelines.",level:"basic",cat:"pandas"},
+{q:"What is method chaining in pandas?",a:"Method chaining pipes multiple operations without intermediate variables:<pre>result = (\n    df\n    .dropna(subset=['salary'])\n    .rename(columns={'emp_id':'id'})\n    .assign(tax=lambda x: x['salary']*0.2)\n    .groupby('dept')['tax'].sum()\n    .reset_index()\n    .sort_values('tax', ascending=False)\n)</pre>",level:"intermediate",cat:"pandas"},
+{q:"How do you handle JSON data in Python?",a:"<pre>import json\nimport pandas as pd\n\nwith open('data.json') as f:\n    data = json.load(f)\ndf = pd.json_normalize(data)\n\n# From API response:\nimport requests\nr = requests.get(url)\ndf = pd.json_normalize(r.json()['results'])</pre>",level:"intermediate",cat:"python"},
+{q:"What is the difference between a Series and a DataFrame?",a:"A Series is a 1D labelled array (one column). A DataFrame is a 2D labelled table (multiple columns). A DataFrame is a collection of Series sharing the same index.<pre>s = pd.Series([1,2,3], name='col')\ndf = pd.DataFrame({'a':[1,2], 'b':[3,4]})</pre>",level:"basic",cat:"pandas"},
+{q:"How do you sample rows from a DataFrame?",a:"<pre>df.sample(n=100)            # random 100 rows\ndf.sample(frac=0.1)         # random 10%\ndf.sample(n=100, random_state=42)  # reproducible</pre>",level:"basic",cat:"pandas"},
+{q:"What is explode() in pandas?",a:"<code>explode()</code> transforms each element of a list-like column into a separate row — useful when a column contains lists.<pre>df = pd.DataFrame({'id':[1,2], 'tags':[['a','b'],['c']]})\ndf.explode('tags')\n# id | tags\n# 1  | a\n# 1  | b\n# 2  | c</pre>",level:"advanced",cat:"pandas"},
+{q:"What is pipe() in pandas?",a:"<code>pipe()</code> lets you apply custom functions in a method chain, keeping code readable.<pre>def add_ratio(df, col1, col2):\n    df['ratio'] = df[col1] / df[col2]\n    return df\n\nresult = df.pipe(add_ratio, 'sales', 'units')</pre>",level:"advanced",cat:"pandas"},
+{q:"How do you use assert statements for data validation?",a:"<pre>assert df['age'].between(0, 120).all(), 'Age out of range'\nassert df['id'].is_unique, 'Duplicate IDs found'\nassert df.isnull().sum().sum() == 0, 'Missing values found'\nassert len(df) > 0, 'Empty DataFrame'</pre>Data validation is a key data analyst skill.",level:"intermediate",cat:"cleaning"},
+{q:"What is the difference between pd.NA, np.nan, and None?",a:"<code>None</code>: Python's null. <code>np.nan</code>: IEEE floating-point NaN (float). <code>pd.NA</code>: pandas' nullable type, works across int, string, and bool dtypes. pandas silently converts None to np.nan in float columns.",level:"intermediate",cat:"cleaning"},
+{q:"How do you export a pandas DataFrame to a formatted Excel report?",a:"<pre>with pd.ExcelWriter('report.xlsx', engine='openpyxl') as w:\n    summary.to_excel(w, sheet_name='Summary', index=False)\n    details.to_excel(w, sheet_name='Details', index=False)\n    ws = w.sheets['Summary']\n    # Style with openpyxl:\n    for cell in ws[1]: cell.font = openpyxl.styles.Font(bold=True)</pre>",level:"advanced",cat:"pandas"},
+];
+
+let cf='all';
+function gc(cat){return{pandas:'b-pandas',numpy:'b-numpy',viz:'b-viz',stats:'b-stats',python:'b-python',cleaning:'b-cleaning'}[cat]||'b-python';}
+function gl(l){return{basic:'b-basic',intermediate:'b-intermediate',advanced:'b-advanced'}[l]||'b-basic';}
+function catLabel(c){return{pandas:'pandas',numpy:'numpy',viz:'visualisation',stats:'statistics',python:'python',cleaning:'data cleaning'}[c]||c;}
+
+function render(list){
+  const el=document.getElementById('ql'),nr=document.getElementById('nores');
+  document.getElementById('vc').textContent=list.length;
+  if(!list.length){el.innerHTML='';nr.style.display='block';return;}
+  nr.style.display='none';
+  el.innerHTML=list.map(item=>`
+    <div class="qc">
+      <div class="qh" onclick="tog(this)">
+        <span class="qn">${String(item._i+1).padStart(2,'0')}</span>
+        <span class="qt">${item.q}</span>
+        <div class="qm">
+          <span class="badge ${gc(item.cat)}">${catLabel(item.cat)}</span>
+          <span class="badge ${gl(item.level)}">${item.level}</span>
+          <i class="ti ti-chevron-down chev" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="qa">${item.a.startsWith('<')?item.a:'<p>'+item.a+'</p>'}</div>
+    </div>`).join('');
+}
+
+function tog(h){
+  const a=h.nextElementSibling,c=h.querySelector('.chev');
+  a.classList.toggle('open');c.classList.toggle('open');
+}
+
+function filt(){
+  const s=document.getElementById('srch').value.toLowerCase();
+  const list=qs.map((q,i)=>({...q,_i:i}))
+    .filter(q=>cf==='all'||q.level===cf)
+    .filter(q=>!s||q.q.toLowerCase().includes(s)||q.a.toLowerCase().includes(s));
+  render(list);
+}
+
+function setF(l,btn){
+  cf=l;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');filt();
+}
+
+render(qs.map((q,i)=>({...q,_i:i})));
+</script>

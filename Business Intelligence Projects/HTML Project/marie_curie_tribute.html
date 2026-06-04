@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marie Curie - Tribute Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: var(--color-text-primary);
+            background: var(--color-background-tertiary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(100, 50, 150, 0.1) 0%, rgba(200, 100, 200, 0.05) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 2px solid var(--color-border-tertiary);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-dates {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--color-background-secondary);
+            border-radius: var(--border-radius-md);
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Quote Section */
+        .quote-section {
+            background: var(--color-background-secondary);
+            border-left: 4px solid rgb(100, 50, 150);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: var(--border-radius-md);
+        }
+
+        .quote-section p {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .quote-author {
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            text-align: right;
+        }
+
+        /* Section */
+        section {
+            margin: 2.5rem 0;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-primary);
+            position: relative;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-border-tertiary);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--color-border-secondary);
+        }
+
+        .timeline-item {
+            margin-left: 2rem;
+            padding: 1rem 0;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 1.5rem;
+            width: 12px;
+            height: 12px;
+            background: rgb(100, 50, 150);
+            border-radius: 50%;
+            border: 3px solid var(--color-background-primary);
+        }
+
+        .timeline-year {
+            font-weight: 500;
+            color: rgb(100, 50, 150);
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .timeline-event {
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Achievements Grid */
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .achievement-card {
+            background: var(--color-background-secondary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--color-border-tertiary);
+            transition: transform 0.2s;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--color-border-secondary);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: rgb(100, 50, 150);
+        }
+
+        .achievement-card h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            color: var(--color-text-primary);
+        }
+
+        .achievement-card p {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--color-border-tertiary);
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .achievements {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>Marie Curie</h1>
+        <p>Pioneer of radioactivity and first woman to win a Nobel Prize</p>
+        <div class="hero-dates">1867 – 1934</div>
+    </div>
+
+    <div class="container">
+        <div class="quote-section">
+            <p>"Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less."</p>
+            <div class="quote-author">— Marie Curie</div>
+        </div>
+
+        <section>
+            <h2>Early life & Education</h2>
+            <p>Born Maria Skłodowska on November 24, 1867, in Warsaw, Poland, Marie Curie grew up in a family of teachers. Her early years were marked by tragedy and resilience. Despite Poland being under Russian occupation, her parents instilled in her a love of learning and scientific curiosity. In 1891, at the age of 23, she moved to Paris to study physics and mathematics at the Sorbonne, where she became the first woman to earn a degree in physics.</p>
+        </section>
+
+        <section>
+            <h2>Scientific Timeline</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">1895</div>
+                    <div class="timeline-event">Marries fellow physicist Pierre Curie, beginning a revolutionary partnership in scientific research</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1898</div>
+                    <div class="timeline-event">Discovers polonium and radium, identifying their radioactive properties</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1903</div>
+                    <div class="timeline-event">Earns Ph.D. and wins first Nobel Prize in Physics (shared with Pierre Curie and Henri Becquerel)</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1911</div>
+                    <div class="timeline-event">Wins Nobel Prize in Chemistry for the discovery of radium—the only person to win Nobel Prizes in two different sciences</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1934</div>
+                    <div class="timeline-event">Dies from aplastic anemia, likely caused by prolonged radiation exposure</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Major Achievements</h2>
+            <div class="achievements">
+                <div class="achievement-card">
+                    <div class="achievement-icon">⚛️</div>
+                    <h3>Discovered Radioactivity</h3>
+                    <p>Pioneered the study of radioactivity and developed the theory of atomic structure that revolutionized physics and chemistry.</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">🏆</div>
+                    <h3>Two Nobel Prizes</h3>
+                    <p>First person ever to win Nobel Prizes in two different scientific fields: Physics and Chemistry.</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">👩‍🔬</div>
+                    <h3>Broke Gender Barriers</h3>
+                    <p>Became the first woman professor at the University of Paris, opening doors for women in science worldwide.</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">🏥</div>
+                    <h3>Medical Applications</h3>
+                    <p>Her work led to groundbreaking applications of radioactivity in medicine, X-rays, and cancer treatment.</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">📚</div>
+                    <h3>Scientific Legacy</h3>
+                    <p>Published numerous groundbreaking research papers that form the foundation of modern nuclear physics.</p>
+                </div>
+                <div class="achievement-card">
+                    <div class="achievement-icon">💪</div>
+                    <h3>Perseverance</h3>
+                    <p>Overcame poverty, discrimination, and tragedy to become one of history's greatest scientists.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Legacy & Impact</h2>
+            <p>Marie Curie's contributions to science transformed our understanding of matter and energy. The element curium was named in her honor, making her one of only two people to have an element named after them. Beyond her scientific achievements, she challenged prevailing attitudes about women in science and demonstrated that intellectual brilliance knows no gender. Her work laid the groundwork for modern physics, chemistry, and medical treatments that continue to save lives today. She remains an enduring symbol of scientific excellence and determination.</p>
+        </section>
+
+        <div class="footer">
+            <p>✨ A tribute to the life and achievements of Marie Curie ✨</p>
+            <p>Inspiring generations of scientists and changing the world through discovery and perseverance</p>
+        </div>
+    </div>
+</body>
+</html>

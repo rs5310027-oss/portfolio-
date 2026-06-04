@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz App</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#8b5cf6,#c084fc,#f3e8ff);
+}
+
+.quiz-container{
+    width:500px;
+    background:rgba(255,255,255,0.25);
+    backdrop-filter:blur(15px);
+    border-radius:25px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    color:white;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+    font-size:18px;
+}
+
+.question{
+    font-size:22px;
+    margin-bottom:20px;
+}
+
+.options button{
+    width:100%;
+    margin:10px 0;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background:white;
+    color:#8b5cf6;
+    font-size:16px;
+    transition:.3s;
+}
+
+.options button:hover{
+    transform:scale(1.03);
+}
+
+.next-btn{
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    background:#7c3aed;
+    color:white;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.result{
+    text-align:center;
+    font-size:24px;
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>🧠 Quiz App</h1>
+
+    <div class="info">
+        <span id="score">Score: 0</span>
+        <span id="timer">Time: 15</span>
+    </div>
+
+    <div id="quiz">
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <button class="next-btn" onclick="nextQuestion()">Next</button>
+    </div>
+</div>
+
+<script>
+const questions = [
+{
+    question:"What does HTML stand for?",
+    options:["Hyper Text Markup Language","Home Tool Markup Language","Hyperlinks Text Mark Language","HighText Machine Language"],
+    answer:"Hyper Text Markup Language"
+},
+{
+    question:"Which language is used for styling web pages?",
+    options:["HTML","Python","CSS","Java"],
+    answer:"CSS"
+},
+{
+    question:"Which is used for web interactivity?",
+    options:["CSS","JavaScript","SQL","C++"],
+    answer:"JavaScript"
+},
+{
+    question:"Which company developed JavaScript?",
+    options:["Google","Netscape","Microsoft","Apple"],
+    answer:"Netscape"
+}
+];
+
+let currentQuestion=0;
+let score=0;
+let timeLeft=15;
+let timer;
+
+function loadQuestion(){
+    clearInterval(timer);
+    timeLeft=15;
+    document.getElementById("timer").innerText="Time: "+timeLeft;
+
+    timer=setInterval(()=>{
+        timeLeft--;
+        document.getElementById("timer").innerText="Time: "+timeLeft;
+        if(timeLeft===0){
+            nextQuestion();
+        }
+    },1000);
+
+    const q=questions[currentQuestion];
+    document.getElementById("question").innerText=q.question;
+
+    const optionsDiv=document.getElementById("options");
+    optionsDiv.innerHTML="";
+
+    q.options.forEach(option=>{
+        const btn=document.createElement("button");
+        btn.innerText=option;
+        btn.onclick=()=>checkAnswer(option);
+        optionsDiv.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected){
+    if(selected===questions[currentQuestion].answer){
+        score++;
+        document.getElementById("score").innerText="Score: "+score;
+    }
+    nextQuestion();
+}
+
+function nextQuestion(){
+    currentQuestion++;
+    if(currentQuestion<questions.length){
+        loadQuestion();
+    }else{
+        clearInterval(timer);
+        document.getElementById("quiz").innerHTML=
+        `<div class="result">🎉 Quiz Finished!<br>Your Score: ${score}/${questions.length}</div>`;
+    }
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>

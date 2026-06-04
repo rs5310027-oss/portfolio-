@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ariana Grande - Spotify Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 0;
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.4;
+            filter: blur(2px);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.8) 100%);
+        }
+
+        .hero-image-container {
+            position: absolute;
+            right: 40px;
+            bottom: 60px;
+            z-index: 1;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100px) translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .hero-image {
+            width: 300px;
+            height: 400px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e91e63, #9c27b0);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            position: relative;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 60px 40px;
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .verified {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1db954;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .verified-badge {
+            width: 18px;
+            height: 18px;
+            background: #1db954;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .artist-name {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            text-transform: capitalize;
+            line-height: 1.2;
+        }
+
+        .stats {
+            font-size: 14px;
+            color: #b3b3b3;
+            margin-bottom: 24px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .play-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1db954;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.08);
+            background: #1ed760;
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #404040;
+            border-radius: 50%;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 18px;
+        }
+
+        .icon-btn:hover {
+            border-color: #1db954;
+            color: #1db954;
+            transform: scale(1.1);
+        }
+
+        .following-btn {
+            padding: 8px 24px;
+            border: 2px solid #404040;
+            border-radius: 24px;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .following-btn:hover {
+            border-color: #1db954;
+            color: #1db954;
+        }
+
+        .section {
+            padding: 40px;
+            border-bottom: 1px solid #282828;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+
+        .popular-tracks {
+            list-style: none;
+        }
+
+        .track-item {
+            padding: 12px 16px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+        }
+
+        .track-item:hover {
+            background: rgba(29, 185, 84, 0.15);
+        }
+
+        .track-num {
+            color: #b3b3b3;
+            font-weight: 700;
+            width: 30px;
+        }
+
+        .track-info {
+            flex: 1;
+        }
+
+        .track-name {
+            font-size: 16px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .track-artist {
+            font-size: 14px;
+            color: #b3b3b3;
+        }
+
+        .track-plays {
+            color: #b3b3b3;
+            font-size: 14px;
+            min-width: 180px;
+        }
+
+        .track-duration {
+            color: #b3b3b3;
+            font-size: 14px;
+            width: 50px;
+        }
+
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: #282828;
+        }
+
+        .album-card {
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .album-card:hover {
+            background: #262626;
+            transform: translateY(-4px);
+        }
+
+        .album-art {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #e91e63, #9c27b0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .album-frame {
+            border: 8px solid #fff;
+            box-sizing: border-box;
+            width: 90%;
+            height: 90%;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .album-img {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #666, #333);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .album-info {
+            padding: 16px;
+        }
+
+        .album-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .album-artist {
+            font-size: 14px;
+            color: #b3b3b3;
+            margin-bottom: 12px;
+        }
+
+        .album-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .plus-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #b3b3b3;
+            color: #b3b3b3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 18px;
+            background: transparent;
+        }
+
+        .plus-btn:hover {
+            border-color: #1db954;
+            color: #1db954;
+            transform: scale(1.15);
+        }
+
+        .about-section {
+            padding: 40px;
+        }
+
+        .about-header {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .artist-card {
+            display: flex;
+            gap: 30px;
+        }
+
+        .artist-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e91e63, #9c27b0);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        .artist-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .artist-bio {
+            flex: 1;
+        }
+
+        .artist-bio p {
+            color: #b3b3b3;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #404040;
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1db954;
+            width: 8%;
+            border-radius: 2px;
+            transition: width 0.2s;
+        }
+
+        .player-bottom {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: #b3b3b3;
+            padding: 0 40px 40px;
+        }
+
+        .time {
+            font-weight: 700;
+        }
+
+        @media (max-width: 1024px) {
+            .hero {
+                flex-direction: column;
+            }
+
+            .hero-image-container {
+                position: relative;
+                right: auto;
+                bottom: auto;
+                margin-top: 30px;
+            }
+
+            .hero-image {
+                width: 250px;
+                height: 350px;
+            }
+
+            .artist-name {
+                font-size: 42px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .artist-name {
+                font-size: 36px;
+            }
+
+            .hero-content {
+                padding: 40px 20px;
+            }
+
+            .hero-image {
+                width: 200px;
+                height: 280px;
+            }
+
+            .hero-image {
+                font-size: 80px;
+            }
+
+            .albums-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .artist-card {
+                flex-direction: column;
+            }
+
+            .artist-avatar {
+                margin: 0 auto;
+            }
+
+            .section,
+            .about-section {
+                padding: 20px;
+            }
+
+            .controls {
+                gap: 12px;
+            }
+
+            .track-plays {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section with Image -->
+        <div class="hero">
+            <div class="hero-background" id="heroBg"></div>
+            <div class="hero-overlay"></div>
+            
+            <div class="hero-content">
+                <div class="verified">
+                    <span class="verified-badge">✓</span>
+                    <span>Verified by Spotify</span>
+                </div>
+                <div class="artist-name">Ariana Grande</div>
+                <div class="stats">84,577,456 monthly listeners</div>
+                <div class="controls">
+                    <button class="play-btn" title="Play" onclick="playTrack()">▶</button>
+                    <button class="icon-btn" title="Save" onclick="saveArtist()">♡</button>
+                    <button class="icon-btn" title="Share" onclick="shareProfile()">⤴</button>
+                    <button class="icon-btn" title="More" onclick="showMore()">⋯</button>
+                    <button class="following-btn" onclick="toggleFollow()">Following</button>
+                </div>
+            </div>
+
+            <div class="hero-image-container">
+                <div class="hero-image" id="heroImage">
+                    <!-- Replace with actual image URL -->
+                    <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+                        <!-- Background -->
+                        <rect width="300" height="400" fill="#1a1a1a"/>
+                        
+                        <!-- Head -->
+                        <circle cx="150" cy="100" r="45" fill="#f5c9a8"/>
+                        
+                        <!-- Hair -->
+                        <path d="M 105 100 Q 105 50 150 50 Q 195 50 195 100 Q 195 75 150 70 Q 105 75 105 100" fill="#2d1f1a"/>
+                        <path d="M 150 50 Q 195 50 195 100" fill="#3d2f2a" opacity="0.6"/>
+                        
+                        <!-- Ponytail -->
+                        <ellipse cx="150" cy="140" rx="20" ry="60" fill="#2d1f1a"/>
+                        <path d="M 150 200 Q 140 220 145 250 Q 150 260 155 250 Q 160 220 150 200" fill="#2d1f1a"/>
+                        
+                        <!-- Eyes -->
+                        <circle cx="135" cy="90" r="6" fill="#1a1a1a"/>
+                        <circle cx="165" cy="90" r="6" fill="#1a1a1a"/>
+                        <circle cx="136" cy="88" r="2.5" fill="#fff"/>
+                        <circle cx="166" cy="88" r="2.5" fill="#fff"/>
+                        
+                        <!-- Eyebrows -->
+                        <path d="M 128 82 Q 135 79 142 81" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <path d="M 158 81 Q 165 79 172 82" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        
+                        <!-- Nose -->
+                        <line x1="150" y1="95" x2="150" y2="108" stroke="#d4a574" stroke-width="1.5"/>
+                        
+                        <!-- Lips -->
+                        <path d="M 138 118 Q 150 128 162 118" stroke="#e91e63" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M 138 118 Q 150 125 162 118" fill="#ff69b4" opacity="0.5"/>
+                        
+                        <!-- Neck -->
+                        <rect x="140" y="140" width="20" height="20" fill="#f5c9a8"/>
+                        
+                        <!-- Body - Black Outfit -->
+                        <path d="M 120 160 Q 100 180 100 250 L 100 380 L 200 380 L 200 250 Q 200 180 180 160 Z" fill="#1a1a1a" stroke="#e91e63" stroke-width="2"/>
+                        
+                        <!-- Hands -->
+                        <circle cx="100" cy="180" r="12" fill="#f5c9a8"/>
+                        <circle cx="200" cy="180" r="12" fill="#f5c9a8"/>
+                        
+                        <!-- Accent Lines -->
+                        <line x1="135" y1="160" x2="135" y2="220" stroke="#e91e63" stroke-width="2" opacity="0.7"/>
+                        <line x1="165" y1="160" x2="165" y2="220" stroke="#e91e63" stroke-width="2" opacity="0.7"/>
+                        
+                        <!-- Sparkles -->
+                        <circle cx="90" cy="140" r="3" fill="#ffeb3b" opacity="0.8"/>
+                        <circle cx="210" cy="150" r="2.5" fill="#ffeb3b" opacity="0.8"/>
+                        <circle cx="110" cy="200" r="2" fill="#ffeb3b" opacity="0.6"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Tracks Section -->
+        <div class="section">
+            <div class="section-title">Popular</div>
+            <ol class="popular-tracks">
+                <li class="track-item">
+                    <div class="track-num">1</div>
+                    <div class="track-info">
+                        <div class="track-name">we can't be friends (wait for your love)</div>
+                        <div class="track-artist">Ariana Grande</div>
+                    </div>
+                    <div class="track-plays">1,962,367,859</div>
+                    <div class="track-duration">3:48</div>
+                </li>
+                <li class="track-item">
+                    <div class="track-num">2</div>
+                    <div class="track-info">
+                        <div class="track-name">thank u, next</div>
+                        <div class="track-artist">Ariana Grande</div>
+                    </div>
+                    <div class="track-plays">2,547,891,234</div>
+                    <div class="track-duration">3:27</div>
+                </li>
+                <li class="track-item">
+                    <div class="track-num">3</div>
+                    <div class="track-info">
+                        <div class="track-name">positions</div>
+                        <div class="track-artist">Ariana Grande</div>
+                    </div>
+                    <div class="track-plays">1,834,567,890</div>
+                    <div class="track-duration">3:23</div>
+                </li>
+                <li class="track-item">
+                    <div class="track-num">4</div>
+                    <div class="track-info">
+                        <div class="track-name">into you</div>
+                        <div class="track-artist">Ariana Grande</div>
+                    </div>
+                    <div class="track-plays">1,756,234,567</div>
+                    <div class="track-duration">4:03</div>
+                </li>
+                <li class="track-item">
+                    <div class="track-num">5</div>
+                    <div class="track-info">
+                        <div class="track-name">god is a woman</div>
+                        <div class="track-artist">Ariana Grande</div>
+                    </div>
+                    <div class="track-plays">1,652,890,123</div>
+                    <div class="track-duration">3:50</div>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Albums Grid -->
+        <div class="albums-grid">
+            <div class="album-card">
+                <div class="album-art">
+                    <div class="album-frame">
+                        <div class="album-img">🎵</div>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-info-row">
+                        <div>
+                            <div class="album-title">Dangerous Woman</div>
+                            <div class="album-artist">Ariana Grande</div>
+                        </div>
+                        <button class="plus-btn" onclick="addAlbum(event)">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="album-card">
+                <div class="album-art">
+                    <div class="album-frame">
+                        <div class="album-img">✨</div>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-info-row">
+                        <div>
+                            <div class="album-title">Eternal Sunshine</div>
+                            <div class="album-artist">Ariana Grande</div>
+                        </div>
+                        <button class="plus-btn" onclick="addAlbum(event)">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="album-card">
+                <div class="album-art">
+                    <div class="album-frame">
+                        <div class="album-img">💖</div>
+                    </div>
+                </div>
+                <div class="album-info">
+                    <div class="album-info-row">
+                        <div>
+                            <div class="album-title">thank u, next</div>
+                            <div class="album-artist">Ariana Grande</div>
+                        </div>
+                        <button class="plus-btn" onclick="addAlbum(event)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="about-section">
+            <div class="about-header">About the artist</div>
+            <div class="artist-card">
+                <div class="artist-avatar">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+                        <defs>
+                            <radialGradient id="bgGradient" cx="50%" cy="50%">
+                                <stop offset="0%" style="stop-color:#ff69b4;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#e91e63;stop-opacity:1" />
+                            </radialGradient>
+                        </defs>
+                        <circle cx="100" cy="100" r="100" fill="url(#bgGradient)"/>
+                        
+                        <!-- Face -->
+                        <circle cx="100" cy="85" r="35" fill="#f5c9a8"/>
+                        
+                        <!-- Hair -->
+                        <path d="M 65 85 Q 65 50 100 45 Q 135 50 135 85" fill="#2d1f1a"/>
+                        <ellipse cx="100" cy="110" rx="18" ry="45" fill="#2d1f1a"/>
+                        
+                        <!-- Eyes -->
+                        <circle cx="85" cy="80" r="5" fill="#1a1a1a"/>
+                        <circle cx="115" cy="80" r="5" fill="#1a1a1a"/>
+                        <circle cx="86" cy="78" r="2" fill="#fff"/>
+                        <circle cx="116" cy="78" r="2" fill="#fff"/>
+                        
+                        <!-- Mouth -->
+                        <path d="M 85 100 Q 100 110 115 100" stroke="#e91e63" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="artist-bio">
+                    <p><strong>Ariana Grande</strong> is an American singer, songwriter, and actress known for her four-octave vocal range and vocal prowess.</p>
+                    <p>She has achieved massive commercial success with albums like "Dangerous Woman," "Sweetener," and "Positions," establishing herself as one of the biggest pop stars of her generation.</p>
+                    <p>With over 200 million records sold worldwide, numerous Grammy Awards, and billions of streams, Ariana Grande continues to dominate the global music charts.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Section -->
+        <div style="padding: 0 40px 40px;">
+            <div style="margin-bottom: 12px; color: #b3b3b3;">Now playing: <strong style="color: #fff;">"we can't be friends (wait for your love)"</strong></div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="player-bottom">
+                <span class="time">0:26</span>
+                <span>/</span>
+                <span class="time">3:48</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interactive button functions
+        function playTrack() {
+            const tracks = [
+                "we can't be friends (wait for your love)",
+                "thank u, next",
+                "positions",
+                "into you",
+                "god is a woman"
+            ];
+            const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
+            alert(`▶ Now playing: "${randomTrack}" 🎵`);
+        }
+
+        function saveArtist() {
+            alert('💚 Ariana Grande saved to your library!');
+        }
+
+        function shareProfile() {
+            const url = window.location.href;
+            alert('📤 Share this link:\n' + url);
+        }
+
+        function showMore() {
+            alert('⋯ More options:\n- Download\n- Add to Queue\n- Goto Artist Radio\n- Share');
+        }
+
+        function toggleFollow() {
+            const btn = event.target;
+            if (btn.textContent === 'Following') {
+                btn.textContent = 'Follow';
+                alert('Unfollowed Ariana Grande');
+            } else {
+                btn.textContent = 'Following';
+                alert('🎉 Now following Ariana Grande!');
+            }
+        }
+
+        function addAlbum(e) {
+            e.stopPropagation();
+            alert('✅ Album added to your library!');
+        }
+
+        // Track click handlers
+        document.querySelectorAll('.track-item').forEach(track => {
+            track.addEventListener('click', () => {
+                const trackName = track.querySelector('.track-name').textContent;
+                alert(`▶ Playing: "${trackName}" 🎵`);
+            });
+        });
+
+        // Album click handlers
+        document.querySelectorAll('.album-card').forEach(album => {
+            album.addEventListener('click', (e) => {
+                if (!e.target.closest('.plus-btn')) {
+                    const albumName = album.querySelector('.album-title').textContent;
+                    alert(`▶ Playing album: "${albumName}"`);
+                }
+            });
+        });
+
+        // Progress bar interaction
+        document.querySelector('.progress-bar').addEventListener('click', (e) => {
+            const bar = e.currentTarget;
+            const rect = bar.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            document.querySelector('.progress-fill').style.width = (percent * 100) + '%';
+        });
+
+        // How to add real images:
+        // 1. Replace the SVG in #heroImage with: <img src="YOUR_IMAGE_URL" alt="Ariana Grande">
+        // 2. For artist avatar, replace SVG with: <img src="YOUR_AVATAR_URL" alt="Ariana Grande">
+        // 3. For hero background, uncomment and set:
+        // document.getElementById('heroBg').style.backgroundImage = "url('YOUR_BG_IMAGE_URL')";
+    </script>
+</body>
+</html>

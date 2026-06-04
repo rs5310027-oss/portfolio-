@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 HTML Projects</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a08;
+    --surface: #111110;
+    --border: #2a2a26;
+    --accent: #e8ff47;
+    --accent2: #ff6b35;
+    --accent3: #47d4ff;
+    --text: #e8e4d9;
+    --muted: #6b6b60;
+    --card-bg: #161614;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.5;
+  }
+
+  header {
+    padding: 80px 60px 60px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: '100';
+    position: absolute;
+    right: -20px;
+    top: -30px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 280px;
+    color: transparent;
+    -webkit-text-stroke: 1px #2a2a26;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 12px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 10vw, 120px);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  h1 span {
+    color: var(--accent);
+    display: block;
+  }
+
+  .subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  /* Filter bar */
+  .filters {
+    padding: 24px 60px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,8,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .filter-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 8px;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(232, 255, 71, 0.05);
+  }
+
+  /* Search */
+  .search-wrap {
+    margin-left: auto;
+    position: relative;
+  }
+
+  .search-wrap input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 7px 36px 7px 14px;
+    width: 200px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-wrap input:focus {
+    border-color: var(--accent);
+  }
+
+  .search-wrap input::placeholder { color: var(--muted); }
+
+  .search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  /* Counter */
+  .counter-bar {
+    padding: 16px 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .count-display {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .count-display strong {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Grid */
+  .projects-grid {
+    padding: 40px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .project-card {
+    background: var(--card-bg);
+    padding: 28px 28px 24px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: hidden;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  .project-card:hover {
+    background: #1c1c1a;
+  }
+
+  .project-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .card-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-num .difficulty {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border: 1px solid;
+  }
+
+  .diff-beginner { color: #4ade80; border-color: #4ade8040; background: #4ade8008; }
+  .diff-intermediate { color: #fbbf24; border-color: #fbbf2440; background: #fbbf2408; }
+  .diff-advanced { color: var(--accent2); border-color: #ff6b3540; background: #ff6b3508; }
+
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.3;
+    color: var(--text);
+  }
+
+  .card-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .card-tag {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    background: rgba(71, 212, 255, 0.07);
+    padding: 2px 8px;
+    border: 1px solid rgba(71, 212, 255, 0.15);
+  }
+
+  .card-arrow {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    color: var(--muted);
+    font-size: 16px;
+    transition: all 0.2s;
+    opacity: 0;
+  }
+
+  .project-card:hover .card-arrow {
+    opacity: 1;
+    transform: translate(2px, -2px);
+    color: var(--accent);
+  }
+
+  /* Hidden state */
+  .project-card.hidden {
+    display: none;
+  }
+
+  /* Footer */
+  footer {
+    padding: 40px 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+  }
+
+  footer p {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  footer strong { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    header, .filters, .counter-bar, .projects-grid, footer {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    header { padding-top: 48px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .search-wrap { margin-left: 0; width: 100%; }
+    .search-wrap input { width: 100%; }
+    .filters { flex-direction: column; align-items: flex-start; }
+    header::after { font-size: 160px; opacity: 0.5; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">HTML · CSS · JavaScript</div>
+  <h1>Build <span>100 Projects</span></h1>
+  <p class="subtitle">A curated collection of hands-on web projects — from beginner experiments to advanced applications.</p>
+</header>
+
+<div class="filters">
+  <span class="filter-label">Filter —</span>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="beginner">Beginner</button>
+  <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+  <button class="filter-btn" data-filter="advanced">Advanced</button>
+  <button class="filter-btn" data-filter="css">CSS</button>
+  <button class="filter-btn" data-filter="js">JavaScript</button>
+  <button class="filter-btn" data-filter="api">API</button>
+  <button class="filter-btn" data-filter="game">Games</button>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Search projects...">
+    <span class="search-icon">⌕</span>
+  </div>
+</div>
+
+<div class="counter-bar">
+  <p class="count-display">Showing <strong id="visibleCount">100</strong> of <strong>100</strong> projects</p>
+</div>
+
+<div class="projects-grid" id="grid"></div>
+
+<footer>
+  <p>100 HTML Projects — Build something every day</p>
+  <p>Made with <strong>HTML · CSS · JS</strong></p>
+</footer>
+
+<script>
+const projects = [
+  // BEGINNER
+  { id:1, title:"Personal Portfolio Page", desc:"Build a multi-section portfolio with About, Skills, Projects, and Contact sections.", diff:"beginner", tags:["css","html"] },
+  { id:2, title:"Tribute Page", desc:"Create a tribute page for a person you admire with images and timeline.", diff:"beginner", tags:["html","css"] },
+  { id:3, title:"Survey Form", desc:"A styled HTML form with radio buttons, checkboxes, dropdowns, and validation.", diff:"beginner", tags:["html","css"] },
+  { id:4, title:"Product Landing Page", desc:"A product landing page with navigation, features section, and CTA button.", diff:"beginner", tags:["html","css"] },
+  { id:5, title:"Recipe Card", desc:"A beautifully styled recipe card with ingredients list and step-by-step instructions.", diff:"beginner", tags:["html","css"] },
+  { id:6, title:"Simple Calculator", desc:"A functional calculator that handles +, −, ×, ÷ operations with keyboard support.", diff:"beginner", tags:["js","html"] },
+  { id:7, title:"Color Palette Generator", desc:"Click a button to generate a random 5-color palette with hex codes to copy.", diff:"beginner", tags:["js","css"] },
+  { id:8, title:"To-Do List App", desc:"Add, check off, and delete tasks. Save them to localStorage so they persist.", diff:"beginner", tags:["js","html"] },
+  { id:9, title:"Countdown Timer", desc:"Set a date and watch a live countdown in days, hours, minutes, seconds.", diff:"beginner", tags:["js","html"] },
+  { id:10, title:"Character Counter", desc:"A textarea that shows live character count and warns when approaching a limit.", diff:"beginner", tags:["js","html"] },
+  { id:11, title:"Quote Generator", desc:"Display a random inspirational quote from a local array; add a tweet button.", diff:"beginner", tags:["js","html"] },
+  { id:12, title:"Age Calculator", desc:"Enter a birthdate and instantly calculate your exact age in years, months, days.", diff:"beginner", tags:["js","html"] },
+  { id:13, title:"Password Generator", desc:"Generate strong passwords with options for length, symbols, numbers, and uppercase.", diff:"beginner", tags:["js","html"] },
+  { id:14, title:"Unit Converter", desc:"Convert between length, weight, temperature, and volume units in real time.", diff:"beginner", tags:["js","html"] },
+  { id:15, title:"Tip Calculator", desc:"Enter bill amount, tip %, and number of people to split the bill instantly.", diff:"beginner", tags:["js","html"] },
+  { id:16, title:"Digital Clock", desc:"A live analog + digital clock with smooth second-hand animation.", diff:"beginner", tags:["js","css"] },
+  { id:17, title:"Accordion FAQ", desc:"An accessible accordion component with smooth expand/collapse animations.", diff:"beginner", tags:["js","css"] },
+  { id:18, title:"Image Slider", desc:"An auto-playing image carousel with prev/next controls and dot indicators.", diff:"beginner", tags:["js","css"] },
+  { id:19, title:"Dark/Light Mode Toggle", desc:"A smooth theme switcher that remembers the user's preference in localStorage.", diff:"beginner", tags:["js","css"] },
+  { id:20, title:"BMI Calculator", desc:"Calculate BMI, display the result with a color-coded health category.", diff:"beginner", tags:["js","html"] },
+
+  // INTERMEDIATE
+  { id:21, title:"Markdown Previewer", desc:"A live side-by-side Markdown editor and HTML preview, no libraries needed.", diff:"intermediate", tags:["js","css"] },
+  { id:22, title:"Pomodoro Timer", desc:"A full Pomodoro technique timer with work/break cycles and session tracking.", diff:"intermediate", tags:["js","css"] },
+  { id:23, title:"Drag & Drop Kanban Board", desc:"A Trello-like board with HTML5 drag-and-drop across columns.", diff:"intermediate", tags:["js","css"] },
+  { id:24, title:"Music Player UI", desc:"A styled music player with play/pause, seek bar, volume, and playlist.", diff:"intermediate", tags:["js","css"] },
+  { id:25, title:"Expense Tracker", desc:"Log income and expenses, see balance, and visualize spending by category.", diff:"intermediate", tags:["js","css"] },
+  { id:26, title:"Notes App with Search", desc:"Create, edit, delete, and search notes with localStorage persistence.", diff:"intermediate", tags:["js","css"] },
+  { id:27, title:"CSS Pixel Art Editor", desc:"A grid-based pixel art canvas where you can paint with a color picker.", diff:"intermediate", tags:["js","css"] },
+  { id:28, title:"Infinite Scroll Feed", desc:"Load and display content dynamically as the user scrolls down the page.", diff:"intermediate", tags:["js","api"] },
+  { id:29, title:"Multi-Step Form Wizard", desc:"A multi-step form with progress bar, validation per step, and final summary.", diff:"intermediate", tags:["js","html","css"] },
+  { id:30, title:"Typing Speed Test", desc:"A WPM typing test with a timer, accuracy tracker, and results screen.", diff:"intermediate", tags:["js","css"] },
+  { id:31, title:"Weather Dashboard", desc:"Fetch weather data by city name and display temp, humidity, wind, and forecasts.", diff:"intermediate", tags:["js","api"] },
+  { id:32, title:"GitHub Profile Viewer", desc:"Enter a GitHub username and display their public repos, avatar, and stats.", diff:"intermediate", tags:["js","api"] },
+  { id:33, title:"Currency Converter", desc:"Live exchange rates via API to convert between any two world currencies.", diff:"intermediate", tags:["js","api"] },
+  { id:34, title:"Recipe Finder", desc:"Search a recipe API by ingredient or dish name and display results with images.", diff:"intermediate", tags:["js","api"] },
+  { id:35, title:"Movie Search App", desc:"Search movies via OMDB API and display ratings, plot, cast, and poster.", diff:"intermediate", tags:["js","api"] },
+  { id:36, title:"News Aggregator", desc:"Fetch headlines from a news API filtered by category and display in a grid.", diff:"intermediate", tags:["js","api"] },
+  { id:37, title:"Flashcard Study App", desc:"Create, flip, and cycle through flashcard decks with a score tracker.", diff:"intermediate", tags:["js","css"] },
+  { id:38, title:"Habit Tracker", desc:"Track daily habits with a monthly grid calendar and streak counter.", diff:"intermediate", tags:["js","css"] },
+  { id:39, title:"Budget Planner", desc:"Input monthly income and expenses to generate a savings breakdown chart.", diff:"intermediate", tags:["js","css"] },
+  { id:40, title:"Book Reading Tracker", desc:"Log books read, in-progress, and want-to-read, with ratings and notes.", diff:"intermediate", tags:["js","css"] },
+  { id:41, title:"URL Shortener UI", desc:"A frontend interface for a URL shortener API with copy-to-clipboard.", diff:"intermediate", tags:["js","api"] },
+  { id:42, title:"Regex Tester", desc:"Enter a pattern and test string to highlight matches in real time.", diff:"intermediate", tags:["js","css"] },
+  { id:43, title:"Color Picker Tool", desc:"A full HSL/RGB/Hex color picker with sliders, preview, and history.", diff:"intermediate", tags:["js","css"] },
+  { id:44, title:"Tab Manager UI", desc:"A tabbed interface component with dynamic tab add/close and keyboard nav.", diff:"intermediate", tags:["js","css"] },
+  { id:45, title:"Scrollspy Navigation", desc:"A sticky nav where links highlight to show which section you're currently viewing.", diff:"intermediate", tags:["js","css"] },
+  { id:46, title:"Drawing Canvas", desc:"A freehand drawing app with pen size, colors, eraser, and save-as-PNG.", diff:"intermediate", tags:["js","canvas"] },
+  { id:47, title:"Timeline Visualizer", desc:"Input events and dates to generate a visual chronological timeline.", diff:"intermediate", tags:["js","css"] },
+  { id:48, title:"Poll / Voting App", desc:"Create polls, vote once, and see live results as animated bar charts.", diff:"intermediate", tags:["js","css"] },
+  { id:49, title:"Form Validation Library", desc:"Build a reusable JS validation module for email, phone, URL, and passwords.", diff:"intermediate", tags:["js","html"] },
+  { id:50, title:"Emoji Picker", desc:"A searchable emoji picker component that copies the emoji to clipboard.", diff:"intermediate", tags:["js","css"] },
+
+  // GAMES
+  { id:51, title:"Snake Game", desc:"Classic snake game on a canvas with increasing speed and high score tracking.", diff:"intermediate", tags:["js","game","canvas"] },
+  { id:52, title:"Tic Tac Toe", desc:"Two-player or vs. AI tic tac toe with a minimax algorithm for unbeatable AI.", diff:"beginner", tags:["js","game"] },
+  { id:53, title:"Memory Card Game", desc:"Flip cards to find matching pairs with a move counter and timer.", diff:"beginner", tags:["js","game","css"] },
+  { id:54, title:"Whack-A-Mole", desc:"A timed whack-a-mole game with escalating speed and score tracking.", diff:"intermediate", tags:["js","game","css"] },
+  { id:55, title:"2048 Game", desc:"The iconic sliding tile puzzle game with smooth animations and score.", diff:"intermediate", tags:["js","game","css"] },
+  { id:56, title:"Tetris", desc:"A fully playable Tetris game with piece rotation, line clearing, and scoring.", diff:"advanced", tags:["js","game","canvas"] },
+  { id:57, title:"Breakout / Brick Breaker", desc:"Control a paddle to bounce a ball and clear bricks, with lives and levels.", diff:"intermediate", tags:["js","game","canvas"] },
+  { id:58, title:"Quiz / Trivia App", desc:"A timed trivia app with categories, lifelines, and a final score screen.", diff:"intermediate", tags:["js","game","api"] },
+  { id:59, title:"Wordle Clone", desc:"Recreate the popular word guessing game with color-coded letter hints.", diff:"intermediate", tags:["js","game","css"] },
+  { id:60, title:"Minesweeper", desc:"Classic minesweeper with a flag system, timer, and difficulty levels.", diff:"advanced", tags:["js","game","css"] },
+  { id:61, title:"Flappy Bird Clone", desc:"Tap to keep a bird flying through pipes, with a canvas-based physics loop.", diff:"advanced", tags:["js","game","canvas"] },
+  { id:62, title:"Simon Says Game", desc:"Repeat the growing pattern of colored button presses without mistakes.", diff:"beginner", tags:["js","game","css"] },
+  { id:63, title:"Rock Paper Scissors", desc:"Play against the computer, track wins/losses over 5 rounds.", diff:"beginner", tags:["js","game"] },
+  { id:64, title:"Hangman Game", desc:"Guess the hidden word letter by letter before running out of lives.", diff:"beginner", tags:["js","game","css"] },
+  { id:65, title:"Space Shooter", desc:"A side-scrolling space shooter with bullets, enemies, and boss fights on canvas.", diff:"advanced", tags:["js","game","canvas"] },
+
+  // ADVANCED / API / CANVAS
+  { id:66, title:"Kanban Board with Firebase", desc:"A real-time drag-and-drop board synced to Firebase Firestore.", diff:"advanced", tags:["js","api"] },
+  { id:67, title:"Chat App UI", desc:"A WhatsApp-style chat UI with message bubbles, timestamps, and read receipts.", diff:"intermediate", tags:["js","css"] },
+  { id:68, title:"Code Editor with Syntax Highlighting", desc:"A minimal code editor using contenteditable and Prism.js highlighting.", diff:"advanced", tags:["js","css"] },
+  { id:69, title:"Virtual Keyboard", desc:"An on-screen keyboard that types into an input field with pressed-key animation.", diff:"intermediate", tags:["js","css"] },
+  { id:70, title:"Spreadsheet (Google Sheets Clone)", desc:"Build a basic grid with formula evaluation like =SUM and cell references.", diff:"advanced", tags:["js","css"] },
+  { id:71, title:"Image Cropper", desc:"Upload, drag to crop, resize handles, and export the cropped image.", diff:"advanced", tags:["js","canvas","css"] },
+  { id:72, title:"Speech to Text App", desc:"Use the Web Speech API to transcribe speech in real time into a textarea.", diff:"intermediate", tags:["js","api"] },
+  { id:73, title:"Text to Speech App", desc:"Enter text, choose voice and rate, and have the browser speak it aloud.", diff:"beginner", tags:["js","api"] },
+  { id:74, title:"Face Detection App", desc:"Use the Face Detection API or a JS library to detect faces via webcam.", diff:"advanced", tags:["js","api","canvas"] },
+  { id:75, title:"Barcode / QR Code Generator", desc:"Enter text or URL and generate a downloadable QR code with a JS library.", diff:"intermediate", tags:["js","api"] },
+  { id:76, title:"Geolocation Tracker", desc:"Display the user's real-time location on a Leaflet.js map with markers.", diff:"intermediate", tags:["js","api"] },
+  { id:77, title:"PDF Viewer", desc:"Upload a PDF and render it page by page using PDF.js in the browser.", diff:"advanced", tags:["js","api"] },
+  { id:78, title:"Video Player with Chapters", desc:"A custom HTML5 video player with chapter markers, speed control, and subtitles.", diff:"advanced", tags:["js","css","html"] },
+  { id:79, title:"Audio Visualizer", desc:"Use the Web Audio API and Canvas to visualize audio as animated bars or waves.", diff:"advanced", tags:["js","canvas","api"] },
+  { id:80, title:"Web Scraper Viewer", desc:"Fetch a CORS-friendly API and display cleaned tabular data with sort/filter.", diff:"intermediate", tags:["js","api"] },
+  { id:81, title:"Photo Filter App", desc:"Apply CSS or canvas filters (grayscale, sepia, brightness) to uploaded images.", diff:"intermediate", tags:["js","canvas","css"] },
+  { id:82, title:"Infinite Canvas Whiteboard", desc:"A pannable, zoomable whiteboard with freehand drawing and sticky notes.", diff:"advanced", tags:["js","canvas","css"] },
+  { id:83, title:"Particle System", desc:"An animated canvas particle system that reacts to mouse movement.", diff:"advanced", tags:["js","canvas"] },
+  { id:84, title:"3D Cube with CSS", desc:"A rotating 3D CSS cube controlled by mouse drag or gyroscope.", diff:"intermediate", tags:["css","js"] },
+  { id:85, title:"Parallax Scrolling Page", desc:"A landing page with multi-layer parallax depth effect as the user scrolls.", diff:"intermediate", tags:["js","css"] },
+  { id:86, title:"Scroll-Triggered Animations", desc:"Page elements animate in as they enter the viewport using IntersectionObserver.", diff:"intermediate", tags:["js","css"] },
+  { id:87, title:"Custom Context Menu", desc:"Right-click anywhere to show a custom animated context menu with actions.", diff:"intermediate", tags:["js","css"] },
+  { id:88, title:"Sticky Sidebar with Dynamic TOC", desc:"Auto-generate a sticky table of contents from heading tags on the page.", diff:"intermediate", tags:["js","css"] },
+  { id:89, title:"Responsive Image Gallery", desc:"A masonry photo grid with lightbox, keyboard navigation, and lazy loading.", diff:"intermediate", tags:["js","css"] },
+  { id:90, title:"Multi-language i18n App", desc:"A page that switches between 3+ languages using a JS translation system.", diff:"intermediate", tags:["js","html"] },
+  { id:91, title:"Browser Notifications App", desc:"Request permission and push scheduled browser notifications with the Notifications API.", diff:"intermediate", tags:["js","api"] },
+  { id:92, title:"Clipboard Manager", desc:"Copy items to a clipboard history and paste any previous item.", diff:"intermediate", tags:["js","api"] },
+  { id:93, title:"IndexedDB Notes App", desc:"A notes app using IndexedDB for offline-first, persistent storage.", diff:"advanced", tags:["js","api"] },
+  { id:94, title:"Service Worker PWA", desc:"Convert any web app into a PWA with a service worker for offline support.", diff:"advanced", tags:["js","api"] },
+  { id:95, title:"WebSocket Chat", desc:"Real-time chat using a public WebSocket echo server.", diff:"advanced", tags:["js","api"] },
+  { id:96, title:"Drag-to-Reorder List", desc:"A list you can reorder by dragging items with smooth transition animations.", diff:"intermediate", tags:["js","css"] },
+  { id:97, title:"CSS Variables Playground", desc:"A live UI to change CSS custom properties and preview results instantly.", diff:"intermediate", tags:["js","css"] },
+  { id:98, title:"CSS Animation Generator", desc:"Generate keyframe animation CSS code visually with an interactive editor.", diff:"advanced", tags:["js","css"] },
+  { id:99, title:"SVG Path Animator", desc:"Draw SVG paths and animate stroke-dashoffset for a handwriting reveal effect.", diff:"advanced", tags:["js","css"] },
+  { id:100, title:"Full-Stack Blog (localStorage)", desc:"A complete blog with create/read/update/delete posts, tags, and a reading view.", diff:"advanced", tags:["js","html","css"] },
+];
+
+const diffColors = {
+  beginner: 'diff-beginner',
+  intermediate: 'diff-intermediate',
+  advanced: 'diff-advanced'
+};
+
+function renderCards(list) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  list.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'project-card';
+    card.style.animationDelay = `${Math.min(i * 0.03, 0.5)}s`;
+    card.dataset.diff = p.diff;
+    card.dataset.tags = p.tags.join(',');
+    card.innerHTML = `
+      <div class="card-num">
+        <span>${String(p.id).padStart(3,'0')}</span>
+        <span class="difficulty ${diffColors[p.diff]}">${p.diff}</span>
+      </div>
+      <div class="card-title">${p.title}</div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-tags">${p.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
+      <div class="card-arrow">↗</div>
+    `;
+    grid.appendChild(card);
+  });
+  updateCount(list.length);
+}
+
+function updateCount(n) {
+  document.getElementById('visibleCount').textContent = n;
+}
+
+let currentFilter = 'all';
+let currentSearch = '';
+
+function applyFilters() {
+  let list = projects;
+
+  if (currentFilter === 'beginner') list = list.filter(p => p.diff === 'beginner');
+  else if (currentFilter === 'intermediate') list = list.filter(p => p.diff === 'intermediate');
+  else if (currentFilter === 'advanced') list = list.filter(p => p.diff === 'advanced');
+  else if (currentFilter !== 'all') list = list.filter(p => p.tags.includes(currentFilter));
+
+  if (currentSearch) {
+    const q = currentSearch.toLowerCase();
+    list = list.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q) ||
+      p.tags.some(t => t.includes(q))
+    );
+  }
+
+  renderCards(list);
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    applyFilters();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentSearch = e.target.value.trim();
+  applyFilters();
+});
+
+// Initial render
+renderCards(projects);
+</script>
+</body>
+</html>

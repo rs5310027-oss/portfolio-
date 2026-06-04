@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Registration</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#8b5cf6,#c084fc,#e9d5ff);
+    min-height:100vh;
+}
+
+/* Navbar */
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 60px;
+    background:rgba(255,255,255,0.2);
+    backdrop-filter:blur(12px);
+    color:white;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+}
+
+/* Hero */
+.hero{
+    text-align:center;
+    padding:80px 20px;
+    color:white;
+}
+
+.hero h1{
+    font-size:52px;
+}
+
+.hero p{
+    margin-top:15px;
+    font-size:20px;
+}
+
+/* Container */
+.container{
+    max-width:1100px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    padding:40px;
+}
+
+/* Glass Cards */
+.card{
+    background:rgba(255,255,255,0.25);
+    backdrop-filter:blur(15px);
+    border-radius:25px;
+    padding:30px;
+    color:white;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Event Details */
+.card h2{
+    margin-bottom:20px;
+}
+
+.schedule{
+    margin-top:20px;
+}
+
+.schedule p{
+    margin:12px 0;
+}
+
+/* Form */
+form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+input, select{
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    outline:none;
+}
+
+button{
+    padding:15px;
+    background:#fff;
+    color:#8b5cf6;
+    border:none;
+    border-radius:12px;
+    font-size:18px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#f3e8ff;
+}
+
+@media(max-width:768px){
+    .container{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">Eventify</div>
+    <div>Home | Events | Register</div>
+</nav>
+
+<section class="hero">
+    <h1>Tech Conference 2026</h1>
+    <p>Join India's biggest innovation & technology event</p>
+</section>
+
+<div class="container">
+
+    <!-- Event Details -->
+    <div class="card">
+        <h2>📅 Event Details</h2>
+        <p><strong>Date:</strong> 15 June 2026</p>
+        <p><strong>Location:</strong> Jaipur Convention Center</p>
+        <p><strong>Time:</strong> 10:00 AM - 6:00 PM</p>
+
+        <div class="schedule">
+            <h2>Event Schedule</h2>
+            <p>10:00 AM - Opening Ceremony</p>
+            <p>12:00 PM - AI Workshop</p>
+            <p>2:00 PM - Startup Networking</p>
+            <p>4:00 PM - Panel Discussion</p>
+        </div>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="card">
+        <h2>📝 Register Now</h2>
+
+        <form>
+            <input type="text" placeholder="Full Name">
+            <input type="email" placeholder="Email Address">
+            <input type="tel" placeholder="Phone Number">
+
+            <select>
+                <option>Select Ticket Type</option>
+                <option>Standard</option>
+                <option>VIP</option>
+                <option>Student Pass</option>
+            </select>
+
+            <button type="submit">Register Now</button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlowAI – AI Beauty & Skincare Advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose:#F4A7B9;--rose-deep:#D4637A;--rose-light:#FDE8EE;
+  --lavender:#C4A8E0;--lav-deep:#8B5DB8;--lav-light:#F0E8F8;
+  --peach:#F7C59F;--peach-deep:#D4845A;--peach-light:#FEF3EB;
+  --mint:#A8D8C8;--mint-deep:#4A9E88;--mint-light:#E8F7F3;
+  --cream:#FFF8F5;--white:#FFFFFF;
+  --text-dark:#2D1B2E;--text-mid:#6B4C6B;--text-light:#B89AB8;
+  --border:#F0D8E8;
+  --shadow:0 4px 24px rgba(180,100,130,0.10);
+  --shadow-lg:0 12px 40px rgba(180,100,130,0.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh;overflow-x:hidden}
+
+/* ── DECORATIVE BG ── */
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(circle at 10% 20%,rgba(244,167,185,0.18) 0%,transparent 50%),
+  radial-gradient(circle at 90% 80%,rgba(196,168,224,0.18) 0%,transparent 50%),
+  radial-gradient(circle at 50% 50%,rgba(247,197,159,0.10) 0%,transparent 60%);
+  pointer-events:none;z-index:0}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,248,245,0.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Playfair Display',serif;font-size:22px;color:var(--rose-deep);display:flex;align-items:center;gap:8px}
+.logo span{background:linear-gradient(135deg,var(--rose-deep),var(--lav-deep));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:6px}
+.nav-pill{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;color:var(--text-mid);background:transparent;transition:all 0.2s}
+.nav-pill:hover,.nav-pill.active{background:var(--rose-light);color:var(--rose-deep)}
+.nav-badge{background:linear-gradient(135deg,var(--rose-deep),var(--lav-deep));color:#fff;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* ── MAIN LAYOUT ── */
+main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:28px 24px 60px}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:32px 0 28px;animation:fadeUp 0.7s ease}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--rose-light);color:var(--rose-deep);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:500;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:42px;line-height:1.15;background:linear-gradient(135deg,var(--rose-deep) 0%,var(--lav-deep) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.hero p{font-size:15px;color:var(--text-mid);max-width:480px;margin:0 auto 24px;line-height:1.7}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.hero-chip{padding:7px 16px;border-radius:20px;font-size:12.5px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--text-mid);transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.hero-chip:hover{background:var(--rose-light);border-color:var(--rose);color:var(--rose-deep);transform:translateY(-1px)}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;background:white;border:1px solid var(--border);border-radius:14px;padding:5px;margin-bottom:22px;box-shadow:var(--shadow)}
+.tab-btn{flex:1;padding:9px 8px;border-radius:10px;font-size:12.5px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text-mid);font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tab-btn.active{background:linear-gradient(135deg,var(--rose-light),var(--lav-light));color:var(--rose-deep);box-shadow:0 2px 8px rgba(180,100,130,0.12)}
+.tab-btn .tab-icon{font-size:16px}
+
+/* ── CARDS ── */
+.card{background:white;border:1px solid var(--border);border-radius:20px;padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
+.card-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--text-dark);margin-bottom:4px}
+.card-sub{font-size:13px;color:var(--text-light);margin-bottom:16px}
+
+/* ── SKIN TYPE QUIZ ── */
+.quiz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.quiz-option{padding:12px 8px;border-radius:14px;border:1.5px solid var(--border);background:white;cursor:pointer;text-align:center;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.quiz-option:hover{border-color:var(--rose);background:var(--rose-light)}
+.quiz-option.selected{border-color:var(--rose-deep);background:var(--rose-light)}
+.quiz-option .opt-emoji{font-size:26px;display:block;margin-bottom:5px}
+.quiz-option .opt-label{font-size:12px;font-weight:500;color:var(--text-dark)}
+.quiz-option .opt-desc{font-size:10.5px;color:var(--text-light);margin-top:2px}
+.concern-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.concern-tag{padding:6px 13px;border-radius:20px;border:1px solid var(--border);font-size:12px;cursor:pointer;background:white;color:var(--text-mid);font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.concern-tag.selected{background:var(--lav-light);border-color:var(--lavender);color:var(--lav-deep)}
+
+/* ── INGREDIENT SCANNER ── */
+.ingr-textarea{width:100%;min-height:100px;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-dark);background:var(--cream);resize:vertical;outline:none;transition:border 0.2s}
+.ingr-textarea:focus{border-color:var(--rose)}
+.ingr-samples{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 0}
+.sample-btn{padding:5px 12px;border-radius:20px;font-size:11.5px;background:var(--peach-light);border:1px solid var(--peach);color:var(--peach-deep);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.sample-btn:hover{background:var(--peach);color:white}
+
+/* ── ROUTINE BUILDER ── */
+.routine-time-tabs{display:flex;gap:8px;margin-bottom:14px}
+.rt-tab{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:white;color:var(--text-mid);font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.rt-tab.active{background:linear-gradient(135deg,#FDE8EE,#F0E8F8);border-color:var(--rose);color:var(--rose-deep)}
+.age-select,.budget-select{padding:8px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-dark);background:white;outline:none;cursor:pointer}
+
+/* ── ACTION BUTTON ── */
+.ai-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:14px;background:linear-gradient(135deg,var(--rose-deep),var(--lav-deep));color:white;font-size:14px;font-weight:500;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;box-shadow:0 4px 16px rgba(180,100,130,0.25)}
+.ai-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(180,100,130,0.30)}
+.ai-btn:disabled{opacity:0.65;cursor:not-allowed;transform:none}
+.ai-btn-sm{padding:8px 16px;font-size:13px;border-radius:10px}
+.sec-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:12px;background:var(--rose-light);color:var(--rose-deep);font-size:13px;font-weight:500;border:1px solid var(--rose);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.sec-btn:hover{background:var(--rose);color:white}
+
+/* ── AI RESPONSE AREA ── */
+.ai-output{margin-top:16px;display:none}
+.ai-output.visible{display:block;animation:fadeUp 0.4s ease}
+.ai-bubble{background:linear-gradient(135deg,var(--rose-light),var(--lav-light));border:1px solid var(--border);border-radius:16px;padding:18px 20px;font-size:13.5px;line-height:1.8;color:var(--text-dark)}
+.ai-bubble strong{color:var(--rose-deep)}
+.ai-bubble h3{font-family:'Playfair Display',serif;font-size:16px;color:var(--lav-deep);margin:12px 0 6px}
+.ai-bubble ul{padding-left:18px;margin:6px 0}
+.ai-bubble li{margin-bottom:4px}
+.typing-dots{display:flex;gap:4px;align-items:center;padding:14px}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--rose);animation:bounce 1.2s infinite}
+.typing-dots span:nth-child(2){animation-delay:0.2s}
+.typing-dots span:nth-child(3){animation-delay:0.4s}
+
+/* ── INGREDIENT BADGE ── */
+.ingr-badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.ibadge{padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:500}
+.ibadge-good{background:#E8F7F3;color:#2D7A62;border:1px solid #A8D8C8}
+.ibadge-warn{background:#FEF3EB;color:#A05A2C;border:1px solid #F7C59F}
+.ibadge-bad{background:#FDE8EE;color:#A0364A;border:1px solid #F4A7B9}
+
+/* ── QUICK TIPS GRID ── */
+.tips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-top:4px}
+.tip-card{background:white;border:1px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:all 0.2s}
+.tip-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--rose)}
+.tip-card .tip-emoji{font-size:28px;margin-bottom:8px}
+.tip-card .tip-title{font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:4px}
+.tip-card .tip-desc{font-size:11.5px;color:var(--text-light);line-height:1.5}
+
+/* ── CHAT ── */
+.chat-messages{max-height:360px;overflow-y:auto;padding-right:4px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--rose);border-radius:4px}
+.msg{max-width:80%;padding:11px 15px;border-radius:16px;font-size:13.5px;line-height:1.65}
+.msg-user{align-self:flex-end;background:linear-gradient(135deg,var(--rose-deep),var(--lav-deep));color:white;border-bottom-right-radius:4px}
+.msg-ai{align-self:flex-start;background:white;border:1px solid var(--border);color:var(--text-dark);border-bottom-left-radius:4px}
+.msg-ai strong{color:var(--rose-deep)}
+.chat-input-row{display:flex;gap:8px}
+.chat-input{flex:1;padding:10px 16px;border:1.5px solid var(--border);border-radius:14px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-dark);outline:none;background:var(--cream)}
+.chat-input:focus{border-color:var(--rose)}
+.chat-qs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chat-q{padding:5px 12px;border-radius:20px;font-size:12px;background:var(--lav-light);border:1px solid var(--lavender);color:var(--lav-deep);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.chat-q:hover{background:var(--lavender);color:white}
+
+/* ── SECTION DIVIDERS ── */
+.section-label{font-size:10.5px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+
+/* ── STATS ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-box{background:linear-gradient(135deg,var(--rose-light),var(--lav-light));border-radius:14px;padding:14px;text-align:center;border:1px solid var(--border)}
+.stat-num{font-family:'Playfair Display',serif;font-size:24px;color:var(--rose-deep)}
+.stat-lbl{font-size:11px;color:var(--text-light);margin-top:2px}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:24px;font-size:12px;color:var(--text-light);position:relative;z-index:1}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@keyframes shimmer{0%{opacity:0.6}50%{opacity:1}100%{opacity:0.6}}
+.pulsing{animation:shimmer 1.8s infinite}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeUp 0.3s ease}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">✨ <span>GlowAI</span></div>
+  <div class="nav-links">
+    <button class="nav-pill active" onclick="scrollTo(0,0)">Home</button>
+    <button class="nav-pill" onclick="switchTab('quiz')">Skin Quiz</button>
+    <button class="nav-pill" onclick="switchTab('ingredients')">Ingredients</button>
+    <button class="nav-pill" onclick="switchTab('chat')">Ask AI</button>
+  </div>
+  <button class="nav-badge">✦ AI Powered</button>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">✨ Powered by Claude AI</div>
+    <h1>Your Personal<br>Beauty Advisor</h1>
+    <p>Get personalized skincare routines, ingredient analysis, and expert beauty tips — all tailored just for you.</p>
+    <div class="hero-chips">
+      <div class="hero-chip" onclick="quickAsk('Best morning skincare routine for glowing skin')">☀️ Morning Glow</div>
+      <div class="hero-chip" onclick="quickAsk('Natural DIY face masks for bright skin')">🌿 DIY Masks</div>
+      <div class="hero-chip" onclick="quickAsk('Anti-aging skincare tips and ingredients')">💎 Anti-Aging</div>
+      <div class="hero-chip" onclick="quickAsk('Best ingredients for acne-prone skin')">🫧 Acne Care</div>
+      <div class="hero-chip" onclick="quickAsk('How to fade dark spots and hyperpigmentation')">🌸 Dark Spots</div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-num">50+</div><div class="stat-lbl">Ingredients analyzed</div></div>
+    <div class="stat-box"><div class="stat-num">∞</div><div class="stat-lbl">Personalized tips</div></div>
+    <div class="stat-box"><div class="stat-num">24/7</div><div class="stat-lbl">AI beauty advisor</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tips')" id="tab-tips"><span class="tab-icon">💡</span>Beauty Tips</button>
+    <button class="tab-btn" onclick="switchTab('quiz')" id="tab-quiz"><span class="tab-icon">🧴</span>Skin Quiz</button>
+    <button class="tab-btn" onclick="switchTab('ingredients')" id="tab-ingredients"><span class="tab-icon">🔬</span>Ingredients</button>
+    <button class="tab-btn" onclick="switchTab('routine')" id="tab-routine"><span class="tab-icon">🌙</span>Routine</button>
+    <button class="tab-btn" onclick="switchTab('chat')" id="tab-chat"><span class="tab-icon">💬</span>Ask AI</button>
+  </div>
+
+  <!-- ═══ TIPS TAB ═══ -->
+  <div class="tab-content active" id="content-tips">
+    <div class="card">
+      <div class="card-title">Quick Beauty Tips</div>
+      <div class="card-sub">Tap any tip to get a detailed AI breakdown 🌸</div>
+      <div class="tips-grid">
+        <div class="tip-card" onclick="quickAsk('Tell me all about double cleansing — how to do it, benefits, and products to use')">
+          <div class="tip-emoji">🫧</div>
+          <div class="tip-title">Double Cleansing</div>
+          <div class="tip-desc">The K-beauty secret for truly clean skin</div>
+        </div>
+        <div class="tip-card" onclick="quickAsk('Explain SPF and sun protection in skincare — which to use and why')">
+          <div class="tip-emoji">☀️</div>
+          <div class="tip-title">SPF & Sun Protection</div>
+          <div class="tip-desc">Why sunscreen is the #1 anti-aging tool</div>
+        </div>
+        <div class="tip-card" onclick="quickAsk('How to layer skincare products correctly — toner, serum, moisturizer order')">
+          <div class="tip-emoji">💧</div>
+          <div class="tip-title">Product Layering</div>
+          <div class="tip-desc">Apply in the right order for results</div>
+        </div>
+        <div class="tip-card" onclick="quickAsk('Explain retinol for beginners — benefits, how to start, and side effects')">
+          <div class="tip-emoji">⚗️</div>
+          <div class="tip-title">Retinol Guide</div>
+          <div class="tip-desc">The gold standard anti-aging ingredient</div>
+        </div>
+        <div class="tip-card" onclick="quickAsk('Best natural ingredients for glowing skin you can find in the kitchen')">
+          <div class="tip-emoji">🌿</div>
+          <div class="tip-title">Natural Glow Boosters</div>
+          <div class="tip-desc">Kitchen ingredients for radiant skin</div>
+        </div>
+        <div class="tip-card" onclick="quickAsk('How to build a simple 3-step skincare routine on a budget')">
+          <div class="tip-emoji">💸</div>
+          <div class="tip-title">Budget Skincare</div>
+          <div class="tip-desc">Effective routine without spending much</div>
+        </div>
+        <div class="tip-card" onclick="quickAsk('Best practices for lip care and treatment of dark lips')">
+          <div class="tip-emoji">💋</div>
+          <div class="tip-title">Lip Care</div>
+          <div class="tip-desc">Soft, plump, and healthy lips</div>
+        </div>
+        <div class="tip-card" onclick="quickAsk('Explain face massage techniques and gua sha for lifting and glow')">
+          <div class="tip-emoji">🪨</div>
+          <div class="tip-title">Gua Sha & Massage</div>
+          <div class="tip-desc">Lift and sculpt with face massage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Output for quick tips -->
+    <div class="ai-output" id="tips-output">
+      <div class="card" style="border-color:var(--rose)">
+        <div id="tips-result"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ QUIZ TAB ═══ -->
+  <div class="tab-content" id="content-quiz">
+    <div class="card">
+      <div class="card-title">✨ Skin Type Quiz</div>
+      <div class="card-sub">Tell us about your skin and get a personalized routine</div>
+
+      <div class="section-label">My skin type is</div>
+      <div class="quiz-grid" id="skinTypeGrid">
+        <div class="quiz-option" onclick="selectSkin(this,'oily')"><span class="opt-emoji">💧</span><div class="opt-label">Oily</div><div class="opt-desc">Shiny, large pores</div></div>
+        <div class="quiz-option" onclick="selectSkin(this,'dry')"><span class="opt-emoji">🏜️</span><div class="opt-label">Dry</div><div class="opt-desc">Tight, flaky</div></div>
+        <div class="quiz-option" onclick="selectSkin(this,'combination')"><span class="opt-emoji">⚡</span><div class="opt-label">Combination</div><div class="opt-desc">Oily T-zone</div></div>
+        <div class="quiz-option" onclick="selectSkin(this,'sensitive')"><span class="opt-emoji">🌸</span><div class="opt-label">Sensitive</div><div class="opt-desc">Reacts easily</div></div>
+        <div class="quiz-option" onclick="selectSkin(this,'normal')"><span class="opt-emoji">✨</span><div class="opt-label">Normal</div><div class="opt-desc">Balanced skin</div></div>
+      </div>
+
+      <div class="section-label" style="margin-top:18px">My skin concerns (select all)</div>
+      <div class="concern-tags">
+        <div class="concern-tag" onclick="toggleConcern(this)">Acne & Breakouts</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Dark Spots</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Dullness</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Fine Lines</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Large Pores</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Redness</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Dark Circles</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Uneven Texture</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Dehydration</div>
+        <div class="concern-tag" onclick="toggleConcern(this)">Blackheads</div>
+      </div>
+
+      <div class="row" style="margin-top:18px">
+        <div>
+          <div class="section-label">Age range</div>
+          <select class="age-select" id="ageRange">
+            <option>Teens (13–19)</option>
+            <option selected>20s</option>
+            <option>30s</option>
+            <option>40s</option>
+            <option>50+</option>
+          </select>
+        </div>
+        <div>
+          <div class="section-label">Climate</div>
+          <select class="age-select" id="climate">
+            <option>Hot & Humid</option>
+            <option>Hot & Dry</option>
+            <option>Temperate</option>
+            <option>Cold</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="ai-btn" onclick="runQuiz()" id="quiz-btn">
+        <span>✨</span> Get My Personalized Routine
+      </button>
+    </div>
+
+    <div class="ai-output" id="quiz-output">
+      <div class="card" style="border-color:var(--lavender)">
+        <div id="quiz-result"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ INGREDIENTS TAB ═══ -->
+  <div class="tab-content" id="content-ingredients">
+    <div class="card">
+      <div class="card-title">🔬 Ingredient Analyzer</div>
+      <div class="card-sub">Paste product ingredients or type individual ones to get safety & benefit info</div>
+      <textarea class="ingr-textarea" id="ingrInput" placeholder="e.g. Niacinamide, Retinol, Hyaluronic Acid, Salicylic Acid, Vitamin C..."></textarea>
+
+      <div class="section-label" style="margin-top:10px">Try a sample</div>
+      <div class="ingr-samples">
+        <button class="sample-btn" onclick="fillIngr('Niacinamide, Hyaluronic Acid, Zinc, Glycerin')">Hydration Serum</button>
+        <button class="sample-btn" onclick="fillIngr('Retinol, Peptides, Vitamin E, Squalane')">Anti-Aging Cream</button>
+        <button class="sample-btn" onclick="fillIngr('Salicylic Acid, Tea Tree Oil, Niacinamide, Witch Hazel')">Acne Treatment</button>
+        <button class="sample-btn" onclick="fillIngr('Vitamin C, Alpha Arbutin, Kojic Acid, Ferulic Acid')">Brightening Serum</button>
+        <button class="sample-btn" onclick="fillIngr('Benzoyl Peroxide, Fragrance, Alcohol Denat, Parabens')">Check This Product</button>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="ai-btn" onclick="analyzeIngredients()" id="ingr-btn"><span>🔬</span> Analyze Ingredients</button>
+        <button class="sec-btn" onclick="checkCompatibility()">⚗️ Check Compatibility</button>
+      </div>
+    </div>
+
+    <div class="ai-output" id="ingr-output">
+      <div class="card" style="border-color:var(--mint)">
+        <div id="ingr-result"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ROUTINE TAB ═══ -->
+  <div class="tab-content" id="content-routine">
+    <div class="card">
+      <div class="card-title">🌙 Routine Builder</div>
+      <div class="card-sub">Build your perfect AM or PM skincare routine</div>
+
+      <div class="routine-time-tabs">
+        <button class="rt-tab active" id="am-tab" onclick="setRoutineTime('AM',this)">☀️ Morning Routine</button>
+        <button class="rt-tab" id="pm-tab" onclick="setRoutineTime('PM',this)">🌙 Night Routine</button>
+        <button class="rt-tab" id="week-tab" onclick="setRoutineTime('Weekly',this)">📅 Weekly Treatments</button>
+      </div>
+
+      <div class="row">
+        <div>
+          <div class="section-label">Skin type</div>
+          <select class="budget-select" id="routineSkin">
+            <option>Oily</option>
+            <option>Dry</option>
+            <option>Combination</option>
+            <option>Sensitive</option>
+            <option>Normal</option>
+          </select>
+        </div>
+        <div>
+          <div class="section-label">Budget</div>
+          <select class="budget-select" id="routineBudget">
+            <option>Affordable (drugstore)</option>
+            <option>Mid-range</option>
+            <option>Luxury</option>
+            <option>Natural / DIY</option>
+          </select>
+        </div>
+        <div>
+          <div class="section-label">Main goal</div>
+          <select class="budget-select" id="routineGoal">
+            <option>Glowing skin</option>
+            <option>Anti-aging</option>
+            <option>Acne control</option>
+            <option>Hydration</option>
+            <option>Even skin tone</option>
+          </select>
+        </div>
+      </div>
+      <button class="ai-btn" onclick="buildRoutine()" id="routine-btn"><span>🌸</span> Build My Routine</button>
+    </div>
+
+    <div class="ai-output" id="routine-output">
+      <div class="card" style="border-color:var(--peach)">
+        <div id="routine-result"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CHAT TAB ═══ -->
+  <div class="tab-content" id="content-chat">
+    <div class="card">
+      <div class="card-title">💬 Ask Your Beauty AI</div>
+      <div class="card-sub">Ask anything about skincare, makeup, hair, or wellness</div>
+
+      <div class="section-label">Suggested questions</div>
+      <div class="chat-qs">
+        <div class="chat-q" onclick="chatSuggest('Can I mix Vitamin C and Niacinamide?')">Vitamin C + Niacinamide?</div>
+        <div class="chat-q" onclick="chatSuggest('What ingredients to avoid during pregnancy?')">Safe in pregnancy?</div>
+        <div class="chat-q" onclick="chatSuggest('How to get rid of dark circles naturally?')">Dark circles help</div>
+        <div class="chat-q" onclick="chatSuggest('Best foods to eat for healthy glowing skin?')">Beauty foods</div>
+        <div class="chat-q" onclick="chatSuggest('How to shrink large pores?')">Minimize pores</div>
+        <div class="chat-q" onclick="chatSuggest('Explain the 10-step Korean skincare routine')">K-beauty routine</div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg msg-ai">Hi gorgeous! 🌸 I'm your AI beauty advisor. Ask me anything about skincare, ingredients, routines, or beauty tips!</div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ask about skincare, ingredients, routines..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="ai-btn ai-btn-sm" onclick="sendChat()">Send ✦</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>Made with 💕 by GlowAI — Powered by Claude AI &nbsp;·&nbsp; For educational purposes only. Always patch test new products.</footer>
+
+<script>
+// ── STATE ──
+let selectedSkin='';
+let selectedConcerns=[];
+let routineTime='AM';
+const chatHistory=[];
+
+// ── TAB SWITCHING ──
+function switchTab(tab){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('content-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+// ── QUIZ ──
+function selectSkin(el,type){
+  document.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSkin=type;
+}
+function toggleConcern(el){
+  el.classList.toggle('selected');
+  selectedConcerns=Array.from(document.querySelectorAll('.concern-tag.selected')).map(e=>e.textContent);
+}
+
+// ── ROUTINE TIME ──
+function setRoutineTime(time,btn){
+  routineTime=time;
+  document.querySelectorAll('.rt-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── INGREDIENT HELPERS ──
+function fillIngr(text){document.getElementById('ingrInput').value=text}
+
+// ── CLAUDE API CALL ──
+async function callClaude(prompt,systemPrompt=''){
+  const messages=[{role:'user',content:prompt}];
+  const body={model:'claude-sonnet-4-20250514',max_tokens:1000,messages};
+  if(systemPrompt) body.system=systemPrompt;
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  const data=await res.json();
+  return data.content?.[0]?.text||'Sorry, I had trouble responding. Please try again!';
+}
+
+// ── RENDER MARKDOWN-LITE ──
+function renderText(text){
+  return text
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^### (.*?)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.*?)$/gm,'<h3>$1</h3>')
+    .replace(/^# (.*?)$/gm,'<h3>$1</h3>')
+    .replace(/^\* (.*?)$/gm,'<li>$1</li>')
+    .replace(/^- (.*?)$/gm,'<li>$1</li>')
+    .replace(/^(\d+)\. (.*?)$/gm,'<li><strong>$1.</strong> $2</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/^(?!<[hul])/gm,'')
+}
+
+function showOutput(outputId,resultId,html){
+  const out=document.getElementById(outputId);
+  out.classList.add('visible');
+  document.getElementById(resultId).innerHTML=`<div class="ai-bubble">${html}</div>`;
+}
+function showLoading(outputId,resultId){
+  const out=document.getElementById(outputId);
+  out.classList.add('visible');
+  document.getElementById(resultId).innerHTML=`<div class="typing-dots pulsing"><span></span><span></span><span></span></div>`;
+}
+
+// ── QUICK TIP ASK ──
+async function quickAsk(prompt){
+  switchTab('tips');
+  showLoading('tips-output','tips-result');
+  setTimeout(()=>document.getElementById('tips-output').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  try{
+    const sys=`You are GlowAI, an expert, warm, and knowledgeable beauty and skincare advisor. Give practical, science-backed advice in a friendly tone. Use emojis sparingly. Format with clear headings and bullet points. Keep response concise but complete (under 400 words).`;
+    const text=await callClaude(prompt,sys);
+    showOutput('tips-output','tips-result',renderText(text));
+  }catch(e){showOutput('tips-output','tips-result','<p>Oops! Could not connect. Please try again. 🌸</p>');}
+}
+
+// ── SKIN QUIZ ──
+async function runQuiz(){
+  if(!selectedSkin){alert('Please select your skin type first! 🌸');return;}
+  const btn=document.getElementById('quiz-btn');
+  btn.disabled=true;btn.textContent='✨ Generating...';
+  showLoading('quiz-output','quiz-result');
+  setTimeout(()=>document.getElementById('quiz-output').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  const concerns=selectedConcerns.length?selectedConcerns.join(', '):'general maintenance';
+  const age=document.getElementById('ageRange').value;
+  const climate=document.getElementById('climate').value;
+  const prompt=`Create a personalized skincare routine for someone with ${selectedSkin} skin in their ${age}, living in a ${climate} climate, with these concerns: ${concerns}. Include AM and PM steps, key ingredients to look for, ingredients to avoid, and 3 lifestyle tips.`;
+  try{
+    const sys=`You are GlowAI, an expert skincare advisor. Give a complete, personalized, and practical routine. Use emojis, clear AM/PM sections, ingredient recommendations, and helpful tips. Be warm, friendly, and specific. Format with headings and bullet points.`;
+    const text=await callClaude(prompt,sys);
+    showOutput('quiz-output','quiz-result',renderText(text));
+  }catch(e){showOutput('quiz-output','quiz-result','<p>Connection error. Please try again! 💕</p>');}
+  btn.disabled=false;btn.innerHTML='<span>✨</span> Get My Personalized Routine';
+}
+
+// ── INGREDIENT ANALYSIS ──
+async function analyzeIngredients(){
+  const input=document.getElementById('ingrInput').value.trim();
+  if(!input){alert('Please enter some ingredients first! 🔬');return;}
+  const btn=document.getElementById('ingr-btn');
+  btn.disabled=true;btn.textContent='🔬 Analyzing...';
+  showLoading('ingr-output','ingr-result');
+  setTimeout(()=>document.getElementById('ingr-output').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  const prompt=`Analyze these skincare ingredients: ${input}. For each ingredient, explain: what it does, skin type it suits, any safety concerns or irritants, and effectiveness rating. Then give an overall product profile summary and who should use/avoid it.`;
+  try{
+    const sys=`You are GlowAI, a cosmetic chemist and skincare expert. Analyze ingredients scientifically but accessibly. Clearly flag potentially irritating, comedogenic, or harmful ingredients. Use a warm tone with emojis. Format with ingredient headings and a final summary section.`;
+    const text=await callClaude(prompt,sys);
+    showOutput('ingr-output','ingr-result',renderText(text));
+  }catch(e){showOutput('ingr-output','ingr-result','<p>Could not analyze. Please try again! 💕</p>');}
+  btn.disabled=false;btn.innerHTML='<span>🔬</span> Analyze Ingredients';
+}
+
+async function checkCompatibility(){
+  const input=document.getElementById('ingrInput').value.trim();
+  if(!input){alert('Please enter ingredients to check! ⚗️');return;}
+  showLoading('ingr-output','ingr-result');
+  setTimeout(()=>document.getElementById('ingr-output').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  const prompt=`Check the compatibility of these skincare ingredients: ${input}. Which combinations work well together? Which ones should NOT be used together (e.g., Vitamin C + Retinol, AHA/BHA + Niacinamide)? Suggest safe layering order and morning vs night usage.`;
+  try{
+    const sys=`You are GlowAI, a cosmetic chemistry expert. Give clear, practical compatibility advice. Use ✅ for compatible, ⚠️ for use with caution, ❌ for avoid combining. Be specific about WHY certain combos are problematic.`;
+    const text=await callClaude(prompt,sys);
+    showOutput('ingr-output','ingr-result',renderText(text));
+  }catch(e){showOutput('ingr-output','ingr-result','<p>Error occurred. Please try again! 💕</p>');}
+}
+
+// ── ROUTINE BUILDER ──
+async function buildRoutine(){
+  const btn=document.getElementById('routine-btn');
+  btn.disabled=true;btn.textContent='🌸 Building...';
+  showLoading('routine-output','routine-result');
+  setTimeout(()=>document.getElementById('routine-output').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  const skin=document.getElementById('routineSkin').value;
+  const budget=document.getElementById('routineBudget').value;
+  const goal=document.getElementById('routineGoal').value;
+  const prompt=`Build a detailed ${routineTime} skincare routine for ${skin} skin, with a ${budget} budget, focused on ${goal}. List each step in order with: product type, key ingredients to look for, how to apply, and why this step matters. Include timing between steps if needed.`;
+  try{
+    const sys=`You are GlowAI, a skincare expert and beauty educator. Create a clear, numbered step-by-step routine with product type, ingredient recommendations, application tips, and specific product suggestions. Use emojis and make it feel luxurious and achievable.`;
+    const text=await callClaude(prompt,sys);
+    showOutput('routine-output','routine-result',renderText(text));
+  }catch(e){showOutput('routine-output','routine-result','<p>Error building routine. Please try again! 💕</p>');}
+  btn.disabled=false;btn.innerHTML='<span>🌸</span> Build My Routine';
+}
+
+// ── CHAT ──
+function chatSuggest(q){document.getElementById('chatInput').value=q;sendChat();}
+
+async function sendChat(){
+  const input=document.getElementById('chatInput');
+  const msg=input.value.trim();
+  if(!msg) return;
+  input.value='';
+  const messages=document.getElementById('chatMessages');
+  messages.innerHTML+=`<div class="msg msg-user">${msg}</div>`;
+  const loadingId='load-'+Date.now();
+  messages.innerHTML+=`<div class="msg msg-ai" id="${loadingId}"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  messages.scrollTop=messages.scrollHeight;
+  chatHistory.push({role:'user',content:msg});
+  try{
+    const body={
+      model:'claude-sonnet-4-20250514',max_tokens:800,
+      system:`You are GlowAI, a friendly, expert beauty and skincare AI advisor. Give warm, practical, science-backed advice. Use emojis occasionally. Be concise (under 200 words per reply). Format nicely with bold for key terms.`,
+      messages:chatHistory.slice(-8)
+    };
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'I had trouble replying. Please try again! 🌸';
+    chatHistory.push({role:'assistant',content:reply});
+    document.getElementById(loadingId).innerHTML=renderText(reply);
+  }catch(e){document.getElementById(loadingId).textContent='Connection error. Please try again! 💕';}
+  messages.scrollTop=messages.scrollHeight;
+}
+
+// ── HERO CHIP CLICK ──
+function quickAsk(prompt){
+  switchTab('tips');
+  setTimeout(()=>quickAsk_inner(prompt),50);
+}
+async function quickAsk_inner(prompt){
+  showLoading('tips-output','tips-result');
+  setTimeout(()=>document.getElementById('tips-output').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  try{
+    const sys=`You are GlowAI, an expert, warm, and knowledgeable beauty and skincare advisor. Give practical, science-backed advice in a friendly tone. Use emojis sparingly. Format with clear headings and bullet points. Keep response concise but complete (under 400 words).`;
+    const text=await callClaude(prompt,sys);
+    showOutput('tips-output','tips-result',renderText(text));
+  }catch(e){showOutput('tips-output','tips-result','<p>Oops! Could not connect. Please try again. 🌸</p>');}
+}
+// fix duplicate function name
+const _qa=quickAsk;
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<style>
+@keyframes sparkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.4); } 50% { box-shadow: 0 0 35px rgba(255, 105, 180, 0.8); } }
+@keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes shine { 0%, 100% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #fff5f7 0%, #ffe6f0 50%, #fff5f7 100%); min-height: 100vh; }
+
+.container { max-width: 800px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+.header { text-align: center; margin-bottom: 2.5rem; }
+.header h1 { font-size: 42px; font-weight: 900; color: #d81b60; text-shadow: 2px 2px 4px rgba(216, 27, 96, 0.2); letter-spacing: 2px; margin-bottom: 8px; animation: bounce 3s ease-in-out infinite; }
+.header p { color: #666; font-size: 15px; font-weight: 700; }
+
+.cartoon-container { text-align: center; margin: 20px 0; font-size: 80px; animation: float 3s ease-in-out infinite; }
+
+.input-section { background: white; border: 3px solid #d81b60; border-radius: 20px; padding: 28px; margin-bottom: 24px; box-shadow: 0 8px 20px rgba(216, 27, 96, 0.15); }
+.input-label { display: block; font-weight: 900; color: #d81b60; margin-bottom: 12px; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+textarea { width: 100%; padding: 14px; border: 2px solid #ffb6d9; border-radius: 12px; font-size: 15px; font-family: 'Arial', sans-serif; resize: vertical; min-height: 100px; background: #fff9fb; font-weight: 600; }
+textarea:focus { outline: none; border-color: #d81b60; background: white; box-shadow: 0 0 20px rgba(216, 27, 96, 0.2); }
+
+.button-group { display: flex; gap: 12px; margin-top: 16px; }
+.btn { flex: 1; padding: 13px 20px; border: none; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+.btn-scan { background: linear-gradient(135deg, #d81b60 0%, #ff1493 100%); color: white; box-shadow: 0 5px 15px rgba(216, 27, 96, 0.3); }
+.btn-scan:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(216, 27, 96, 0.4); }
+.btn-clear { background: white; border: 2px solid #ffb6d9; color: #d81b60; }
+.btn-clear:hover { background: #fff5f7; }
+
+.spinner { display: inline-block; width: 35px; height: 35px; border: 4px solid #ffb6d9; border-top-color: #d81b60; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading { display: none; text-align: center; padding: 50px 20px; }
+.loading.show { display: block; }
+.loading-text { margin-top: 16px; color: #d81b60; font-weight: 900; font-size: 16px; }
+
+.results { display: none; }
+.results.show { display: block; animation: pop 0.6s ease-out; }
+
+.main-card { background: white; border: 4px solid #d81b60; border-radius: 20px; padding: 32px; margin-bottom: 24px; box-shadow: 0 12px 30px rgba(216, 27, 96, 0.2); animation: glow 3s ease-in-out infinite; }
+
+.main-emoji { font-size: 70px; margin-bottom: 16px; display: inline-block; animation: float 2.5s ease-in-out infinite; }
+
+.main-title { font-size: 32px; font-weight: 900; color: #d81b60; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; }
+
+.verdict-text { font-size: 20px; font-weight: 700; color: #666; margin-bottom: 24px; line-height: 1.5; font-style: italic; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px; }
+.stat-box { background: linear-gradient(135deg, #fff5f7 0%, #ffe6f0 100%); border: 2px solid #ffb6d9; border-radius: 14px; padding: 18px; text-align: center; }
+.stat-label { font-size: 11px; font-weight: 900; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.stat-value { font-size: 36px; font-weight: 900; color: #d81b60; }
+
+.meter-container { margin-top: 20px; }
+.meter-label { font-size: 12px; font-weight: 700; color: #666; margin-bottom: 6px; }
+.meter { height: 12px; background: #ffe6f0; border-radius: 10px; overflow: hidden; border: 2px solid #ffb6d9; }
+.meter-fill { height: 100%; background: linear-gradient(90deg, #d81b60, #ff1493); border-radius: 8px; transition: width 0.8s ease; }
+
+.traits-section { background: #fff5f7; border: 2px dashed #ffb6d9; border-radius: 14px; padding: 16px; margin-top: 20px; }
+.traits-title { font-size: 13px; font-weight: 900; color: #d81b60; text-transform: uppercase; margin-bottom: 10px; }
+.traits-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.trait { background: white; border: 1px solid #d81b60; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #d81b60; text-transform: uppercase; }
+
+.emoji-gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
+.emoji-item { font-size: 40px; text-align: center; animation: float 3s ease-in-out infinite; }
+.emoji-item:nth-child(2) { animation-delay: 0.2s; }
+.emoji-item:nth-child(3) { animation-delay: 0.4s; }
+.emoji-item:nth-child(4) { animation-delay: 0.6s; }
+.emoji-item:nth-child(5) { animation-delay: 0.8s; }
+
+.empty-state { text-align: center; padding: 50px 20px; color: #666; font-weight: 700; }
+</style>
+
+<div class="container">
+  <div class="header">
+    <h1>Baddie Energy Scanner 💅</h1>
+    <p>Serving confidence analysis for the girls 💖</p>
+  </div>
+
+  <div class="cartoon-container">💃✨👑</div>
+
+  <div class="input-section">
+    <label class="input-label">Type your message or bio</label>
+    <textarea id="messageInput" placeholder="Paste a message, caption, bio, or anything... let's scan your energy 💋"></textarea>
+    <div class="button-group">
+      <button class="btn btn-scan" onclick="scanEnergy()">Scan Baddie Energy</button>
+      <button class="btn btn-clear" onclick="clearInput()">Clear</button>
+    </div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Reading your aura, bestie...</div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="empty-state" id="emptyState">
+    <p>Tell me your thoughts and I'll read your energy 💋✨</p>
+  </div>
+</div>
+
+<script>
+const energyProfiles = {
+  maxBaddie: {
+    title: 'MAX BADDIE ENERGY',
+    emoji: '👑',
+    verdict: 'You radiate 92% main character energy. The confidence? Unmatched. You walked so other girls could run. This is THAT GIRL.',
+    baddieLevel: 95,
+    confidenceAura: 98,
+    softGirlScore: 8,
+    deluluPercentage: 45,
+    keywords: ['no cap', 'slay', 'periodt', 'ate and left', 'unbothered', 'main character', 'that girl', 'it girl', 'bad b****', 'don\'t care', 'own it', 'boss'],
+    traits: ['Unapologetic', 'Confident AF', 'Unbothered', 'Main Character', 'That Girl Energy'],
+    emojis: ['👑', '💎', '🔥', '💋', '✨']
+  },
+  highBaddie: {
+    title: 'HIGH BADDIE ENERGY',
+    emoji: '💅',
+    verdict: 'You\'re radiating 78% baddie energy! The confidence is showing and people can FEEL it. You\'re comfortable in your skin and it shows.',
+    baddieLevel: 78,
+    confidenceAura: 85,
+    softGirlScore: 18,
+    deluluPercentage: 65,
+    keywords: ['confidence', 'love myself', 'blessed', 'grateful', 'strong', 'queen', 'boss energy', 'independent', 'glow up', 'vibe'],
+    traits: ['Self-Assured', 'Independent', 'Powerful', 'Magnetic', 'Confident'],
+    emojis: ['💅', '💋', '🌟', '💃', '👸']
+  },
+  balancedEnergy: {
+    title: 'BALANCED ENERGY',
+    emoji: '🌸',
+    verdict: 'You\'re giving 58% baddie, 42% soft girl. You\'ve got that perfect mix—confident but also kind. The duality? We love it.',
+    baddieLevel: 58,
+    confidenceAura: 68,
+    softGirlScore: 62,
+    deluluPercentage: 52,
+    keywords: ['kind', 'thoughtful', 'real', 'genuine', 'down to earth', 'authentic', 'real ones know', 'appreciate', 'love you guys'],
+    traits: ['Authentic', 'Balanced', 'Grounded', 'Real', 'Genuine'],
+    emojis: ['🌸', '💕', '✨', '🦋', '💫']
+  },
+  softGirl: {
+    title: 'SOFT GIRL ENERGY',
+    emoji: '🌷',
+    verdict: 'You\'re serving 35% baddie, 75% soft girl. You\'ve got that sweet, gentle vibe. Nurturing and kind—the world needs more of this.',
+    baddieLevel: 35,
+    confidenceAura: 42,
+    softGirlScore: 88,
+    deluluPercentage: 28,
+    keywords: ['love', 'care', 'sweet', 'gentle', 'appreciate you', 'thinking of you', 'hope you\'re okay', 'sending love'],
+    traits: ['Nurturing', 'Empathetic', 'Gentle', 'Thoughtful', 'Kind'],
+    emojis: ['🌷', '💕', '🦋', '🌿', '☁️']
+  },
+  chaosEnergy: {
+    title: 'CHAOTIC BADDIE ENERGY',
+    emoji: '💀',
+    verdict: 'You\'re 88% baddie but in the most unhinged way possible. The chaos energy? PEAK. You\'re funny, you\'re confident, and you don\'t give a damn.',
+    baddieLevel: 88,
+    confidenceAura: 92,
+    softGirlScore: 12,
+    deluluPercentage: 78,
+    keywords: ['lmaooo', 'stop', 'im crying', 'absolutely foul', 'unhinged', 'chaotic energy', 'what is wrong with me', 'bestie i can\'t'],
+    traits: ['Hilarious', 'Unhinged', 'Chaotic', 'Doesn\'t Care', 'Naturally Funny'],
+    emojis: ['💀', '🔥', '😭', '💋', '👑']
+  }
+};
+
+function scanEnergy() {
+  const message = document.getElementById('messageInput').value.trim();
+  
+  if (!message) {
+    alert('bestie you gotta say something first! 💋');
+    return;
+  }
+
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('emptyState').style.display = 'none';
+
+  setTimeout(() => {
+    const profile = analyzeEnergy(message);
+    displayEnergy(profile);
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('results').classList.add('show');
+  }, 1600);
+}
+
+function analyzeEnergy(text) {
+  const lower = text.toLowerCase();
+  let scores = {};
+
+  for (let profile in energyProfiles) {
+    let score = 0;
+    const data = energyProfiles[profile];
+
+    for (let keyword of data.keywords) {
+      score += (lower.match(new RegExp(`\\b${keyword}\\b`, 'gi')) || []).length * 3;
+    }
+
+    scores[profile] = score;
+  }
+
+  let winner = 'balancedEnergy';
+  let maxScore = 0;
+  for (let profile in scores) {
+    if (scores[profile] > maxScore) {
+      maxScore = scores[profile];
+      winner = profile;
+    }
+  }
+
+  return energyProfiles[winner];
+}
+
+function displayEnergy(profile) {
+  const resultsDiv = document.getElementById('results');
+  
+  resultsDiv.innerHTML = `
+    <div class="main-card">
+      <div class="main-emoji">${profile.emoji}</div>
+      <div class="main-title">${profile.title}</div>
+      
+      <div class="verdict-text">"${profile.verdict}"</div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label">Baddie Level</div>
+          <div class="stat-value">${profile.baddieLevel}%</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Confidence Aura</div>
+          <div class="stat-value">${profile.confidenceAura}%</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Soft Girl Score</div>
+          <div class="stat-value">${profile.softGirlScore}%</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Delulu %</div>
+          <div class="stat-value">${profile.deluluPercentage}%</div>
+        </div>
+      </div>
+
+      <div class="meter-container">
+        <div class="meter-label">Overall Baddie Meter</div>
+        <div class="meter">
+          <div class="meter-fill" style="width: ${profile.baddieLevel}%"></div>
+        </div>
+      </div>
+
+      <div class="traits-section">
+        <div class="traits-title">Your Energy Traits</div>
+        <div class="traits-list">
+          ${profile.traits.map(t => `<div class="trait">${t}</div>`).join('')}
+        </div>
+      </div>
+
+      <div class="emoji-gallery">
+        ${profile.emojis.map(e => `<div class="emoji-item">${e}</div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function clearInput() {
+  document.getElementById('messageInput').value = '';
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('emptyState').style.display = 'block';
+}
+</script>

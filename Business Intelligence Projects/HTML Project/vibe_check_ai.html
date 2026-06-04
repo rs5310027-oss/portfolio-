@@ -1,0 +1,246 @@
+<style>
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+@keyframes glitch { 0%, 100% { text-shadow: 2px 2px #FF006E, -2px -2px #00F5FF; } 50% { text-shadow: -2px 2px #FFB700, 2px -2px #00FF00; } }
+@keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Arial', sans-serif; background: linear-gradient(-45deg, #FF006E, #00F5FF, #FFB700, #00FF00, #FF006E); background-size: 400% 400%; animation: rainbow 8s ease infinite; min-height: 100vh; }
+
+.container { max-width: 750px; margin: 0 auto; padding: 2rem 1.5rem; }
+.header { text-align: center; margin-bottom: 2.5rem; animation: bounce 2s ease-in-out infinite; }
+.header h1 { font-size: 44px; font-weight: 900; color: white; text-shadow: 3px 3px #FF006E, -3px -3px #00F5FF, 6px 6px #FFB700; animation: glitch 0.8s infinite; letter-spacing: 3px; transform: skewY(-2deg); }
+.header p { color: white; font-size: 15px; font-weight: 700; text-shadow: 2px 2px rgba(0,0,0,0.3); margin-top: 8px; }
+
+.input-section { background: rgba(255, 255, 255, 0.95); border: 4px solid white; border-radius: 20px; padding: 28px; margin-bottom: 24px; box-shadow: 8px 8px 0 rgba(0,0,0,0.2), inset 0 0 20px rgba(255, 0, 110, 0.1); position: relative; overflow: hidden; }
+.input-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 0, 110, 0.05) 10px, rgba(255, 0, 110, 0.05) 20px); animation: spin 20s linear infinite; }
+
+.input-label { display: block; font-weight: 900; color: #FF006E; margin-bottom: 12px; font-size: 16px; position: relative; z-index: 1; text-transform: uppercase; letter-spacing: 1px; }
+textarea { width: 100%; padding: 16px; border: 3px solid #00F5FF; border-radius: 12px; font-size: 15px; font-family: 'Arial', sans-serif; resize: vertical; min-height: 120px; background: white; font-weight: 600; color: #2d2d2d; transition: all 0.3s; position: relative; z-index: 1; }
+textarea::placeholder { color: #a0a0a0; font-weight: 600; }
+textarea:focus { outline: none; border-color: #FFB700; box-shadow: inset 0 0 10px rgba(255, 183, 0, 0.3), 0 0 20px rgba(255, 183, 0, 0.2); }
+
+.button-group { display: flex; gap: 12px; margin-top: 16px; position: relative; z-index: 1; }
+.btn { flex: 1; padding: 14px 20px; border: none; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+.btn-check { background: linear-gradient(135deg, #FF006E, #FFB700); color: white; box-shadow: 5px 5px 0 rgba(0,0,0,0.2); }
+.btn-check:hover { transform: translate(-3px, -3px); box-shadow: 8px 8px 0 rgba(0,0,0,0.2); animation: wiggle 0.5s; }
+.btn-check:active { transform: translate(0, 0); box-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+.btn-clear { background: white; color: #00F5FF; border: 3px solid #00F5FF; box-shadow: 4px 4px 0 #00F5FF; }
+.btn-clear:hover { background: #00F5FF; color: white; }
+
+.spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid #FF006E; border-top-color: #00F5FF; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loading { display: none; text-align: center; padding: 50px 20px; }
+.loading.show { display: block; }
+.loading-text { margin-top: 16px; color: white; font-weight: 900; font-size: 18px; text-shadow: 2px 2px #FF006E; animation: pulse 2s infinite; }
+
+.results { display: none; }
+.results.show { display: block; }
+
+.vibe-card { background: white; border: 5px solid; border-radius: 20px; padding: 28px; margin-bottom: 20px; position: relative; overflow: hidden; box-shadow: 12px 12px 0 rgba(0,0,0,0.15); animation: bounce 0.8s ease-out; }
+
+.card-trendy { border-color: #FF006E; }
+.card-trendy::before { content: '✨ TRENDY ✨'; position: absolute; top: -30px; right: -30px; font-size: 12px; font-weight: 900; color: white; background: #FF006E; padding: 20px; width: 200px; transform: rotate(45deg); text-align: center; z-index: 10; }
+
+.card-viral { border-color: #00F5FF; }
+.card-viral::before { content: '🚀 VIRAL 🚀'; position: absolute; top: -30px; right: -30px; font-size: 12px; font-weight: 900; color: white; background: #00F5FF; color: #2d2d2d; padding: 20px; width: 200px; transform: rotate(45deg); text-align: center; z-index: 10; }
+
+.card-mid { border-color: #FFB700; }
+.card-mid::before { content: '⚠️ MID ⚠️'; position: absolute; top: -30px; right: -30px; font-size: 12px; font-weight: 900; color: white; background: #FFB700; padding: 20px; width: 200px; transform: rotate(45deg); text-align: center; z-index: 10; }
+
+.card-content { position: relative; z-index: 1; }
+.card-emoji { font-size: 50px; margin-bottom: 12px; display: inline-block; animation: bounce 2s ease-in-out infinite; }
+.card-title { font-size: 28px; font-weight: 900; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; }
+.card-trendy .card-title { color: #FF006E; }
+.card-viral .card-title { color: #00F5FF; }
+.card-mid .card-title { color: #FFB700; }
+
+.card-desc { font-size: 16px; color: #5a5a5a; line-height: 1.5; margin-bottom: 20px; font-weight: 600; }
+.score-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.score-box { background: linear-gradient(135deg, #f0f0f0, #ffffff); border: 2px solid #ddd; border-radius: 12px; padding: 16px; text-align: center; }
+.score-label { font-size: 12px; color: #888; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.score-value { font-size: 32px; font-weight: 900; color: #FF006E; }
+
+.vibe-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.tag { background: #f5f5f5; border: 2px solid #ddd; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; text-transform: uppercase; color: #5a5a5a; }
+.tag.hot { background: #FFB700; border-color: #FF006E; color: white; }
+.tag.cold { background: #00F5FF; border-color: #00F5FF; color: #2d2d2d; }
+
+.verdict { background: linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 245, 255, 0.1)); border: 3px dashed #FF006E; border-radius: 12px; padding: 16px; font-size: 15px; font-weight: 700; color: #2d2d2d; line-height: 1.6; }
+
+.empty-state { text-align: center; padding: 50px 20px; color: white; font-weight: 700; }
+</style>
+
+<div class="container">
+  <div class="header">
+    <h1>VIBE CHECK AI</h1>
+    <p>Is it trendy? Is it funny? Will it go viral? 🔥</p>
+  </div>
+
+  <div class="input-section">
+    <label class="input-label">Drop your content 👇</label>
+    <textarea id="contentInput" placeholder="Type your meme, caption, idea, tweet, etc... anything you want us to vibe check"></textarea>
+    <div class="button-group">
+      <button class="btn btn-check" onclick="checkVibe()">Check the vibe</button>
+      <button class="btn btn-clear" onclick="clearContent()">Reset</button>
+    </div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Fr fr reading the energy rn...</div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="empty-state" id="emptyState">
+    <p>THE VIBE DEPENDS ON YOU 👀</p>
+  </div>
+</div>
+
+<script>
+const vibePatterns = {
+  trendy: {
+    emoji: '✨',
+    keywords: ['literally', 'no cap', 'fr fr', 'slay', 'ate', 'main character', 'it girl', 'that girl', 'aesthetic', 'live laugh love but make it', 'gen z', 'bestie', 'oop', 'periodt', 'and i oop', 'iconic', 'served', 'ate and left no crumbs'],
+    patterns: [/no cap|fr fr|slay|ate|main character|it girl|periodt/i],
+    desc: 'This is TRENDY trendy. People will be saying this unironically in group chats within 48 hours. Iconic behavior.',
+    trendScore: 92,
+    funnyScore: 85,
+    viralScore: 78
+  },
+  viral: {
+    emoji: '🚀',
+    keywords: ['would go viral', 'funny', 'relatable', 'true', 'oop', 'tell me why', 'i laughed', 'stop it', 'why is this', 'caught red-handed', 'lmaooo', 'STOP', 'i am crying'],
+    patterns: [/would go viral|everyone.*laugh|this is so|why is this|caught red-handed/i],
+    desc: 'This has viral written ALL over it. TikTok will eat this UP. 500K+ views guaranteed (probably). The algorithm loves it.',
+    trendScore: 72,
+    funnyScore: 94,
+    viralScore: 88
+  },
+  mid: {
+    emoji: '⚠️',
+    keywords: ['ok', 'cool', 'sure', 'fine', 'whatever', 'idk', 'maybe', 'sad', 'tired', 'blank stare', 'why would you post this', 'ew', 'no thanks'],
+    patterns: [/^(ok|cool|fine|whatever)$/i, /(sad|tired|meh)/i],
+    desc: 'Yikes bestie. This is giving... not vibes. It\'s not bad, it\'s just not IT. The energy is stagnant. Nobody will remember this in 3 hours.',
+    trendScore: 24,
+    funnyScore: 15,
+    viralScore: 8
+  },
+  chaos: {
+    emoji: '💀',
+    keywords: ['lmaooo', 'i am screaming', 'dead', 'crying laughing', 'stop it im crying', 'absolutely foul', 'unhinged', 'unhinged but make it fashion', 'chaotic', 'what the hell', 'that\'s just evil', 'why would you say this'],
+    patterns: [/unhinged|chaotic|absolutely.*foul|what the hell|im.*screaming|i am dead/i],
+    desc: 'STOP. This is UNHINGED and honestly? We love that for you. This is the kind of content that makes people send it to their bestie at 3am saying "this is us." Complete chaos energy but THAT\'S the point.',
+    trendScore: 88,
+    funnyScore: 96,
+    viralScore: 92
+  }
+};
+
+function checkVibe() {
+  const content = document.getElementById('contentInput').value.trim();
+  
+  if (!content) {
+    alert('you cant vibe check NOTHING ??? put something there bestie!!!');
+    return;
+  }
+
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('emptyState').style.display = 'none';
+
+  setTimeout(() => {
+    const vibe = analyzeVibe(content);
+    displayVibe(vibe);
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('results').classList.add('show');
+  }, 1800);
+}
+
+function analyzeVibe(text) {
+  const lower = text.toLowerCase();
+  let scores = {};
+
+  for (let category in vibePatterns) {
+    let score = 0;
+    const pattern = vibePatterns[category];
+
+    for (let keyword of pattern.keywords) {
+      score += (lower.match(new RegExp(`\\b${keyword}\\b`, 'gi')) || []).length * 2;
+    }
+
+    for (let regex of pattern.patterns) {
+      if (regex.test(text)) score += 8;
+    }
+
+    scores[category] = score;
+  }
+
+  let winner = 'mid';
+  let maxScore = 0;
+  for (let cat in scores) {
+    if (scores[cat] > maxScore) {
+      maxScore = scores[cat];
+      winner = cat;
+    }
+  }
+
+  return { category: winner, score: maxScore };
+}
+
+function displayVibe(vibe) {
+  const pattern = vibePatterns[vibe.category];
+  const cardClass = vibe.category === 'chaos' ? 'card-viral' : vibe.category === 'viral' ? 'card-viral' : vibe.category === 'trendy' ? 'card-trendy' : 'card-mid';
+  const cardClassAlt = vibe.category === 'chaos' ? 'card-trendy' : cardClass;
+
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.innerHTML = `
+    <div class="vibe-card ${cardClassAlt}">
+      <div class="card-content">
+        <div class="card-emoji">${pattern.emoji}</div>
+        <div class="card-title">${vibe.category.toUpperCase()}</div>
+        
+        <div class="card-desc">${pattern.desc}</div>
+
+        <div class="score-grid">
+          <div class="score-box">
+            <div class="score-label">Trendy %</div>
+            <div class="score-value">${pattern.trendScore}</div>
+          </div>
+          <div class="score-box">
+            <div class="score-label">Funny %</div>
+            <div class="score-value">${pattern.funnyScore}</div>
+          </div>
+          <div class="score-box">
+            <div class="score-label">Viral %</div>
+            <div class="score-value">${pattern.viralScore}</div>
+          </div>
+        </div>
+
+        <div class="vibe-tags">
+          ${vibe.category === 'trendy' ? '<div class="tag hot">Main Character Energy</div><div class="tag hot">Periodt</div><div class="tag hot">No Cap</div>' : ''}
+          ${vibe.category === 'viral' ? '<div class="tag cold">TikTok Ready</div><div class="tag cold">Relatable</div><div class="tag cold">Go Viral</div>' : ''}
+          ${vibe.category === 'chaos' ? '<div class="tag hot">Unhinged</div><div class="tag hot">That Girl</div><div class="tag hot">Ate & Left No Crumbs</div>' : ''}
+          ${vibe.category === 'mid' ? '<div class="tag">Giving Nothing</div><div class="tag">Cooked</div><div class="tag">Needs Work</div>' : ''}
+        </div>
+
+        <div class="verdict">
+          ${vibe.category === 'chaos' ? '⚡ THIS IS UNFILTERED CHAOS AND WE ARE LIVING FOR IT. Send this to your ride or die. This is the energy.' : ''}
+          ${vibe.category === 'trendy' ? '👑 THE TRENDSETTER. Post this and watch people start copying you immediately. You just started a movement, babe.' : ''}
+          ${vibe.category === 'viral' ? '🎥 THIS WILL GO VIRAL CERTIFIED. The algorithm will push this. Retweet it. Share it. Now.' : ''}
+          ${vibe.category === 'mid' ? '😶 bestie... do you even need to post this? like its giving nothing... maybe keep scrolling instead of posting this one.' : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function clearContent() {
+  document.getElementById('contentInput').value = '';
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('emptyState').style.display = 'block';
+}
+</script>
